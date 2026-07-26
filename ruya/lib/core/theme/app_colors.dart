@@ -24,6 +24,23 @@ class AppColors {
 
   static const Color errorContainerDark = Color(0x28EF4444);
   static const Color onErrorContainerDark = Color(0xFFFF8888);
+
+  // --- BRAND & BACKGROUND TOKENS ---
+  static const Color brandPrimaryLight = Color(0xFFD0A37A);
+  static const Color brandPrimaryDark = Color(0xFFE2B488);
+
+  static const Color backgroundCream = Color(0xFFFAF9F6);
+  static const Color backgroundDark = Color(0xFF121212);
+
+  static Color getBrandPrimary(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? brandPrimaryDark : brandPrimaryLight;
+  }
+
+  static Color getBackground(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? backgroundDark : backgroundCream;
+  }
   static Color getSuccessContainer(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return isDark ? successContainerDark : successContainerLight;
