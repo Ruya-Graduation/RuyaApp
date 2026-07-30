@@ -57,7 +57,7 @@ class AppAlertBanner extends StatelessWidget {
                   Text(
                     subtitle!,
                     style: TextStyle(
-                      color: fgColor.withOpacity(0.8),
+                      color: fgColor.withValues(alpha: 0.8),
                       fontSize: 13,
                     ),
                   ),

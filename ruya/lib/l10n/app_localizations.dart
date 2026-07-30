@@ -271,6 +271,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password must be at least 8 characters'**
   String get passwordMinError;
+
+  /// No description provided for @forgetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget Password'**
+  String get forgetPasswordTitle;
+
+  /// No description provided for @forgetPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the email address associated with your account'**
+  String get forgetPasswordSubtitle;
+
+  /// No description provided for @emailAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get emailAddressLabel;
+
+  /// No description provided for @recoverPasswordBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover Password'**
+  String get recoverPasswordBtn;
+
+  /// No description provided for @getYourCodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Your Code'**
+  String get getYourCodeTitle;
+
+  /// No description provided for @getYourCodeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the 4-digit code that send to your email'**
+  String get getYourCodeSubtitle;
+
+  /// No description provided for @resendCodeText.
+  ///
+  /// In en, this message translates to:
+  /// **'if you don\'t receive code! '**
+  String get resendCodeText;
+
+  /// No description provided for @resendCodeLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend'**
+  String get resendCodeLink;
+
+  /// No description provided for @verifyAndProceedBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'verify and Proceed'**
+  String get verifyAndProceedBtn;
+
+  /// No description provided for @enterNewPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter New Password'**
+  String get enterNewPasswordTitle;
+
+  /// No description provided for @enterNewPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your new password must be different from last used password'**
+  String get enterNewPasswordSubtitle;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'confirm Password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @continueBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'continue'**
+  String get continueBtn;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @backToSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Sign In'**
+  String get backToSignIn;
+
+  /// No description provided for @passwordResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password Reset Successfully!'**
+  String get passwordResetSuccess;
+
+  /// No description provided for @tabDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover'**
+  String get tabDiscover;
+
+  /// No description provided for @tabChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get tabChat;
+
+  /// No description provided for @tabMemories.
+  ///
+  /// In en, this message translates to:
+  /// **'Memories'**
+  String get tabMemories;
+
+  /// No description provided for @tabProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get tabProfile;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search monuments, regions, or stories...'**
+  String get searchHint;
 }
 
 class _AppLocalizationsDelegate

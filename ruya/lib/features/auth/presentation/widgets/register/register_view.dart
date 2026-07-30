@@ -62,7 +62,7 @@ class _RegisterViewState extends State<RegisterView> {
         if (state.status == RegisterStatus.success) {
           Future.delayed(const Duration(milliseconds: 1200), () {
             if (context.mounted) {
-              context.go('/explore');
+              context.go('/home');
             }
           });
         }

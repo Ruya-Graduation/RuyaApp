@@ -58,7 +58,7 @@ class _SignInViewState extends State<SignInView> {
         if (state.status == SignInStatus.success) {
           Future.delayed(const Duration(milliseconds: 1200), () {
             if (context.mounted) {
-              context.go('/explore');
+              context.go('/home');
             }
           });
         }

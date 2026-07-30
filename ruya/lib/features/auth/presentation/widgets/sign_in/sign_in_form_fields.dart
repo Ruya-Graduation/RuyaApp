@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 import 'package:ruya/core/widgets/app_text_field.dart';
 import 'package:ruya/l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 class SignInFormFields extends StatelessWidget {
   final TextEditingController emailController;
@@ -44,10 +45,12 @@ class SignInFormFields extends StatelessWidget {
         ),
         AppSpacing.verticalGapSm,
         TextButton(
-          onPressed: () {},
-          child: Text(
-            l10n.forgotPassword,
-            style: const TextStyle(color: Colors.grey),
+          onPressed: () {
+            context.push('/forgot-password');
+          },
+          child: const Text(
+            'Forgot Password?',
+            style: TextStyle(color: Colors.grey),
           ),
         ),
       ],

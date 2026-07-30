@@ -100,4 +100,70 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordMinError => 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل';
+
+  @override
+  String get forgetPasswordTitle => 'نسيت كلمة المرور';
+
+  @override
+  String get forgetPasswordSubtitle =>
+      'أدخل عنوان البريد الإلكتروني المرتبط بحسابك';
+
+  @override
+  String get emailAddressLabel => 'البريد الإلكتروني';
+
+  @override
+  String get recoverPasswordBtn => 'استعادة كلمة المرور';
+
+  @override
+  String get getYourCodeTitle => 'احصل على الرمز الخاص بك';
+
+  @override
+  String get getYourCodeSubtitle =>
+      'يرجى إدخال الرمز المكون من ٤ أرقام المرسل إلى بريدك الإلكتروني';
+
+  @override
+  String get resendCodeText => 'إذا لم تتلق الرمز! ';
+
+  @override
+  String get resendCodeLink => 'إعادة الإرسال';
+
+  @override
+  String get verifyAndProceedBtn => 'تحقق ومتابعة';
+
+  @override
+  String get enterNewPasswordTitle => 'أدخل كلمة المرور الجديدة';
+
+  @override
+  String get enterNewPasswordSubtitle =>
+      'يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور المستخدمة سابقاً';
+
+  @override
+  String get confirmPasswordLabel => 'تأكيد كلمة المرور';
+
+  @override
+  String get continueBtn => 'استمرار';
+
+  @override
+  String get back => 'رجوع';
+
+  @override
+  String get backToSignIn => 'العودة إلى تسجيل الدخول';
+
+  @override
+  String get passwordResetSuccess => 'تم إعادة تعيين كلمة المرور بنجاح!';
+
+  @override
+  String get tabDiscover => 'اكتشف';
+
+  @override
+  String get tabChat => 'دردشة';
+
+  @override
+  String get tabMemories => 'ذكريات';
+
+  @override
+  String get tabProfile => 'حسابي';
+
+  @override
+  String get searchHint => 'ابحث عن المعالم، المناطق، أو القصص...';
 }

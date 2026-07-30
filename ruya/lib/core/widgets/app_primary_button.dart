@@ -39,7 +39,7 @@ class AppPrimaryButton extends StatelessWidget {
       onPressed: isDisabled ? null : onPressed,
       style: FilledButton.styleFrom(
         backgroundColor: brandColor,
-        disabledBackgroundColor: brandColor.withOpacity(0.5),
+        disabledBackgroundColor: brandColor.withValues(alpha: 0.5),
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.md),

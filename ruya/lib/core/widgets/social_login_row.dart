@@ -13,7 +13,7 @@ class SocialLoginRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: Divider(color: Colors.grey.withOpacity(0.3))),
+            Expanded(child: Divider(color: Colors.grey.withValues(alpha: 0.3))),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: Text(
@@ -21,7 +21,7 @@ class SocialLoginRow extends StatelessWidget {
                 style: const TextStyle(color: Colors.grey, fontSize: 13),
               ),
             ),
-            Expanded(child: Divider(color: Colors.grey.withOpacity(0.3))),
+            Expanded(child: Divider(color: Colors.grey.withValues(alpha: 0.3))),
           ],
         ),
         AppSpacing.verticalGapLg,

@@ -29,5 +29,28 @@
   "fixErrorsBanner": "Please fix the errors below to continue.",
   "fullNameRequiredError": "Full name is required",
   "invalidEmailError": "Please enter a valid email address",
-  "passwordMinError": "Password must be at least 8 characters"
+  "passwordMinError": "Password must be at least 8 characters",
+
+  "forgetPasswordTitle": "Forget Password",
+  "forgetPasswordSubtitle": "Enter the email address associated with your account",
+  "emailAddressLabel": "Email Address",
+  "recoverPasswordBtn": "Recover Password",
+  "getYourCodeTitle": "Get Your Code",
+  "getYourCodeSubtitle": "Please enter the 4-digit code that send to your email",
+  "resendCodeText": "if you don't receive code! ",
+  "resendCodeLink": "Resend",
+  "verifyAndProceedBtn": "verify and Proceed",
+  "enterNewPasswordTitle": "Enter New Password",
+  "enterNewPasswordSubtitle": "Your new password must be different from last used password",
+  "confirmPasswordLabel": "confirm Password",
+  "continueBtn": "continue",
+  "back": "Back",
+  "backToSignIn": "Back to Sign In",
+  "passwordResetSuccess": "Password Reset Successfully!",
+
+  "tabDiscover": "Discover",
+  "tabChat": "Chat",
+  "tabMemories": "Memories",
+  "tabProfile": "Profile",
+  "searchHint": "Search monuments, regions, or stories..."
 }

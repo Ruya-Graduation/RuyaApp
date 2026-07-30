@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class AppColors {
@@ -32,6 +30,10 @@ class AppColors {
   static const Color backgroundCream = Color(0xFFFAF9F6);
   static const Color backgroundDark = Color(0xFF121212);
 
+  /// Surface color for cards/containers (one step above the page background).
+  static const Color surfaceDark = Color(0xFF1E1E1E);
+  static const Color surfaceLight = Color(0xFFFFFFFF);
+
   static Color getBrandPrimary(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return isDark ? brandPrimaryDark : brandPrimaryLight;
@@ -41,6 +43,13 @@ class AppColors {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return isDark ? backgroundDark : backgroundCream;
   }
+
+  /// Returns the card / container surface color (one step lighter than page bg).
+  static Color getSurface(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? surfaceDark : surfaceLight;
+  }
+
   static Color getSuccessContainer(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return isDark ? successContainerDark : successContainerLight;

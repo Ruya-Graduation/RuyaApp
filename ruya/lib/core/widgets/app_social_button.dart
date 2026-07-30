@@ -22,7 +22,7 @@ class AppSocialButton extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.withOpacity(0.3)),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
           borderRadius: BorderRadius.circular(AppSpacing.xxl),
         ),
         child: icon,

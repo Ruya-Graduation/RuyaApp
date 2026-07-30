@@ -99,4 +99,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordMinError => 'Password must be at least 8 characters';
+
+  @override
+  String get forgetPasswordTitle => 'Forget Password';
+
+  @override
+  String get forgetPasswordSubtitle =>
+      'Enter the email address associated with your account';
+
+  @override
+  String get emailAddressLabel => 'Email Address';
+
+  @override
+  String get recoverPasswordBtn => 'Recover Password';
+
+  @override
+  String get getYourCodeTitle => 'Get Your Code';
+
+  @override
+  String get getYourCodeSubtitle =>
+      'Please enter the 4-digit code that send to your email';
+
+  @override
+  String get resendCodeText => 'if you don\'t receive code! ';
+
+  @override
+  String get resendCodeLink => 'Resend';
+
+  @override
+  String get verifyAndProceedBtn => 'verify and Proceed';
+
+  @override
+  String get enterNewPasswordTitle => 'Enter New Password';
+
+  @override
+  String get enterNewPasswordSubtitle =>
+      'Your new password must be different from last used password';
+
+  @override
+  String get confirmPasswordLabel => 'confirm Password';
+
+  @override
+  String get continueBtn => 'continue';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get backToSignIn => 'Back to Sign In';
+
+  @override
+  String get passwordResetSuccess => 'Password Reset Successfully!';
+
+  @override
+  String get tabDiscover => 'Discover';
+
+  @override
+  String get tabChat => 'Chat';
+
+  @override
+  String get tabMemories => 'Memories';
+
+  @override
+  String get tabProfile => 'Profile';
+
+  @override
+  String get searchHint => 'Search monuments, regions, or stories...';
 }

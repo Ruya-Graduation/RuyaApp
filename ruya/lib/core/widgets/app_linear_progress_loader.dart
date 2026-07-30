@@ -15,7 +15,7 @@ class AppLinearProgressLoader extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(2),
           child: LinearProgressIndicator(
-            backgroundColor: AppColors.getBrandPrimary(context).withOpacity(0.2),
+            backgroundColor: AppColors.getBrandPrimary(context).withValues(alpha: 0.2),
             valueColor: const AlwaysStoppedAnimation<Color>(AppColors.successGreen),
             minHeight: 4,
           ),

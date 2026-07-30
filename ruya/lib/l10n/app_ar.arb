@@ -29,5 +29,28 @@
   "fixErrorsBanner": "يرجى تصحيح الأخطاء أدناه للمتابعة.",
   "fullNameRequiredError": "الاسم الكامل مطلوب",
   "invalidEmailError": "يرجى إدخال بريد إلكتروني صحيح",
-  "passwordMinError": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل"
+  "passwordMinError": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+
+  "forgetPasswordTitle": "نسيت كلمة المرور",
+  "forgetPasswordSubtitle": "أدخل عنوان البريد الإلكتروني المرتبط بحسابك",
+  "emailAddressLabel": "البريد الإلكتروني",
+  "recoverPasswordBtn": "استعادة كلمة المرور",
+  "getYourCodeTitle": "احصل على الرمز الخاص بك",
+  "getYourCodeSubtitle": "يرجى إدخال الرمز المكون من ٤ أرقام المرسل إلى بريدك الإلكتروني",
+  "resendCodeText": "إذا لم تتلق الرمز! ",
+  "resendCodeLink": "إعادة الإرسال",
+  "verifyAndProceedBtn": "تحقق ومتابعة",
+  "enterNewPasswordTitle": "أدخل كلمة المرور الجديدة",
+  "enterNewPasswordSubtitle": "يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور المستخدمة سابقاً",
+  "confirmPasswordLabel": "تأكيد كلمة المرور",
+  "continueBtn": "استمرار",
+  "back": "رجوع",
+  "backToSignIn": "العودة إلى تسجيل الدخول",
+  "passwordResetSuccess": "تم إعادة تعيين كلمة المرور بنجاح!",
+
+  "tabDiscover": "اكتشف",
+  "tabChat": "دردشة",
+  "tabMemories": "ذكريات",
+  "tabProfile": "حسابي",
+  "searchHint": "ابحث عن المعالم، المناطق، أو القصص..."
 }

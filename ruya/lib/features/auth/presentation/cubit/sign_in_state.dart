@@ -16,16 +16,20 @@ class SignInState extends Equatable {
     this.fieldErrors = const {},
   });
 
+  static const Object _keep = Object();
+
   SignInState copyWith({
     SignInStatus? status,
     UserEntity? user,
-    String? errorMessage,
+    // Sentinel pattern: pass null explicitly to clear the error.
+    Object? errorMessage = _keep,
     Map<String, String?>? fieldErrors,
   }) {
     return SignInState(
       status: status ?? this.status,
       user: user ?? this.user,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessage:
+          errorMessage == _keep ? this.errorMessage : errorMessage as String?,
       fieldErrors: fieldErrors ?? this.fieldErrors,
     );
   }
