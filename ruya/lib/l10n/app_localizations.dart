@@ -305,7 +305,7 @@ abstract class AppLocalizations {
   /// No description provided for @getYourCodeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Please enter the 4-digit code that send to your email'**
+  /// **'Please enter the 6-digit code sent to your email'**
   String get getYourCodeSubtitle;
 
   /// No description provided for @resendCodeText.
@@ -367,6 +367,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password Reset Successfully!'**
   String get passwordResetSuccess;
+
+  /// No description provided for @preferredLanguageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred Language'**
+  String get preferredLanguageLabel;
+
+  /// No description provided for @knowledgeLevelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Knowledge Level'**
+  String get knowledgeLevelLabel;
+
+  /// No description provided for @knowledgeLevelBeginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get knowledgeLevelBeginner;
+
+  /// No description provided for @knowledgeLevelIntermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get knowledgeLevelIntermediate;
+
+  /// No description provided for @knowledgeLevelAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get knowledgeLevelAdvanced;
+
+  /// No description provided for @resendCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in {seconds}s'**
+  String resendCooldown(int seconds);
+
+  /// No description provided for @loggedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged out successfully.'**
+  String get loggedOut;
 
   /// No description provided for @tabDiscover.
   ///

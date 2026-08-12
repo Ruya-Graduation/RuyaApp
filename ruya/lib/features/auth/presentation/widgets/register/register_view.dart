@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ruya/core/localization/locale_cubit.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 import 'package:ruya/core/utils/validators.dart';
 import 'package:ruya/core/widgets/app_alert_banner.dart';
-
 import 'package:ruya/core/widgets/app_primary_button.dart';
 import 'package:ruya/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:ruya/features/auth/presentation/cubit/register_state.dart';
@@ -22,6 +22,22 @@ class _RegisterViewState extends State<RegisterView> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  String _selectedLanguage = 'en';
+  String _selectedKnowledgeLevel = 'beginner';
+
+  @override
+  void initState() {
+    super.initState();
+    // Seed the language selector from the app's current locale.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final locale = context.read<LocaleCubit>().state;
+        setState(() {
+          _selectedLanguage = locale.languageCode == 'ar' ? 'ar' : 'en';
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -49,7 +65,13 @@ class _RegisterViewState extends State<RegisterView> {
         'password': passwordError,
       });
     } else {
-      cubit.register(name, email, password);
+      cubit.register(
+        name: name,
+        email: email,
+        password: password,
+        preferredLanguage: _selectedLanguage,
+        knowledgeLevel: _selectedKnowledgeLevel,
+      );
     }
   }
 
@@ -103,6 +125,11 @@ class _RegisterViewState extends State<RegisterView> {
               emailError: state.fieldErrors['email'],
               passwordError: state.fieldErrors['password'],
               isSuccess: isSuccess,
+              selectedLanguage: _selectedLanguage,
+              selectedKnowledgeLevel: _selectedKnowledgeLevel,
+              onLanguageChanged: (val) => setState(() => _selectedLanguage = val),
+              onKnowledgeLevelChanged: (val) =>
+                  setState(() => _selectedKnowledgeLevel = val),
             ),
             AppSpacing.verticalGapXl,
             AppPrimaryButton(

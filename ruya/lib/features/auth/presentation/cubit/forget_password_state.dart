@@ -6,13 +6,20 @@ class ForgetPasswordState extends Equatable {
   final ForgetPasswordStatus status;
   final String? errorMessage;
   final String email;
-  final String otp;
+
+  /// The opaque reset token returned by `/api/Auth/verify-otp`.
+  /// Null until OTP verification succeeds. Must be sent to `/api/Auth/reset-password`.
+  final String? resetToken;
+
+  /// Seconds remaining in the client-side resend cooldown (0 = can resend).
+  final int resendCooldownSeconds;
 
   const ForgetPasswordState({
     this.status = ForgetPasswordStatus.initial,
     this.errorMessage,
     this.email = '',
-    this.otp = '',
+    this.resetToken,
+    this.resendCooldownSeconds = 0,
   });
 
   /// Sentinel value used to distinguish "keep old value" from "set to null".
@@ -25,17 +32,23 @@ class ForgetPasswordState extends Equatable {
     // not allow clearing back to null).
     Object? errorMessage = _keep,
     String? email,
-    String? otp,
+    Object? resetToken = _keep,
+    int? resendCooldownSeconds,
   }) {
     return ForgetPasswordState(
       status: status ?? this.status,
       errorMessage:
           errorMessage == _keep ? this.errorMessage : errorMessage as String?,
       email: email ?? this.email,
-      otp: otp ?? this.otp,
+      resetToken:
+          resetToken == _keep ? this.resetToken : resetToken as String?,
+      resendCooldownSeconds:
+          resendCooldownSeconds ?? this.resendCooldownSeconds,
     );
   }
 
   @override
-  List<Object?> get props => [status, errorMessage, email, otp];
+  List<Object?> get props =>
+      [status, errorMessage, email, resetToken, resendCooldownSeconds];
 }
+

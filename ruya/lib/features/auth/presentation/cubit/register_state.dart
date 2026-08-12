@@ -8,12 +8,16 @@ class RegisterState extends Equatable {
   final UserEntity? user;
   final String? errorMessage;
   final Map<String, String?> fieldErrors;
+  final String preferredLanguage;
+  final String knowledgeLevel;
 
   const RegisterState({
     this.status = RegisterStatus.initial,
     this.user,
     this.errorMessage,
     this.fieldErrors = const {},
+    this.preferredLanguage = 'en',
+    this.knowledgeLevel = 'beginner',
   });
 
   static const Object _keep = Object();
@@ -24,6 +28,8 @@ class RegisterState extends Equatable {
     // Sentinel pattern: pass null explicitly to clear the error.
     Object? errorMessage = _keep,
     Map<String, String?>? fieldErrors,
+    String? preferredLanguage,
+    String? knowledgeLevel,
   }) {
     return RegisterState(
       status: status ?? this.status,
@@ -31,9 +37,13 @@ class RegisterState extends Equatable {
       errorMessage:
           errorMessage == _keep ? this.errorMessage : errorMessage as String?,
       fieldErrors: fieldErrors ?? this.fieldErrors,
+      preferredLanguage: preferredLanguage ?? this.preferredLanguage,
+      knowledgeLevel: knowledgeLevel ?? this.knowledgeLevel,
     );
   }
 
   @override
-  List<Object?> get props => [status, user, errorMessage, fieldErrors];
+  List<Object?> get props =>
+      [status, user, errorMessage, fieldErrors, preferredLanguage, knowledgeLevel];
 }
+

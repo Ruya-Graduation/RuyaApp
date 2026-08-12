@@ -118,7 +118,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get getYourCodeSubtitle =>
-      'Please enter the 4-digit code that send to your email';
+      'Please enter the 6-digit code sent to your email';
 
   @override
   String get resendCodeText => 'if you don\'t receive code! ';
@@ -150,6 +150,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordResetSuccess => 'Password Reset Successfully!';
+
+  @override
+  String get preferredLanguageLabel => 'Preferred Language';
+
+  @override
+  String get knowledgeLevelLabel => 'Knowledge Level';
+
+  @override
+  String get knowledgeLevelBeginner => 'Beginner';
+
+  @override
+  String get knowledgeLevelIntermediate => 'Intermediate';
+
+  @override
+  String get knowledgeLevelAdvanced => 'Advanced';
+
+  @override
+  String resendCooldown(int seconds) {
+    return 'Resend in ${seconds}s';
+  }
+
+  @override
+  String get loggedOut => 'Logged out successfully.';
 
   @override
   String get tabDiscover => 'Discover';

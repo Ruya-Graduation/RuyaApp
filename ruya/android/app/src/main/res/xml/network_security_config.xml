@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Scoped cleartext-traffic allowance for the Ruya backend.
+
+  IMPORTANT: This is a stopgap while ruya.runasp.net is served over plain HTTP.
+  Remove this file (and the android:networkSecurityConfig reference in
+  AndroidManifest.xml) once the backend is behind HTTPS.
+
+  The rule is intentionally domain-scoped (NOT global usesCleartextTraffic="true")
+  so cleartext is only permitted for this one host.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">ruya.runasp.net</domain>
+    </domain-config>
+</network-security-config>

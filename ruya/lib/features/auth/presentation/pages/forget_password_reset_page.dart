@@ -78,13 +78,30 @@ class _ForgetPasswordResetPageState extends State<ForgetPasswordResetPage> {
                   ),
                   child: BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
                     listener: (context, state) {
-                      if (state.status == ForgetPasswordStatus.success) {
+                      // Only react to success AFTER resetPassword (step 3).
+                      // verifyOtp (step 2) also emits success, but at that
+                      // point resetToken is set and we are NOT on this page yet.
+                      // Here we guard: resetToken must be present (set by step 2)
+                      // and status must be success — meaning step 3 just finished.
+                      if (state.status == ForgetPasswordStatus.success &&
+                          state.resetToken != null) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(l10n.passwordResetSuccess),
+                            duration: const Duration(seconds: 2),
+                            backgroundColor: Colors.green,
                           ),
                         );
-                        context.go('/');
+                        // Small delay so the SnackBar flashes briefly before
+                        // we navigate away.
+                        Future.delayed(const Duration(milliseconds: 1500), () {
+                          if (context.mounted) {
+                            // go('/') lands on the AuthPage (sign-in tab).
+                            // The session-restore redirect is a no-op here
+                            // because reset-password does NOT issue a JWT.
+                            context.go('/');
+                          }
+                        });
                       }
                     },
                     builder: (context, state) {
