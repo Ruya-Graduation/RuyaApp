@@ -165,4 +165,126 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchHint => 'Search monuments, regions, or stories...';
+
+  @override
+  String get accountSettings => 'Account Settings';
+
+  @override
+  String get editDisplayName => 'Edit Display Name';
+
+  @override
+  String get updateEmail => 'Update Email';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get secureLogOut => 'Secure Log Out';
+
+  @override
+  String get appPreferences => 'App Preferences';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get gpsNarration => 'GPS Narration';
+
+  @override
+  String get autoNarrateNearSites => 'Auto-narrate when near sites';
+
+  @override
+  String get en => 'EN';
+
+  @override
+  String get ar => 'AR';
+
+  @override
+  String get hours => 'Hours';
+
+  @override
+  String get adult => 'Adult';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get viewMap => 'View Map';
+
+  @override
+  String get crowds => 'Crowds';
+
+  @override
+  String get low => 'Low';
+
+  @override
+  String get ruyaSuggests => 'Ruya Suggests';
+
+  @override
+  String get ruyaSuggestsDescription =>
+      'You have 2 hours free. Add the nearby Valley of the Kings to your itinerary?';
+
+  @override
+  String get addToItinerary => '+ Add to Itinerary';
+
+  @override
+  String get bookEntryTicket => 'Book Entry Ticket';
+
+  @override
+  String get reserveEntry => 'Reserve Entry';
+
+  @override
+  String get selectDate => 'Select Date';
+
+  @override
+  String get avail => 'Avail';
+
+  @override
+  String get filling => 'Filling';
+
+  @override
+  String get sold => 'Sold';
+
+  @override
+  String get student => 'Student';
+
+  @override
+  String get foreigner => 'Foreigner';
+
+  @override
+  String get local => 'Local';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get tickets => 'tickets';
+
+  @override
+  String get confirmProcessTicket => 'Confirm & Process Ticket';
+
+  @override
+  String get bookingConfirmed => 'Booking Confirmed!';
+
+  @override
+  String get bookingConfirmedSubtitle =>
+      'Your tickets have been secured. Present the QR code at the entrance gate.';
+
+  @override
+  String get scanAtGate => 'Scan at gate';
+
+  @override
+  String get refNum => 'Ref #';
+
+  @override
+  String get site => 'Site';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get timeSlot => 'Time Slot';
+
+  @override
+  String get cancelBooking => 'Cancel Booking';
 }

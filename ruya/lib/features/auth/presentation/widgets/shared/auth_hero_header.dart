@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ruya/core/theme/app_text_styles.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
-import 'package:ruya/core/localization/locale_cubit.dart';
-import 'package:ruya/core/widgets/app_segmented_toggle.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:ruya/core/widgets/app_language_toggle.dart';
 
 class AuthHeroHeader extends StatelessWidget {
   final String title;
@@ -53,7 +52,10 @@ class AuthHeroHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildLocaleToggle(context),
+                const Align(
+                  alignment: AlignmentDirectional.topStart,
+                  child: AppLanguageToggle(),
+                ),
                 const Spacer(),
                 Text(
                   tag,
@@ -78,21 +80,4 @@ class AuthHeroHeader extends StatelessWidget {
 
   }
 
-  Widget _buildLocaleToggle(BuildContext context) {
-    return BlocBuilder<LocaleCubit, Locale>(
-      builder: (context, locale) {
-        return Align(
-          alignment: AlignmentDirectional.topStart,
-          child: AppSegmentedToggle<String>(
-            options: const ['en', 'ar'],
-            selected: locale.languageCode,
-            onChanged: (code) {
-              context.read<LocaleCubit>().setLocale(Locale(code));
-            },
-            labelBuilder: (code) => code.toUpperCase(),
-          ),
-        );
-      },
-    );
-  }
 }

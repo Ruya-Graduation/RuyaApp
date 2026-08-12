@@ -397,6 +397,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search monuments, regions, or stories...'**
   String get searchHint;
+
+  /// No description provided for @accountSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Settings'**
+  String get accountSettings;
+
+  /// No description provided for @editDisplayName.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Display Name'**
+  String get editDisplayName;
+
+  /// No description provided for @updateEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Email'**
+  String get updateEmail;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePassword;
+
+  /// No description provided for @secureLogOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure Log Out'**
+  String get secureLogOut;
+
+  /// No description provided for @appPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'App Preferences'**
+  String get appPreferences;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @gpsNarration.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Narration'**
+  String get gpsNarration;
+
+  /// No description provided for @autoNarrateNearSites.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-narrate when near sites'**
+  String get autoNarrateNearSites;
+
+  /// No description provided for @en.
+  ///
+  /// In en, this message translates to:
+  /// **'EN'**
+  String get en;
+
+  /// No description provided for @ar.
+  ///
+  /// In en, this message translates to:
+  /// **'AR'**
+  String get ar;
+
+  /// No description provided for @hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get hours;
+
+  /// No description provided for @adult.
+  ///
+  /// In en, this message translates to:
+  /// **'Adult'**
+  String get adult;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// No description provided for @viewMap.
+  ///
+  /// In en, this message translates to:
+  /// **'View Map'**
+  String get viewMap;
+
+  /// No description provided for @crowds.
+  ///
+  /// In en, this message translates to:
+  /// **'Crowds'**
+  String get crowds;
+
+  /// No description provided for @low.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get low;
+
+  /// No description provided for @ruyaSuggests.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruya Suggests'**
+  String get ruyaSuggests;
+
+  /// No description provided for @ruyaSuggestsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You have 2 hours free. Add the nearby Valley of the Kings to your itinerary?'**
+  String get ruyaSuggestsDescription;
+
+  /// No description provided for @addToItinerary.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Add to Itinerary'**
+  String get addToItinerary;
+
+  /// No description provided for @bookEntryTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Entry Ticket'**
+  String get bookEntryTicket;
+
+  /// No description provided for @reserveEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Reserve Entry'**
+  String get reserveEntry;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Date'**
+  String get selectDate;
+
+  /// No description provided for @avail.
+  ///
+  /// In en, this message translates to:
+  /// **'Avail'**
+  String get avail;
+
+  /// No description provided for @filling.
+  ///
+  /// In en, this message translates to:
+  /// **'Filling'**
+  String get filling;
+
+  /// No description provided for @sold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get sold;
+
+  /// No description provided for @student.
+  ///
+  /// In en, this message translates to:
+  /// **'Student'**
+  String get student;
+
+  /// No description provided for @foreigner.
+  ///
+  /// In en, this message translates to:
+  /// **'Foreigner'**
+  String get foreigner;
+
+  /// No description provided for @local.
+  ///
+  /// In en, this message translates to:
+  /// **'Local'**
+  String get local;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @tickets.
+  ///
+  /// In en, this message translates to:
+  /// **'tickets'**
+  String get tickets;
+
+  /// No description provided for @confirmProcessTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm & Process Ticket'**
+  String get confirmProcessTicket;
+
+  /// No description provided for @bookingConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Confirmed!'**
+  String get bookingConfirmed;
+
+  /// No description provided for @bookingConfirmedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your tickets have been secured. Present the QR code at the entrance gate.'**
+  String get bookingConfirmedSubtitle;
+
+  /// No description provided for @scanAtGate.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan at gate'**
+  String get scanAtGate;
+
+  /// No description provided for @refNum.
+  ///
+  /// In en, this message translates to:
+  /// **'Ref #'**
+  String get refNum;
+
+  /// No description provided for @site.
+  ///
+  /// In en, this message translates to:
+  /// **'Site'**
+  String get site;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
+  /// No description provided for @timeSlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Slot'**
+  String get timeSlot;
+
+  /// No description provided for @cancelBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Booking'**
+  String get cancelBooking;
 }
 
 class _AppLocalizationsDelegate

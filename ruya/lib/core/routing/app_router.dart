@@ -5,6 +5,10 @@ import 'package:ruya/core/di/injection.dart';
 import 'package:ruya/core/presentation/cubit/bottom_nav_cubit.dart';
 import 'package:ruya/core/widgets/main_layout.dart';
 import 'package:ruya/core/widgets/placeholder_page.dart';
+import 'package:ruya/features/profile/presentation/screens/profile_screen.dart';
+import 'package:ruya/features/site_details/presentation/screens/site_details_screen.dart';
+import 'package:ruya/features/booking/presentation/screens/ticket_selection_screen.dart';
+import 'package:ruya/features/booking/presentation/screens/booking_confirmation_screen.dart';
 import 'package:ruya/features/auth/presentation/cubit/forget_password_cubit.dart';
 import 'package:ruya/features/auth/presentation/pages/auth_page.dart';
 import 'package:ruya/features/auth/presentation/pages/forget_password_email_page.dart';
@@ -24,6 +28,18 @@ class AppRouter {
       GoRoute(
         path: '/',
         builder: (context, state) => const AuthPage(),
+      ),
+      GoRoute(
+        path: '/site-details',
+        builder: (context, state) => const SiteDetailsScreen(),
+      ),
+      GoRoute(
+        path: '/ticket-selection',
+        builder: (context, state) => const TicketSelectionScreen(),
+      ),
+      GoRoute(
+        path: '/booking-confirmation',
+        builder: (context, state) => const BookingConfirmationScreen(),
       ),
 
       // -----------------------------------------------------------------------
@@ -103,7 +119,7 @@ class AppRouter {
               GoRoute(
                 path: '/profile',
                 builder: (context, state) =>
-                    const PlaceholderPage(title: 'Profile Page'),
+                    const ProfileScreen(),
               ),
             ],
           ),

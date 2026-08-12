@@ -166,4 +166,126 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get searchHint => 'ابحث عن المعالم، المناطق، أو القصص...';
+
+  @override
+  String get accountSettings => 'إعدادات الحساب';
+
+  @override
+  String get editDisplayName => 'تعديل الاسم';
+
+  @override
+  String get updateEmail => 'تحديث البريد الإلكتروني';
+
+  @override
+  String get changePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get secureLogOut => 'تسجيل خروج آمن';
+
+  @override
+  String get appPreferences => 'تفضيلات التطبيق';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get gpsNarration => 'السرد عبر نظام تحديد المواقع';
+
+  @override
+  String get autoNarrateNearSites => 'سرد تلقائي عند الاقتراب من المواقع';
+
+  @override
+  String get en => 'EN';
+
+  @override
+  String get ar => 'AR';
+
+  @override
+  String get hours => 'ساعات العمل';
+
+  @override
+  String get adult => 'بالغ';
+
+  @override
+  String get location => 'الموقع';
+
+  @override
+  String get viewMap => 'عرض الخريطة';
+
+  @override
+  String get crowds => 'الازدحام';
+
+  @override
+  String get low => 'منخفض';
+
+  @override
+  String get ruyaSuggests => 'رؤيا تقترح';
+
+  @override
+  String get ruyaSuggestsDescription =>
+      'لديك ساعتان فراغ. هل تريد إضافة وادي الملوك القريب إلى مسار رحلتك؟';
+
+  @override
+  String get addToItinerary => '+ أضف إلى مسار الرحلة';
+
+  @override
+  String get bookEntryTicket => 'حجز تذكرة الدخول';
+
+  @override
+  String get reserveEntry => 'حجز الدخول';
+
+  @override
+  String get selectDate => 'اختر التاريخ';
+
+  @override
+  String get avail => 'متاح';
+
+  @override
+  String get filling => 'يمتلئ';
+
+  @override
+  String get sold => 'مباع';
+
+  @override
+  String get student => 'طالب';
+
+  @override
+  String get foreigner => 'أجنبي';
+
+  @override
+  String get local => 'محلي';
+
+  @override
+  String get total => 'المجموع';
+
+  @override
+  String get tickets => 'تذاكر';
+
+  @override
+  String get confirmProcessTicket => 'تأكيد وإصدار التذكرة';
+
+  @override
+  String get bookingConfirmed => 'تم تأكيد الحجز!';
+
+  @override
+  String get bookingConfirmedSubtitle =>
+      'تم تأمين تذاكرك. يرجى إبراز رمز الاستجابة السريعة عند بوابة الدخول.';
+
+  @override
+  String get scanAtGate => 'امسح عند البوابة';
+
+  @override
+  String get refNum => 'رقم المرجع';
+
+  @override
+  String get site => 'الموقع';
+
+  @override
+  String get date => 'التاريخ';
+
+  @override
+  String get timeSlot => 'فترة الدخول';
+
+  @override
+  String get cancelBooking => 'إلغاء الحجز';
 }
