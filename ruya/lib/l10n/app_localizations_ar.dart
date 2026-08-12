@@ -119,7 +119,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get getYourCodeSubtitle =>
-      'يرجى إدخال الرمز المكون من ٤ أرقام المرسل إلى بريدك الإلكتروني';
+      'يرجى إدخال الرمز المكون من ٦ أرقام المرسل إلى بريدك الإلكتروني';
 
   @override
   String get resendCodeText => 'إذا لم تتلق الرمز! ';
@@ -151,6 +151,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordResetSuccess => 'تم إعادة تعيين كلمة المرور بنجاح!';
+
+  @override
+  String get preferredLanguageLabel => 'اللغة المفضلة';
+
+  @override
+  String get knowledgeLevelLabel => 'مستوى المعرفة';
+
+  @override
+  String get knowledgeLevelBeginner => 'مبتدئ';
+
+  @override
+  String get knowledgeLevelIntermediate => 'متوسط';
+
+  @override
+  String get knowledgeLevelAdvanced => 'متقدم';
+
+  @override
+  String resendCooldown(int seconds) {
+    return 'إعادة الإرسال بعد $seconds ث';
+  }
+
+  @override
+  String get loggedOut => 'تم تسجيل الخروج بنجاح.';
 
   @override
   String get tabDiscover => 'اكتشف';

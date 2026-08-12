@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ruya/core/di/injection.dart';
+import 'package:ruya/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:ruya/features/profile/presentation/widgets/editable_list_tile.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
@@ -53,24 +56,30 @@ class AccountSettingsCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // Handle Log Out
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[50],
-                foregroundColor: Colors.red,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await getIt<LogoutUseCase>()();
+                  if (context.mounted) {
+                    context.go('/');
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[50],
+                  foregroundColor: Colors.red,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: Text(
-                l10n.secureLogOut,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                child: Text(
+                  l10n.secureLogOut,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),

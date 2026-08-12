@@ -20,9 +20,10 @@ class ForgetPasswordOtpPage extends StatefulWidget {
 }
 
 class _ForgetPasswordOtpPageState extends State<ForgetPasswordOtpPage> {
+  // 6 digits — backend generates OtpLength = 6, zero-padded.
   final List<TextEditingController> _controllers =
-      List.generate(4, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
+      List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   @override
   void dispose() {
@@ -37,7 +38,7 @@ class _ForgetPasswordOtpPageState extends State<ForgetPasswordOtpPage> {
 
   void _submit(BuildContext context) {
     final otp = _controllers.map((c) => c.text).join();
-    if (otp.length == 4) {
+    if (otp.length == 6) {
       context.read<ForgetPasswordCubit>().verifyOtp(otp);
     }
   }
@@ -71,7 +72,8 @@ class _ForgetPasswordOtpPageState extends State<ForgetPasswordOtpPage> {
                   ),
                   child: BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
                     listener: (context, state) {
-                      if (state.status == ForgetPasswordStatus.success) {
+                      if (state.status == ForgetPasswordStatus.success &&
+                          state.resetToken != null) {
                         context.push('/reset-password');
                       }
                     },
@@ -111,7 +113,11 @@ class _ForgetPasswordOtpPageState extends State<ForgetPasswordOtpPage> {
                             focusNodes: _focusNodes,
                           ),
                           AppSpacing.verticalGapXl,
-                          _ResendRow(l10n: l10n),
+                          _ResendRow(
+                            l10n: l10n,
+                            cooldownSeconds: state.resendCooldownSeconds,
+                            isLoading: isLoading,
+                          ),
                           AppSpacing.verticalGapXxl,
                           AppPrimaryButton(
                             label: l10n.verifyAndProceedBtn,
@@ -157,11 +163,12 @@ class _OtpInputRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(4, (index) {
+      children: List.generate(6, (index) {
         return Container(
-          width: 60,
-          height: 60,
-          margin: const EdgeInsets.symmetric(horizontal: 8),
+          // Narrowed from 60 → 46 so 6 boxes fit comfortably on narrow screens.
+          width: 46,
+          height: 54,
+          margin: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
             color: AppColors.getBrandPrimary(context),
             borderRadius: BorderRadius.circular(8),
@@ -173,7 +180,7 @@ class _OtpInputRow extends StatelessWidget {
             keyboardType: TextInputType.number,
             maxLength: 1,
             style: const TextStyle(
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -182,7 +189,7 @@ class _OtpInputRow extends StatelessWidget {
               border: InputBorder.none,
             ),
             onChanged: (value) {
-              if (value.isNotEmpty && index < 3) {
+              if (value.isNotEmpty && index < 5) {
                 focusNodes[index + 1].requestFocus();
               } else if (value.isEmpty && index > 0) {
                 focusNodes[index - 1].requestFocus();
@@ -197,10 +204,19 @@ class _OtpInputRow extends StatelessWidget {
 
 class _ResendRow extends StatelessWidget {
   final AppLocalizations l10n;
-  const _ResendRow({required this.l10n});
+  final int cooldownSeconds;
+  final bool isLoading;
+
+  const _ResendRow({
+    required this.l10n,
+    required this.cooldownSeconds,
+    required this.isLoading,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final canResend = cooldownSeconds == 0 && !isLoading;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -209,13 +225,17 @@ class _ResendRow extends StatelessWidget {
           style: const TextStyle(color: Colors.grey),
         ),
         GestureDetector(
-          onTap: () {
-            // TODO: wire up resend OTP action
-          },
+          onTap: canResend
+              ? () => context.read<ForgetPasswordCubit>().resendOtp()
+              : null,
           child: Text(
-            l10n.resendCodeLink,
+            cooldownSeconds > 0
+                ? l10n.resendCooldown(cooldownSeconds)
+                : l10n.resendCodeLink,
             style: TextStyle(
-              color: AppColors.getBrandPrimary(context),
+              color: canResend
+                  ? AppColors.getBrandPrimary(context)
+                  : Colors.grey,
               fontWeight: FontWeight.bold,
             ),
           ),

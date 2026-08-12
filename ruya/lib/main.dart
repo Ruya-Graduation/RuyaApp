@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ruya/core/di/injection.dart';
 import 'package:ruya/core/localization/locale_cubit.dart';
@@ -9,6 +10,9 @@ import 'package:ruya/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Load .env BEFORE configuring dependencies so AppConfig.baseUrl is available
+  // during DI setup (DioClient reads it at construction time).
+  await dotenv.load(fileName: '.env');
   await configureDependencies();
   runApp(
     BlocProvider(
@@ -52,4 +56,3 @@ class MainApp extends StatelessWidget {
     );
   }
 }
-

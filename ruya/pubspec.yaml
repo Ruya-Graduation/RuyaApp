@@ -18,6 +18,10 @@ dependencies:
   dartz: ^0.10.1
   shared_preferences: ^2.2.2
   equatable: ^2.0.5
+  dio: ^5.7.0
+  flutter_dotenv: ^5.2.1
+  flutter_secure_storage: ^9.2.2
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -29,3 +33,4 @@ flutter:
   generate: true
   assets:
     - assets/images/
+    - .env

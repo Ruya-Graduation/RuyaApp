@@ -10,7 +10,7 @@ class SignInCubit extends Cubit<SignInState> {
   void signIn(String email, String password) async {
     emit(state.copyWith(status: SignInStatus.loading, errorMessage: null, fieldErrors: {}));
     
-    final result = await _signInUseCase(email, password);
+    final result = await _signInUseCase(email: email, password: password);
     
     result.fold(
       (failure) => emit(state.copyWith(status: SignInStatus.error, errorMessage: failure.message)),
@@ -32,3 +32,4 @@ class SignInCubit extends Cubit<SignInState> {
     }
   }
 }
+

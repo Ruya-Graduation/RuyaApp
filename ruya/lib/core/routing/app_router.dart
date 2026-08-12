@@ -14,6 +14,7 @@ import 'package:ruya/features/auth/presentation/pages/auth_page.dart';
 import 'package:ruya/features/auth/presentation/pages/forget_password_email_page.dart';
 import 'package:ruya/features/auth/presentation/pages/forget_password_otp_page.dart';
 import 'package:ruya/features/auth/presentation/pages/forget_password_reset_page.dart';
+import 'package:ruya/features/auth/domain/usecases/restore_session_usecase.dart';
 import 'package:ruya/features/home/presentation/pages/home_page.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -27,6 +28,13 @@ class AppRouter {
     routes: [
       GoRoute(
         path: '/',
+        // Session restore: reads the local JWT and decodes exp — no network call.
+        // If a valid session exists, skip the auth page and go straight to /home.
+        redirect: (context, state) async {
+          final user = await getIt<RestoreSessionUseCase>()();
+          if (user != null) return '/home';
+          return null;
+        },
         builder: (context, state) => const AuthPage(),
       ),
       GoRoute(
@@ -118,8 +126,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/profile',
-                builder: (context, state) =>
-                    const ProfileScreen(),
+                builder: (context, state) => const ProfileScreen(),
               ),
             ],
           ),
