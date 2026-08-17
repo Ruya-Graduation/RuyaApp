@@ -679,6 +679,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel Booking'**
   String get cancelBooking;
+
+  /// No description provided for @chatHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat History'**
+  String get chatHistory;
+
+  /// No description provided for @recentConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'RECENT CONVERSATIONS'**
+  String get recentConversations;
+
+  /// No description provided for @startNewConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Start New Conversation'**
+  String get startNewConversation;
+
+  /// No description provided for @deleteChatConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Chat'**
+  String get deleteChatConfirmTitle;
+
+  /// No description provided for @deleteChatConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this conversation?'**
+  String get deleteChatConfirmBody;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @activeKarnakMode.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVE - KARNAK MODE'**
+  String get activeKarnakMode;
+
+  /// No description provided for @typeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message...'**
+  String get typeMessage;
 }
 
 class _AppLocalizationsDelegate

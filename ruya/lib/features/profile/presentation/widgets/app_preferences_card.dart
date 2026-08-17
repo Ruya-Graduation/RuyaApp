@@ -43,7 +43,7 @@ class AppPreferencesCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD4A373).withOpacity(0.1),
+                    color: const Color(0xFFD4A373).withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -79,7 +79,7 @@ class AppPreferencesCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.1),
+                    color: Colors.blue.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -111,7 +111,7 @@ class AppPreferencesCard extends StatelessWidget {
                 Switch(
                   value: true,
                   onChanged: (val) {},
-                  activeColor: const Color(0xFFD4A373),
+                  activeThumbColor: const Color(0xFFD4A373),
                 ),
               ],
             ),

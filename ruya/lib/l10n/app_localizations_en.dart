@@ -310,4 +310,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancelBooking => 'Cancel Booking';
+
+  @override
+  String get chatHistory => 'Chat History';
+
+  @override
+  String get recentConversations => 'RECENT CONVERSATIONS';
+
+  @override
+  String get startNewConversation => 'Start New Conversation';
+
+  @override
+  String get deleteChatConfirmTitle => 'Delete Chat';
+
+  @override
+  String get deleteChatConfirmBody =>
+      'Are you sure you want to delete this conversation?';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get activeKarnakMode => 'ACTIVE - KARNAK MODE';
+
+  @override
+  String get typeMessage => 'Type a message...';
 }

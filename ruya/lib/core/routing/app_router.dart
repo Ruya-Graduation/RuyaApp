@@ -5,6 +5,8 @@ import 'package:ruya/core/di/injection.dart';
 import 'package:ruya/core/presentation/cubit/bottom_nav_cubit.dart';
 import 'package:ruya/core/widgets/main_layout.dart';
 import 'package:ruya/core/widgets/placeholder_page.dart';
+import 'package:ruya/features/chat/presentation/pages/chat_history_page.dart';
+import 'package:ruya/features/chat/presentation/pages/ai_chat_page.dart';
 import 'package:ruya/features/profile/presentation/screens/profile_screen.dart';
 import 'package:ruya/features/site_details/presentation/screens/site_details_screen.dart';
 import 'package:ruya/features/booking/presentation/screens/ticket_selection_screen.dart';
@@ -48,6 +50,10 @@ class AppRouter {
       GoRoute(
         path: '/booking-confirmation',
         builder: (context, state) => const BookingConfirmationScreen(),
+      ),
+      GoRoute(
+        path: '/ai-chat',
+        builder: (context, state) => const AiChatPage(),
       ),
 
       // -----------------------------------------------------------------------
@@ -108,8 +114,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/chat',
-                builder: (context, state) =>
-                    const PlaceholderPage(title: 'Chat Page'),
+                builder: (context, state) => const ChatHistoryPage(),
               ),
             ],
           ),

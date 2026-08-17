@@ -33,7 +33,7 @@ class ProfileHeader extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD4A373).withOpacity(0.2),
+                  color: const Color(0xFFD4A373).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(

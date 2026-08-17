@@ -311,4 +311,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancelBooking => 'إلغاء الحجز';
+
+  @override
+  String get chatHistory => 'سجل الدردشة';
+
+  @override
+  String get recentConversations => 'المحادثات الأخيرة';
+
+  @override
+  String get startNewConversation => 'بدء محادثة جديدة';
+
+  @override
+  String get deleteChatConfirmTitle => 'حذف الدردشة';
+
+  @override
+  String get deleteChatConfirmBody => 'هل أنت متأكد أنك تريد حذف هذه المحادثة؟';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get activeKarnakMode => 'نشط - وضع الكرنك';
+
+  @override
+  String get typeMessage => 'اكتب رسالة...';
 }

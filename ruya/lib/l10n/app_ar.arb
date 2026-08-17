@@ -100,5 +100,14 @@
   "site": "الموقع",
   "date": "التاريخ",
   "timeSlot": "فترة الدخول",
-  "cancelBooking": "إلغاء الحجز"
+  "cancelBooking": "إلغاء الحجز",
+  "chatHistory": "سجل الدردشة",
+  "recentConversations": "المحادثات الأخيرة",
+  "startNewConversation": "بدء محادثة جديدة",
+  "deleteChatConfirmTitle": "حذف الدردشة",
+  "deleteChatConfirmBody": "هل أنت متأكد أنك تريد حذف هذه المحادثة؟",
+  "cancel": "إلغاء",
+  "delete": "حذف",
+  "activeKarnakMode": "نشط - وضع الكرنك",
+  "typeMessage": "اكتب رسالة..."
 }

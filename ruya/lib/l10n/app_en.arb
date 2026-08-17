@@ -100,5 +100,14 @@
   "site": "Site",
   "date": "Date",
   "timeSlot": "Time Slot",
-  "cancelBooking": "Cancel Booking"
+  "cancelBooking": "Cancel Booking",
+  "chatHistory": "Chat History",
+  "recentConversations": "RECENT CONVERSATIONS",
+  "startNewConversation": "Start New Conversation",
+  "deleteChatConfirmTitle": "Delete Chat",
+  "deleteChatConfirmBody": "Are you sure you want to delete this conversation?",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "activeKarnakMode": "ACTIVE - KARNAK MODE",
+  "typeMessage": "Type a message..."
 }

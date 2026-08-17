@@ -74,7 +74,7 @@ class TicketCounter extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: onPressed != null ? const Color(0xFFD4A373).withOpacity(0.2) : Colors.grey.withOpacity(0.1),
+          color: onPressed != null ? const Color(0xFFD4A373).withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(
