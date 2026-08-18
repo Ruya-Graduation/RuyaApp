@@ -8,7 +8,10 @@ abstract class MonumentLocalDataSource {
 }
 
 /// Fake local datasource that returns mock monument data.
-/// Replace this with a real API/database implementation later.
+///
+/// This datasource is NO LONGER WIRED INTO DI — the app uses
+/// [MonumentRemoteDataSource] for all production data.
+/// Kept here for reference / offline testing purposes only.
 class FakeMonumentLocalDataSource implements MonumentLocalDataSource {
   static const List<MonumentModel> _mockMonuments = [
     MonumentModel(
@@ -17,6 +20,8 @@ class FakeMonumentLocalDataSource implements MonumentLocalDataSource {
       location: 'Luxor, Upper Egypt',
       imagePath: 'assets/images/egyptian_pyramids.png',
       crowdsLevel: 'Low Crowds',
+      latitude: 25.7188,
+      longitude: 32.6573,
     ),
     MonumentModel(
       id: '2',
@@ -24,6 +29,8 @@ class FakeMonumentLocalDataSource implements MonumentLocalDataSource {
       location: 'Giza, Greater Cairo',
       imagePath: 'assets/images/egyptian_pyramids.png',
       crowdsLevel: 'Moderate',
+      latitude: 29.9792,
+      longitude: 31.1342,
     ),
     MonumentModel(
       id: '3',
@@ -31,6 +38,8 @@ class FakeMonumentLocalDataSource implements MonumentLocalDataSource {
       location: 'Aswan, Upper Egypt',
       imagePath: 'assets/images/egyptian_pyramids.png',
       crowdsLevel: 'Low Crowds',
+      latitude: 22.3372,
+      longitude: 31.6258,
     ),
     MonumentModel(
       id: '4',
@@ -38,6 +47,8 @@ class FakeMonumentLocalDataSource implements MonumentLocalDataSource {
       location: 'Cairo, Greater Cairo',
       imagePath: 'assets/images/egyptian_pyramids.png',
       crowdsLevel: 'High Crowds',
+      latitude: 30.0478,
+      longitude: 31.2336,
     ),
     MonumentModel(
       id: '5',
@@ -45,6 +56,8 @@ class FakeMonumentLocalDataSource implements MonumentLocalDataSource {
       location: 'Luxor, Upper Egypt',
       imagePath: 'assets/images/egyptian_pyramids.png',
       crowdsLevel: 'Moderate',
+      latitude: 25.7402,
+      longitude: 32.6014,
     ),
   ];
 

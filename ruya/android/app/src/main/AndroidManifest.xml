@@ -2,6 +2,10 @@
     <!-- INTERNET permission is required for all network calls. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Location permissions for foreground GPS proximity feature. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:label="ruya"
         android:name="${applicationName}"

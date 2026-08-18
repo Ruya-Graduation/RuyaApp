@@ -9,6 +9,10 @@ import 'package:ruya/core/network/dio_client.dart';
 import 'package:ruya/core/session/token_local_data_source.dart';
 import 'package:ruya/core/session/session_service.dart';
 
+// Core — Location
+import 'package:ruya/core/location/location_settings_cubit.dart';
+import 'package:ruya/core/location/proximity_service.dart';
+
 // Auth — Data
 import 'package:ruya/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:ruya/features/auth/data/repositories/auth_repository_impl.dart';
@@ -30,7 +34,7 @@ import 'package:ruya/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:ruya/features/auth/presentation/cubit/sign_in_cubit.dart';
 
 // Home — Data
-import 'package:ruya/features/home/data/datasources/monument_local_data_source.dart';
+import 'package:ruya/features/home/data/datasources/monument_remote_data_source.dart';
 import 'package:ruya/features/home/data/repositories/monument_repository_impl.dart';
 
 // Home — Domain
@@ -74,6 +78,25 @@ Future<void> configureDependencies() async {
   );
 
   // ---------------------------------------------------------------------------
+  // Core — Location
+  // ---------------------------------------------------------------------------
+
+  // LazySingleton: the same cubit instance is shared between AppPreferencesCard
+  // and HomePage so the toggle state and stream lifecycle stay in sync.
+  getIt.registerLazySingleton<LocationSettingsCubit>(
+    () => LocationSettingsCubit(getIt<SharedPreferences>()),
+  );
+
+  // LazySingleton: the same ProximityService instance is shared between
+  // HomePage (lifecycle management) and the logout handler so that:
+  //   1. The _notifiedSiteIds dedupe set is session-scoped (not per-widget).
+  //   2. stop() called from the logout button actually stops the stream
+  //      that HomePage started.
+  getIt.registerLazySingleton<ProximityService>(
+    () => ProximityService(),
+  );
+
+  // ---------------------------------------------------------------------------
   // Auth Feature
   // ---------------------------------------------------------------------------
 
@@ -112,17 +135,18 @@ Future<void> configureDependencies() async {
   // Home Feature
   // ---------------------------------------------------------------------------
 
-  // Data
-  getIt.registerLazySingleton<MonumentLocalDataSource>(
-    () => FakeMonumentLocalDataSource(),
+  // Data — Real remote source (replaces FakeMonumentLocalDataSource).
+  // FakeMonumentLocalDataSource is kept on disk but no longer wired into DI.
+  getIt.registerLazySingleton<MonumentRemoteDataSource>(
+    () => MonumentRemoteDataSourceImpl(getIt<Dio>()),
   );
   getIt.registerLazySingleton<MonumentRepository>(
-    () => MonumentRepositoryImpl(getIt()),
+    () => MonumentRepositoryImpl(getIt<MonumentRemoteDataSource>()),
   );
 
   // Domain
   getIt.registerLazySingleton(() => GetMonumentsUseCase(getIt()));
 
-  // Presentation
+  // Presentation — Factory so each HomePage entry gets a fresh cubit.
   getIt.registerFactory(() => HomeCubit(getIt()));
 }

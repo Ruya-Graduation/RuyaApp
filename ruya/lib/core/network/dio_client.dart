@@ -41,6 +41,8 @@ class DioClient {
         receiveTimeout: const Duration(seconds: 10),
         contentType: 'application/json',
         responseType: ResponseType.json,
+        followRedirects: true,
+        maxRedirects: 5,
       ),
     );
 

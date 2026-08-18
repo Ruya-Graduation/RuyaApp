@@ -3,12 +3,16 @@ import 'package:go_router/go_router.dart';
 import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 import 'package:ruya/features/home/domain/entities/monument_entity.dart';
+import 'package:ruya/features/home/presentation/widgets/monument_image.dart';
 
 /// Displays a single monument as a card with an image, name, location,
 /// and a crowd-level badge.
 ///
 /// Accepts a [MonumentEntity] (domain layer) — NOT a data model —
 /// keeping the presentation layer independent of the data layer.
+///
+/// Image rendering is delegated to [MonumentImage], which handles the
+/// remote-URL / local-asset fallback logic.
 class MonumentCard extends StatelessWidget {
   final MonumentEntity monument;
 
@@ -36,7 +40,7 @@ class MonumentCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _MonumentImage(imagePath: monument.imagePath),
+            _MonumentImageSection(imageUrl: monument.imageUrl),
             _MonumentDetails(monument: monument),
           ],
         ),
@@ -49,9 +53,9 @@ class MonumentCard extends StatelessWidget {
 // Private sub-widgets — not exported; live here for locality of behaviour.
 // ---------------------------------------------------------------------------
 
-class _MonumentImage extends StatelessWidget {
-  final String imagePath;
-  const _MonumentImage({required this.imagePath});
+class _MonumentImageSection extends StatelessWidget {
+  final String? imageUrl;
+  const _MonumentImageSection({required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +63,7 @@ class _MonumentImage extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-          child: Image.asset(
-            imagePath,
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
+          child: MonumentImage(imageUrl: imageUrl, height: 180),
         ),
         Positioned(
           top: 12,
