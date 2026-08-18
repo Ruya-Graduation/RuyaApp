@@ -359,4 +359,71 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backToDiscover => 'العودة إلى الاستكشاف';
+
+  @override
+  String get listening => 'جارٍ الاستماع...';
+
+  @override
+  String get releaseToSend => 'اترك للإرسال';
+
+  @override
+  String get recording => 'جارٍ التسجيل...';
+
+  @override
+  String get takePhoto => 'التقاط صورة';
+
+  @override
+  String get chooseFromGallery => 'اختيار من المعرض';
+
+  @override
+  String get attachImage => 'إرفاق صورة';
+
+  @override
+  String get removeImage => 'إزالة الصورة';
+
+  @override
+  String get micPermissionRequired => 'مطلوب إذن الميكروفون والتعرف على الصوت';
+
+  @override
+  String get micPermissionRationale =>
+      'تحتاج رؤيا إلى إذن استخدام الميكروفون والتعرف على الصوت لتتمكن من التحدث إلى المرشد الذكي. يرجى تفعيلها من إعدادات التطبيق.';
+
+  @override
+  String get openSettings => 'فتح الإعدادات';
+
+  @override
+  String get speechNotAvailable => 'التعرف على الصوت غير متوفر على هذا الجهاز.';
+
+  @override
+  String get imageTooLarge => 'حجم الصورة كبير جدًا (الحد الأقصى ١٠ ميغابايت).';
+
+  @override
+  String get imageDefaultQuestion => 'ماذا يمكنك أن تخبرني عن هذا؟';
+
+  @override
+  String get visionBadge => 'رؤية بالذكاء الاصطناعي';
+
+  @override
+  String get replayAudio => 'استمع';
+
+  @override
+  String get noMessagesYet => 'اسأل رؤيا أي شيء عن التاريخ المصري...';
+
+  @override
+  String get noConversations => 'لا توجد محادثات حتى الآن';
+
+  @override
+  String get errorLoadingConversations => 'فشل تحميل سجل المحادثات.';
+
+  @override
+  String get errorLoadingMessages => 'فشل تحميل الرسائل.';
+
+  @override
+  String get failedToSendMessage => 'فشل إرسال الرسالة.';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get viewArtifact => 'عرض المعلم';
 }

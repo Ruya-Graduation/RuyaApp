@@ -359,4 +359,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backToDiscover => 'Back to Discover';
+
+  @override
+  String get listening => 'Listening...';
+
+  @override
+  String get releaseToSend => 'Release to send';
+
+  @override
+  String get recording => 'Recording...';
+
+  @override
+  String get takePhoto => 'Take Photo';
+
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+
+  @override
+  String get attachImage => 'Attach Image';
+
+  @override
+  String get removeImage => 'Remove Image';
+
+  @override
+  String get micPermissionRequired => 'Microphone & Speech Permission Required';
+
+  @override
+  String get micPermissionRationale =>
+      'Ruya needs microphone and speech recognition permissions to let you talk to the AI guide. Please enable them in app settings.';
+
+  @override
+  String get openSettings => 'Open Settings';
+
+  @override
+  String get speechNotAvailable =>
+      'Speech recognition is not available on this device.';
+
+  @override
+  String get imageTooLarge => 'Image file is too large (maximum size is 10MB).';
+
+  @override
+  String get imageDefaultQuestion => 'What can you tell me about this?';
+
+  @override
+  String get visionBadge => 'Vision';
+
+  @override
+  String get replayAudio => 'Listen';
+
+  @override
+  String get noMessagesYet => 'Ask Ruya anything about Egyptian history...';
+
+  @override
+  String get noConversations => 'No conversations yet';
+
+  @override
+  String get errorLoadingConversations => 'Failed to load chat history.';
+
+  @override
+  String get errorLoadingMessages => 'Failed to load messages.';
+
+  @override
+  String get failedToSendMessage => 'Failed to send message.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get viewArtifact => 'View Artifact';
 }
