@@ -18,6 +18,8 @@ import 'package:ruya/features/auth/presentation/pages/forget_password_otp_page.d
 import 'package:ruya/features/auth/presentation/pages/forget_password_reset_page.dart';
 import 'package:ruya/features/auth/domain/usecases/restore_session_usecase.dart';
 import 'package:ruya/features/home/presentation/pages/home_page.dart';
+import 'package:ruya/features/site_details/domain/entities/site_detail_entity.dart';
+import 'package:ruya/features/booking/domain/entities/booking_entity.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final _forgotPasswordNavigatorKey =
@@ -40,16 +42,25 @@ class AppRouter {
         builder: (context, state) => const AuthPage(),
       ),
       GoRoute(
-        path: '/site-details',
-        builder: (context, state) => const SiteDetailsScreen(),
+        path: '/site-details/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return SiteDetailsScreen(siteId: id);
+        },
       ),
       GoRoute(
         path: '/ticket-selection',
-        builder: (context, state) => const TicketSelectionScreen(),
+        builder: (context, state) {
+          final site = state.extra as SiteDetailEntity;
+          return TicketSelectionScreen(site: site);
+        },
       ),
       GoRoute(
         path: '/booking-confirmation',
-        builder: (context, state) => const BookingConfirmationScreen(),
+        builder: (context, state) {
+          final booking = state.extra as BookingEntity;
+          return BookingConfirmationScreen(booking: booking);
+        },
       ),
       GoRoute(
         path: '/ai-chat',

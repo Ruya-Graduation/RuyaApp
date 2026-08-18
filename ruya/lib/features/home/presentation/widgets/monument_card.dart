@@ -22,7 +22,7 @@ class MonumentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/site-details');
+        context.push('/site-details/${monument.id}');
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.lg),

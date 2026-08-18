@@ -109,5 +109,12 @@
   "cancel": "Cancel",
   "delete": "Delete",
   "activeKarnakMode": "ACTIVE - KARNAK MODE",
-  "typeMessage": "Type a message..."
+  "typeMessage": "Type a message...",
+  "numberOfTickets": "Number of Tickets",
+  "selectVisitDateHint": "Select a visit date to continue",
+  "saveAsPdf": "Save as PDF",
+  "saveAsImage": "Save as Image",
+  "ticketSaved": "Ticket saved successfully.",
+  "ticketSaveFailed": "Couldn't save the ticket. Please try again.",
+  "backToDiscover": "Back to Discover"
 }

@@ -85,6 +85,8 @@
 	<!-- NSLocationAlwaysUsageDescription is intentionally absent — background tracking is not supported. -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Ruya uses your location to notify you when you are near a historical site.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Ruya saves your entry ticket to your photo library when you choose "Save as Image".</string>
 </dict>
 </plist>
 

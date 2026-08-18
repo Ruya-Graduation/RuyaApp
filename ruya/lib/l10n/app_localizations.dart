@@ -733,6 +733,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type a message...'**
   String get typeMessage;
+
+  /// No description provided for @numberOfTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Tickets'**
+  String get numberOfTickets;
+
+  /// No description provided for @selectVisitDateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a visit date to continue'**
+  String get selectVisitDateHint;
+
+  /// No description provided for @saveAsPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as PDF'**
+  String get saveAsPdf;
+
+  /// No description provided for @saveAsImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as Image'**
+  String get saveAsImage;
+
+  /// No description provided for @ticketSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket saved successfully.'**
+  String get ticketSaved;
+
+  /// No description provided for @ticketSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the ticket. Please try again.'**
+  String get ticketSaveFailed;
+
+  /// No description provided for @backToDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Discover'**
+  String get backToDiscover;
 }
 
 class _AppLocalizationsDelegate

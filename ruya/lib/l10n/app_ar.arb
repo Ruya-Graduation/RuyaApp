@@ -109,5 +109,12 @@
   "cancel": "إلغاء",
   "delete": "حذف",
   "activeKarnakMode": "نشط - وضع الكرنك",
-  "typeMessage": "اكتب رسالة..."
+  "typeMessage": "اكتب رسالة...",
+  "numberOfTickets": "عدد التذاكر",
+  "selectVisitDateHint": "اختر تاريخ الزيارة للمتابعة",
+  "saveAsPdf": "حفظ كملف PDF",
+  "saveAsImage": "حفظ كصورة",
+  "ticketSaved": "تم حفظ التذكرة بنجاح.",
+  "ticketSaveFailed": "تعذر حفظ التذكرة. يرجى المحاولة مرة أخرى.",
+  "backToDiscover": "العودة إلى الاستكشاف"
 }

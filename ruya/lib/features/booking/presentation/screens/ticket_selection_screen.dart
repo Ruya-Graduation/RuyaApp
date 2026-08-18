@@ -1,32 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:ruya/features/booking/presentation/widgets/calendar_mock_widget.dart';
+import 'package:ruya/features/booking/presentation/widgets/booking_calendar_widget.dart';
 import 'package:ruya/features/booking/presentation/widgets/ticket_counter.dart';
 import 'package:ruya/features/booking/presentation/widgets/ticket_selection_bottom_sheet.dart';
+import 'package:ruya/features/site_details/domain/entities/site_detail_entity.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
 class TicketSelectionScreen extends StatefulWidget {
-  const TicketSelectionScreen({super.key});
+  final SiteDetailEntity site;
+
+  const TicketSelectionScreen({super.key, required this.site});
 
   @override
   State<TicketSelectionScreen> createState() => _TicketSelectionScreenState();
 }
 
 class _TicketSelectionScreenState extends State<TicketSelectionScreen> {
-  int adultTickets = 2;
-  int studentTickets = 1;
-  int foreignerTickets = 0;
-  int localTickets = 0;
+  DateTime? selectedDate;
+  int ticketCount = 1;
 
-  final int adultPrice = 450;
-  final int studentPrice = 150;
-  final int foreignerPrice = 600;
-  final int localPrice = 80;
-
-  int get totalTickets => adultTickets + studentTickets + foreignerTickets + localTickets;
-  int get totalPrice => (adultTickets * adultPrice) +
-      (studentTickets * studentPrice) +
-      (foreignerTickets * foreignerPrice) +
-      (localTickets * localPrice);
+  double get totalPrice => ticketCount * widget.site.ticketPrice;
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +27,16 @@ class _TicketSelectionScreenState extends State<TicketSelectionScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFFAF8F5),
+      backgroundColor:
+          isDark ? const Color(0xFF121212) : const Color(0xFFFAF8F5),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -55,53 +51,61 @@ class _TicketSelectionScreenState extends State<TicketSelectionScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Karnak Temple',
+              widget.site.name,
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 fontFamily: 'PlayfairDisplay',
               ),
             ),
             const SizedBox(height: 24),
-            
-            const CalendarMockWidget(),
-            
+
+            // Interactive Calendar
+            BookingCalendarWidget(
+              selectedDate: selectedDate,
+              onDateSelected: (date) {
+                setState(() {
+                  selectedDate = date;
+                });
+              },
+            ),
+
+            if (selectedDate == null) ...[
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Text(
+                  l10n.selectVisitDateHint,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.orange[700],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+
             const SizedBox(height: 24),
 
-            // Ticket Counters
+            // Single Ticket Counter
             TicketCounter(
-              title: l10n.adult,
-              price: 'EGP $adultPrice',
-              count: adultTickets,
-              onChanged: (val) => setState(() => adultTickets = val),
+              title: l10n.numberOfTickets,
+              price:
+                  '${widget.site.ticketCurrency} ${widget.site.ticketPrice.toStringAsFixed(0)}',
+              count: ticketCount,
+              onChanged: (val) {
+                if (val >= 1) {
+                  setState(() => ticketCount = val);
+                }
+              },
             ),
-            const SizedBox(height: 12),
-            TicketCounter(
-              title: l10n.student,
-              price: 'EGP $studentPrice',
-              count: studentTickets,
-              onChanged: (val) => setState(() => studentTickets = val),
-            ),
-            const SizedBox(height: 12),
-            TicketCounter(
-              title: l10n.foreigner,
-              price: 'EGP $foreignerPrice',
-              count: foreignerTickets,
-              onChanged: (val) => setState(() => foreignerTickets = val),
-            ),
-            const SizedBox(height: 12),
-            TicketCounter(
-              title: l10n.local,
-              price: 'EGP $localPrice',
-              count: localTickets,
-              onChanged: (val) => setState(() => localTickets = val),
-            ),
-            
+
             const SizedBox(height: 100), // Space for bottom sheet
           ],
         ),
       ),
       bottomSheet: TicketSelectionBottomSheet(
-        totalTickets: totalTickets,
+        site: widget.site,
+        selectedDate: selectedDate,
+        ticketCount: ticketCount,
         totalPrice: totalPrice,
       ),
     );

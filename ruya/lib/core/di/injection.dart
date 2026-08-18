@@ -44,6 +44,23 @@ import 'package:ruya/features/home/domain/usecases/get_monuments_usecase.dart';
 // Home — Presentation
 import 'package:ruya/features/home/presentation/cubit/home_cubit.dart';
 
+// Site Details — Data
+import 'package:ruya/features/site_details/data/datasources/site_detail_remote_data_source.dart';
+import 'package:ruya/features/site_details/data/repositories/site_detail_repository_impl.dart';
+
+// Site Details — Domain
+import 'package:ruya/features/site_details/domain/repositories/site_detail_repository.dart';
+import 'package:ruya/features/site_details/domain/usecases/get_site_by_id_usecase.dart';
+
+// Site Details — Presentation
+import 'package:ruya/features/site_details/presentation/cubit/site_details_cubit.dart';
+
+// Booking — Data / Service
+import 'package:ruya/features/booking/data/services/ticket_export_service.dart';
+
+// Booking — Domain
+import 'package:ruya/features/booking/domain/usecases/create_local_booking_usecase.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> configureDependencies() async {
@@ -149,4 +166,22 @@ Future<void> configureDependencies() async {
 
   // Presentation — Factory so each HomePage entry gets a fresh cubit.
   getIt.registerFactory(() => HomeCubit(getIt()));
+
+  // ---------------------------------------------------------------------------
+  // Site Details Feature
+  // ---------------------------------------------------------------------------
+  getIt.registerLazySingleton<SiteDetailRemoteDataSource>(
+    () => SiteDetailRemoteDataSourceImpl(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<SiteDetailRepository>(
+    () => SiteDetailRepositoryImpl(getIt<SiteDetailRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton(() => GetSiteByIdUseCase(getIt()));
+  getIt.registerFactory(() => SiteDetailsCubit(getIt()));
+
+  // ---------------------------------------------------------------------------
+  // Booking Feature
+  // ---------------------------------------------------------------------------
+  getIt.registerLazySingleton(() => CreateLocalBookingUseCase());
+  getIt.registerFactory(() => TicketExportService());
 }
