@@ -338,4 +338,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get typeMessage => 'Type a message...';
+
+  @override
+  String get numberOfTickets => 'Number of Tickets';
+
+  @override
+  String get selectVisitDateHint => 'Select a visit date to continue';
+
+  @override
+  String get saveAsPdf => 'Save as PDF';
+
+  @override
+  String get saveAsImage => 'Save as Image';
+
+  @override
+  String get ticketSaved => 'Ticket saved successfully.';
+
+  @override
+  String get ticketSaveFailed => 'Couldn\'t save the ticket. Please try again.';
+
+  @override
+  String get backToDiscover => 'Back to Discover';
 }

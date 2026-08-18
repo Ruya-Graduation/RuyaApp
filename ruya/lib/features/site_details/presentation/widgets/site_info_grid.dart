@@ -1,20 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/features/site_details/domain/entities/site_detail_entity.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
 class SiteInfoGrid extends StatelessWidget {
-  const SiteInfoGrid({super.key});
+  final SiteDetailEntity site;
+
+  const SiteInfoGrid({super.key, required this.site});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _SiteInfoCard(icon: Icons.access_time, title: l10n.hours, value: '6AM–5PM'),
-        _SiteInfoCard(icon: Icons.confirmation_number_outlined, title: l10n.adult, value: 'EGP 450'),
-        _SiteInfoCard(icon: Icons.location_on_outlined, title: l10n.location, value: l10n.viewMap),
-        _SiteInfoCard(icon: Icons.people_outline, title: l10n.crowds, value: l10n.low),
+        _SiteInfoCard(
+          icon: Icons.access_time,
+          title: l10n.hours,
+          value: site.hours.isNotEmpty ? site.hours : '—',
+        ),
+        _SiteInfoCard(
+          icon: Icons.confirmation_number_outlined,
+          title: l10n.adult,
+          value: site.ticketRaw.isNotEmpty ? site.ticketRaw : '—',
+        ),
+        _SiteInfoCard(
+          icon: Icons.location_on_outlined,
+          title: l10n.location,
+          value: l10n.viewMap,
+        ),
+        _SiteInfoCard(
+          icon: Icons.people_outline,
+          title: l10n.crowds,
+          value: site.crowds.isNotEmpty ? site.crowds : '—',
+        ),
       ],
     );
   }
@@ -64,6 +83,8 @@ class _SiteInfoCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

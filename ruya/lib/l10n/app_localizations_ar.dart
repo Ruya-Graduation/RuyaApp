@@ -338,4 +338,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get typeMessage => 'اكتب رسالة...';
+
+  @override
+  String get numberOfTickets => 'عدد التذاكر';
+
+  @override
+  String get selectVisitDateHint => 'اختر تاريخ الزيارة للمتابعة';
+
+  @override
+  String get saveAsPdf => 'حفظ كملف PDF';
+
+  @override
+  String get saveAsImage => 'حفظ كصورة';
+
+  @override
+  String get ticketSaved => 'تم حفظ التذكرة بنجاح.';
+
+  @override
+  String get ticketSaveFailed => 'تعذر حفظ التذكرة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get backToDiscover => 'العودة إلى الاستكشاف';
 }

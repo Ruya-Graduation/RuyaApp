@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ruya/features/site_details/domain/entities/site_detail_entity.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
 class SiteBottomSheet extends StatelessWidget {
-  const SiteBottomSheet({super.key});
+  final SiteDetailEntity site;
+
+  const SiteBottomSheet({super.key, required this.site});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -20,7 +22,7 @@ class SiteBottomSheet extends StatelessWidget {
           height: 56,
           child: ElevatedButton(
             onPressed: () {
-              context.push('/ticket-selection');
+              context.push('/ticket-selection', extra: site);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD4A373),

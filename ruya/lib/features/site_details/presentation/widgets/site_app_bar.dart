@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/features/home/presentation/widgets/monument_image.dart';
 
 class SiteAppBar extends StatelessWidget {
-  const SiteAppBar({super.key});
+  final String? imageUrl;
+
+  const SiteAppBar({super.key, this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -9,13 +12,10 @@ class SiteAppBar extends StatelessWidget {
       expandedHeight: 300,
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
-        background: Image.asset(
-          'assets/images/placeholder_site.png', // Fallback to a valid asset if possible, or just a colored container
+        background: MonumentImage(
+          imageUrl: imageUrl,
+          height: 300,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Container(
-            color: Colors.brown[300],
-            child: const Center(child: Icon(Icons.image, size: 50, color: Colors.white)),
-          ),
         ),
       ),
       actions: [
@@ -26,7 +26,11 @@ class SiteAppBar extends StatelessWidget {
               color: Colors.white,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.bookmark_outline, color: Colors.black, size: 20),
+            child: const Icon(
+              Icons.bookmark_outline,
+              color: Colors.black,
+              size: 20,
+            ),
           ),
           onPressed: () {},
         ),
