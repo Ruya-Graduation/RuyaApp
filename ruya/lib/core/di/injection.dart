@@ -61,6 +61,26 @@ import 'package:ruya/features/booking/data/services/ticket_export_service.dart';
 // Booking — Domain
 import 'package:ruya/features/booking/domain/usecases/create_local_booking_usecase.dart';
 
+// Core — Services
+import 'package:ruya/core/services/speech_to_text_service.dart';
+import 'package:ruya/core/services/tts_service.dart';
+
+// Chat — Data
+import 'package:ruya/features/chat/data/datasources/chat_remote_data_source.dart';
+import 'package:ruya/features/chat/data/repositories/chat_repository_impl.dart';
+
+// Chat — Domain
+import 'package:ruya/features/chat/domain/repositories/chat_repository.dart';
+import 'package:ruya/features/chat/domain/usecases/send_chat_message_usecase.dart';
+import 'package:ruya/features/chat/domain/usecases/get_conversation_usecase.dart';
+import 'package:ruya/features/chat/domain/usecases/get_conversations_usecase.dart';
+import 'package:ruya/features/chat/domain/usecases/delete_conversation_usecase.dart';
+
+// Chat — Presentation
+import 'package:ruya/features/chat/presentation/cubit/chat_cubit.dart';
+import 'package:ruya/features/chat/presentation/cubit/voice_input_cubit.dart';
+import 'package:ruya/features/chat/presentation/cubit/chat_history_cubit.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> configureDependencies() async {
@@ -184,4 +204,47 @@ Future<void> configureDependencies() async {
   // ---------------------------------------------------------------------------
   getIt.registerLazySingleton(() => CreateLocalBookingUseCase());
   getIt.registerFactory(() => TicketExportService());
+
+  // ---------------------------------------------------------------------------
+  // Core — Voice & Speech Services
+  // ---------------------------------------------------------------------------
+  getIt.registerLazySingleton<SpeechToTextService>(
+    () => SpeechToTextService(),
+  );
+  getIt.registerLazySingleton<TtsService>(
+    () => TtsService(),
+  );
+
+  // ---------------------------------------------------------------------------
+  // Chat Feature
+  // ---------------------------------------------------------------------------
+
+  // Data
+  getIt.registerLazySingleton<ChatRemoteDataSource>(
+    () => ChatRemoteDataSourceImpl(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<ChatRepository>(
+    () => ChatRepositoryImpl(getIt<ChatRemoteDataSource>()),
+  );
+
+  // Domain — Use Cases
+  getIt.registerLazySingleton(() => SendChatMessageUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetConversationUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetConversationsUseCase(getIt()));
+  getIt.registerLazySingleton(() => DeleteConversationUseCase(getIt()));
+
+  // Presentation — Cubits
+  getIt.registerFactory(() => ChatCubit(
+        sendChatMessageUseCase: getIt(),
+        getConversationUseCase: getIt(),
+        ttsService: getIt(),
+      ));
+  getIt.registerFactory(() => VoiceInputCubit(
+        speechToTextService: getIt(),
+        ttsService: getIt(),
+      ));
+  getIt.registerFactory(() => ChatHistoryCubit(
+        getConversationsUseCase: getIt(),
+        deleteConversationUseCase: getIt(),
+      ));
 }

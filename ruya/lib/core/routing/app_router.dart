@@ -64,7 +64,10 @@ class AppRouter {
       ),
       GoRoute(
         path: '/ai-chat',
-        builder: (context, state) => const AiChatPage(),
+        builder: (context, state) {
+          final conversationId = state.extra as int?;
+          return AiChatPage(initialConversationId: conversationId);
+        },
       ),
 
       // -----------------------------------------------------------------------

@@ -775,6 +775,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to Discover'**
   String get backToDiscover;
+
+  /// No description provided for @listening.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening...'**
+  String get listening;
+
+  /// No description provided for @releaseToSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Release to send'**
+  String get releaseToSend;
+
+  /// No description provided for @recording.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording...'**
+  String get recording;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @attachImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach Image'**
+  String get attachImage;
+
+  /// No description provided for @removeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Image'**
+  String get removeImage;
+
+  /// No description provided for @micPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone & Speech Permission Required'**
+  String get micPermissionRequired;
+
+  /// No description provided for @micPermissionRationale.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruya needs microphone and speech recognition permissions to let you talk to the AI guide. Please enable them in app settings.'**
+  String get micPermissionRationale;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get openSettings;
+
+  /// No description provided for @speechNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Speech recognition is not available on this device.'**
+  String get speechNotAvailable;
+
+  /// No description provided for @imageTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Image file is too large (maximum size is 10MB).'**
+  String get imageTooLarge;
+
+  /// No description provided for @imageDefaultQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'What can you tell me about this?'**
+  String get imageDefaultQuestion;
+
+  /// No description provided for @visionBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Vision'**
+  String get visionBadge;
+
+  /// No description provided for @replayAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen'**
+  String get replayAudio;
+
+  /// No description provided for @noMessagesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Ruya anything about Egyptian history...'**
+  String get noMessagesYet;
+
+  /// No description provided for @noConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations yet'**
+  String get noConversations;
+
+  /// No description provided for @errorLoadingConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load chat history.'**
+  String get errorLoadingConversations;
+
+  /// No description provided for @errorLoadingMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load messages.'**
+  String get errorLoadingMessages;
+
+  /// No description provided for @failedToSendMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send message.'**
+  String get failedToSendMessage;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @viewArtifact.
+  ///
+  /// In en, this message translates to:
+  /// **'View Artifact'**
+  String get viewArtifact;
 }
 
 class _AppLocalizationsDelegate

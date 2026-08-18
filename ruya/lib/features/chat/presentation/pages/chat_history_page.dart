@@ -1,73 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ruya/core/di/injection.dart';
+import 'package:ruya/core/utils/app_snackbar.dart';
 import 'package:ruya/features/chat/domain/entities/chat_session.dart';
+import 'package:ruya/features/chat/presentation/cubit/chat_history_cubit.dart';
+import 'package:ruya/features/chat/presentation/cubit/chat_history_state.dart';
 import 'package:ruya/features/chat/presentation/widgets/chat_sessions_list.dart';
 import 'package:ruya/features/chat/presentation/widgets/start_conversation_button.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
-class ChatHistoryPage extends StatefulWidget {
+class ChatHistoryPage extends StatelessWidget {
   const ChatHistoryPage({super.key});
 
   @override
-  State<ChatHistoryPage> createState() => _ChatHistoryPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => ChatHistoryCubit(
+        getConversationsUseCase: getIt(),
+        deleteConversationUseCase: getIt(),
+      )..loadConversations(),
+      child: const _ChatHistoryView(),
+    );
+  }
 }
 
-class _ChatHistoryPageState extends State<ChatHistoryPage> {
-  // ── Static mock data ───────────────────────────────────────────────────────
-  final List<ChatSession> _sessions = [
-    ChatSession(
-      id: '1',
-      title: 'Karnak Temple Complex',
-      previewText: 'Who built the Karnak Temple, and why is it so significant...',
-      messageCount: 12,
-      timestamp: DateTime.now(),
-    ),
-    ChatSession(
-      id: '2',
-      title: 'Great Pyramid of Giza',
-      previewText: 'How were the pyramids built and what...',
-      messageCount: 8,
-      timestamp: DateTime.now().subtract(const Duration(hours: 1, minutes: 26)),
-    ),
-    ChatSession(
-      id: '3',
-      title: 'Valley of the Kings',
-      previewText: 'Tell me about the royal tombs and their...',
-      messageCount: 15,
-      timestamp: DateTime.now().subtract(const Duration(days: 1)),
-    ),
-    ChatSession(
-      id: '4',
-      title: 'Philae Temple & Isis',
-      previewText: 'What rituals were performed at Philae T...',
-      messageCount: 6,
-      timestamp: DateTime.now().subtract(const Duration(days: 1, hours: 4)),
-    ),
-    ChatSession(
-      id: '5',
-      title: 'Egyptian Mythology',
-      previewText: 'Explain the story of Osiris, Isis, and Horus.',
-      messageCount: 20,
-      timestamp: DateTime.now().subtract(const Duration(days: 30)),
-    ),
-    ChatSession(
-      id: '6',
-      title: 'Ancient Egyptian Art',
-      previewText: 'What are the artistic conventions of Egy...',
-      messageCount: 9,
-      timestamp: DateTime.now().subtract(const Duration(days: 31)),
-    ),
-    ChatSession(
-      id: '7',
-      title: 'Luxor Day 2 Planning',
-      previewText: 'Help me plan a full day in Luxor visiting t...',
-      messageCount: 11,
-      timestamp: DateTime.now().subtract(const Duration(days: 32)),
-    ),
-  ];
+class _ChatHistoryView extends StatelessWidget {
+  const _ChatHistoryView();
 
-  // ── Delete logic ───────────────────────────────────────────────────────────
-  Future<void> _confirmDelete(ChatSession session) async {
+  Future<void> _confirmDelete(
+    BuildContext context,
+    ChatSession session,
+  ) async {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -79,11 +43,18 @@ class _ChatHistoryPageState extends State<ChatHistoryPage> {
       ),
     );
 
-    if (shouldDelete == true && mounted) {
-      setState(() {
-        _sessions.removeWhere((s) => s.id == session.id);
-      });
+    if (shouldDelete == true && context.mounted) {
+      final success = await context
+          .read<ChatHistoryCubit>()
+          .deleteConversation(session);
+      if (!success && context.mounted) {
+        AppSnackBar.showError(context, l10n.errorLoadingConversations);
+      }
     }
+  }
+
+  void _openConversation(BuildContext context, ChatSession session) {
+    context.push('/ai-chat', extra: session.conversationId);
   }
 
   @override
@@ -91,26 +62,80 @@ class _ChatHistoryPageState extends State<ChatHistoryPage> {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFAF6F0),
-      appBar: _buildAppBar(l10n, isDark),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _RecentConversationsLabel(l10n: l10n, isDark: isDark),
-          Expanded(
-            child: ChatSessionsList(
-              sessions: _sessions,
-              onDelete: _confirmDelete,
-            ),
+    return BlocConsumer<ChatHistoryCubit, ChatHistoryState>(
+      listener: (context, state) {
+        if (state.errorMessage != null &&
+            state.status == ChatHistoryStatus.error) {
+          AppSnackBar.showError(context, state.errorMessage!);
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor:
+              isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFAF6F0),
+          appBar: _buildAppBar(l10n, isDark),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _RecentConversationsLabel(l10n: l10n, isDark: isDark),
+              Expanded(
+                child: RefreshIndicator(
+                  color: const Color(0xFFD4A373),
+                  onRefresh: () =>
+                      context.read<ChatHistoryCubit>().loadConversations(),
+                  child: switch (state.status) {
+                    ChatHistoryStatus.initial ||
+                    ChatHistoryStatus.loading =>
+                      const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFFD4A373),
+                        ),
+                      ),
+                    ChatHistoryStatus.error when state.sessions.isEmpty =>
+                      Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.error_outline_rounded,
+                              color: Colors.red,
+                              size: 48,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              state.errorMessage ??
+                                  l10n.errorLoadingConversations,
+                              style: TextStyle(
+                                color: isDark ? Colors.white70 : Colors.black54,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            TextButton.icon(
+                              onPressed: () => context
+                                  .read<ChatHistoryCubit>()
+                                  .loadConversations(),
+                              icon: const Icon(Icons.refresh),
+                              label: Text(l10n.retry),
+                            ),
+                          ],
+                        ),
+                      ),
+                    _ => ChatSessionsList(
+                        sessions: state.sessions,
+                        onSessionTap: (s) => _openConversation(context, s),
+                        onDelete: (s) => _confirmDelete(context, s),
+                      ),
+                  },
+                ),
+              ),
+              StartConversationButton(
+                label: l10n.startNewConversation,
+                onPressed: () => context.push('/ai-chat'),
+              ),
+            ],
           ),
-          StartConversationButton(
-            label: l10n.startNewConversation,
-            onPressed: () => context.push('/ai-chat'),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -131,7 +156,7 @@ class _ChatHistoryPageState extends State<ChatHistoryPage> {
   }
 }
 
-// ── Private sub-widget: section label ─────────────────────────────────────────
+// ── Section Label ─────────────────────────────────────────────────────────────
 class _RecentConversationsLabel extends StatelessWidget {
   final AppLocalizations l10n;
   final bool isDark;
@@ -155,7 +180,7 @@ class _RecentConversationsLabel extends StatelessWidget {
   }
 }
 
-// ── Private sub-widget: confirm delete dialog ──────────────────────────────────
+// ── Confirm Delete Dialog ─────────────────────────────────────────────────────
 class _DeleteConfirmDialog extends StatelessWidget {
   final AppLocalizations l10n;
   final bool isDark;

@@ -87,6 +87,14 @@
 	<string>Ruya uses your location to notify you when you are near a historical site.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Ruya saves your entry ticket to your photo library when you choose "Save as Image".</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Ruya needs your microphone to let you talk to the AI guide.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Ruya uses speech recognition to transcribe your voice messages.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Ruya needs camera access to let you photograph artifacts and monuments for AI analysis.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Ruya needs photo library access so you can select artifact images for AI analysis.</string>
 </dict>
 </plist>
 
