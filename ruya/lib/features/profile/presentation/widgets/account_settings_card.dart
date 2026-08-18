@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ruya/core/di/injection.dart';
+import 'package:ruya/core/location/proximity_service.dart';
 import 'package:ruya/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:ruya/features/profile/presentation/widgets/editable_list_tile.dart';
 import 'package:ruya/l10n/app_localizations.dart';
@@ -60,6 +61,9 @@ class AccountSettingsCard extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
+                  // Stop GPS stream immediately on logout — don't rely on
+                  // widget disposal since Home branch stays alive in the shell.
+                  getIt<ProximityService>().stop();
                   await getIt<LogoutUseCase>()();
                   if (context.mounted) {
                     context.go('/');
