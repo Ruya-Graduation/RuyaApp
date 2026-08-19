@@ -48,7 +48,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       }
 
       if (image != null) {
-        final filename = image.path.split(Platform.pathSeparator).last;
+        final filename = image.path.split(RegExp(r'[/\\]')).last;
         formMap['Image'] = await MultipartFile.fromFile(
           image.path,
           filename: filename,
@@ -60,9 +60,6 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       final response = await _dio.post(
         '/Chat/message',
         data: formData,
-        options: Options(
-          contentType: 'multipart/form-data',
-        ),
       );
 
       final body = response.data;

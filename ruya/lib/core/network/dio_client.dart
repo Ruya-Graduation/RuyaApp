@@ -24,6 +24,12 @@ class DioClient {
 
   static Dio? _instance;
 
+  /// Resets the cached singleton instance (useful in tests).
+  @visibleForTesting
+  static void resetInstance() {
+    _instance = null;
+  }
+
   /// Returns (and lazily constructs) the singleton [Dio] instance.
   ///
   /// [tokenDataSource] must be the same singleton registered in the DI
@@ -38,7 +44,8 @@ class DioClient {
       BaseOptions(
         baseUrl: '${AppConfig.baseUrl}/api',
         connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 10),
+        sendTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 45),
         contentType: 'application/json',
         responseType: ResponseType.json,
         followRedirects: true,
@@ -51,8 +58,11 @@ class DioClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await tokenDataSource.getToken();
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';
+          if (token != null && token.trim().isNotEmpty) {
+            final cleanToken = token.trim();
+            options.headers['Authorization'] = cleanToken.startsWith('Bearer ')
+                ? cleanToken
+                : 'Bearer $cleanToken';
           }
           handler.next(options);
         },
@@ -62,7 +72,10 @@ class DioClient {
     // ── Error interceptor ────────────────────────────────────────────────────
     dio.interceptors.add(
       InterceptorsWrapper(
-        onError: (DioException error, handler) {
+        onError: (DioException error, handler) async {
+          if (error.response?.statusCode == 401) {
+            await tokenDataSource.clearToken();
+          }
           handler.reject(
             DioException(
               requestOptions: error.requestOptions,
@@ -79,7 +92,9 @@ class DioClient {
     if (kDebugMode) {
       dio.interceptors.add(
         LogInterceptor(
+          requestHeader: true,
           requestBody: true,
+          responseHeader: false,
           responseBody: true,
           error: true,
           logPrint: (o) => debugPrint('[DioClient] $o'),
@@ -91,23 +106,24 @@ class DioClient {
   }
 
   /// Converts a [DioException] into an [ApiException] by inspecting the
-  /// response body and handling the two distinct backend error shapes.
+  /// response body and handling backend error shapes cleanly.
   static ApiException _normalise(DioException error) {
     // No response at all (network/timeout/DNS failure)
     if (error.response == null) {
-      return ApiException(
-        statusCode: -1,
-        message: _networkMessage(error),
-      );
+      return ApiException(statusCode: -1, message: _networkMessage(error));
     }
 
     final statusCode = error.response!.statusCode ?? -1;
     final data = error.response!.data;
 
     // ── Shape 1: Business-rule envelope {success, message, data, errors} ─────
-    if (data is Map<String, dynamic> && data.containsKey('success')) {
-      final msg = data['message'] as String? ?? 'An unexpected error occurred.';
-      return ApiException(statusCode: statusCode, message: msg);
+    if (data is Map<String, dynamic> &&
+        data.containsKey('message') &&
+        data['message'] != null) {
+      final msg = data['message'].toString().trim();
+      if (msg.isNotEmpty) {
+        return ApiException(statusCode: statusCode, message: msg);
+      }
     }
 
     // ── Shape 2: ASP.NET ValidationProblemDetails ────────────────────────────
@@ -137,10 +153,43 @@ class DioClient {
       );
     }
 
+    // ── Shape 3: ASP.NET ProblemDetails / Title field ─────────────────────────
+    if (data is Map<String, dynamic> &&
+        data.containsKey('title') &&
+        data['title'] != null) {
+      final title = data['title'].toString().trim();
+      if (title.isNotEmpty) {
+        return ApiException(statusCode: statusCode, message: title);
+      }
+    }
+
+    // ── Status code specific friendly messages ───────────────────────────────
+    if (statusCode == 401) {
+      return const ApiException(
+        statusCode: 401,
+        message: 'Your session has expired or you are not authorized. Please sign in again.',
+      );
+    } else if (statusCode == 403) {
+      return const ApiException(
+        statusCode: 403,
+        message: 'You do not have permission to access this feature.',
+      );
+    } else if (statusCode == 404) {
+      return const ApiException(
+        statusCode: 404,
+        message: 'The requested resource was not found.',
+      );
+    } else if (statusCode >= 500) {
+      return const ApiException(
+        statusCode: 500,
+        message: 'A server error occurred. Please try again later.',
+      );
+    }
+
     // ── Fallback ─────────────────────────────────────────────────────────────
     return ApiException(
       statusCode: statusCode,
-      message: error.message ?? 'An unexpected error occurred.',
+      message: 'Request failed with status code $statusCode.',
     );
   }
 
