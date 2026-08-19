@@ -427,4 +427,141 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewArtifact => 'View Artifact';
+
+  @override
+  String get memoryVault => 'Memory Vault';
+
+  @override
+  String get yourJourneyArchive => 'Your Journey Archive';
+
+  @override
+  String tripsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count trips',
+      one: '1 trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get routeTimeline => 'ROUTE TIMELINE';
+
+  @override
+  String get shareJourney => 'Share Journey';
+
+  @override
+  String get downloadPdf => 'Download PDF';
+
+  @override
+  String get addNewMoment => 'Add New Moment';
+
+  @override
+  String get createMomentTitle => 'Create Memory Album';
+
+  @override
+  String get momentTitleLabel => 'Trip / Album Title';
+
+  @override
+  String get momentTitleHint => 'e.g. Luxor & Valley of the Kings';
+
+  @override
+  String get tripDateLabel => 'Start Month & Year';
+
+  @override
+  String get tripDateHint => 'e.g. Jan 2026';
+
+  @override
+  String get coverPhotoLabel => 'Cover Photo';
+
+  @override
+  String get tapToSelectCover => 'Tap to select cover image';
+
+  @override
+  String get photosSectionTitle => 'Trip Photos';
+
+  @override
+  String get addPhotosButton => 'Add Photos';
+
+  @override
+  String get createMomentBtn => 'Create Moment';
+
+  @override
+  String get momentCreatedSuccess => 'Memory album created successfully!';
+
+  @override
+  String get titleRequiredError => 'Title is required';
+
+  @override
+  String get dateRequiredError => 'Start month & year is required';
+
+  @override
+  String get coverRequiredError => 'Please select a cover photo';
+
+  @override
+  String get noPhotosAddedYet => 'No photos added yet';
+
+  @override
+  String get scanTitle => 'SCANNING';
+
+  @override
+  String get scanCapturePrompt => 'Point camera at ancient ruins or artifacts';
+
+  @override
+  String get postCaptureTitle => 'Photo Captured';
+
+  @override
+  String get postCaptureSubtitle =>
+      'What would you like to do with this photo?';
+
+  @override
+  String get addToChatOption => 'Ask AI in Chat';
+
+  @override
+  String get addToChatOptionDesc =>
+      'Start an AI conversation to analyze and discover historical insights';
+
+  @override
+  String get addToMemoriesOption => 'Add to Memories';
+
+  @override
+  String get addToMemoriesOptionDesc =>
+      'Save this photo into an existing or new memory album';
+
+  @override
+  String get selectAlbum => 'Select Album';
+
+  @override
+  String get selectAlbumToAddTo => 'Choose an album to add this photo to:';
+
+  @override
+  String get confirmAddToAlbumTitle => 'Add Photo to Album?';
+
+  @override
+  String confirmAddToAlbumBody(String albumTitle) {
+    return 'Are you sure you want to add this photo to \"$albumTitle\"?';
+  }
+
+  @override
+  String get photoAddedSuccess => 'Photo added to album successfully!';
+
+  @override
+  String get createNewAlbum => 'Create New Album';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get pdfSavedSuccess => 'PDF document prepared successfully!';
+
+  @override
+  String get deletePhotoConfirmTitle => 'Delete Photo?';
+
+  @override
+  String get deletePhotoConfirmBody =>
+      'Are you sure you want to delete this photo from the album?';
+
+  @override
+  String get photoDeletedSuccess => 'Photo removed from album successfully!';
 }

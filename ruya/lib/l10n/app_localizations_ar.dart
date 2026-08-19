@@ -426,4 +426,144 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get viewArtifact => 'عرض المعلم';
+
+  @override
+  String get memoryVault => 'خزينة الذكريات';
+
+  @override
+  String get yourJourneyArchive => 'أرشيف رحلاتك';
+
+  @override
+  String tripsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count رحلة',
+      many: '$count رحلة',
+      few: '$count رحلات',
+      two: 'رحلتان',
+      one: 'رحلة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get routeTimeline => 'الجدول الزمني للرحلة';
+
+  @override
+  String get shareJourney => 'مشاركة الرحلة';
+
+  @override
+  String get downloadPdf => 'تحميل PDF';
+
+  @override
+  String get addNewMoment => 'إضافة لحظة جديدة';
+
+  @override
+  String get createMomentTitle => 'إنشاء ألبوم ذكريات';
+
+  @override
+  String get momentTitleLabel => 'عنوان الرحلة / الألبوم';
+
+  @override
+  String get momentTitleHint => 'مثال: الأقصر ووادي الملوك';
+
+  @override
+  String get tripDateLabel => 'شهر وسنة البدء';
+
+  @override
+  String get tripDateHint => 'مثال: يناير ٢٠٢٦';
+
+  @override
+  String get coverPhotoLabel => 'صورة الغلاف';
+
+  @override
+  String get tapToSelectCover => 'انقر لاختيار صورة الغلاف';
+
+  @override
+  String get photosSectionTitle => 'صور الرحلة';
+
+  @override
+  String get addPhotosButton => 'إضافة صور';
+
+  @override
+  String get createMomentBtn => 'إنشاء الألبوم';
+
+  @override
+  String get momentCreatedSuccess => 'تم إنشاء ألبوم الذكريات بنجاح!';
+
+  @override
+  String get titleRequiredError => 'العنوان مطلوب';
+
+  @override
+  String get dateRequiredError => 'شهر وسنة البدء مطلوبة';
+
+  @override
+  String get coverRequiredError => 'يرجى اختيار صورة الغلاف';
+
+  @override
+  String get noPhotosAddedYet => 'لم تتم إضافة أي صور بعد';
+
+  @override
+  String get scanTitle => 'جارٍ المسح';
+
+  @override
+  String get scanCapturePrompt => 'وجّه الكاميرا نحو المعالم أو الآثار القديمة';
+
+  @override
+  String get postCaptureTitle => 'تم التقاط الصورة';
+
+  @override
+  String get postCaptureSubtitle => 'ماذا تود أن تفعل بهذه الصورة؟';
+
+  @override
+  String get addToChatOption => 'اسأل الذكاء الاصطناعي في الدردشة';
+
+  @override
+  String get addToChatOptionDesc =>
+      'ابدأ محادثة ذكية لتحليل الصورة واكتشاف معلومات تاريخية';
+
+  @override
+  String get addToMemoriesOption => 'إضافة إلى الذكريات';
+
+  @override
+  String get addToMemoriesOptionDesc =>
+      'احفظ هذه الصورة في ألبوم ذكريات حالي أو جديد';
+
+  @override
+  String get selectAlbum => 'اختر الألبوم';
+
+  @override
+  String get selectAlbumToAddTo =>
+      'اختر الألبوم الذي تريد إضافة هذه الصورة إليه:';
+
+  @override
+  String get confirmAddToAlbumTitle => 'إضافة الصورة إلى الألبوم؟';
+
+  @override
+  String confirmAddToAlbumBody(String albumTitle) {
+    return 'هل أنت متأكد أنك تريد إضافة هذه الصورة إلى \"$albumTitle\"؟';
+  }
+
+  @override
+  String get photoAddedSuccess => 'تمت إضافة الصورة إلى الألبوم بنجاح!';
+
+  @override
+  String get createNewAlbum => 'إنشاء ألبوم جديد';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get pdfSavedSuccess => 'تم تجهيز مستند PDF بنجاح!';
+
+  @override
+  String get deletePhotoConfirmTitle => 'حذف الصورة؟';
+
+  @override
+  String get deletePhotoConfirmBody =>
+      'هل أنت متأكد أنك تريد حذف هذه الصورة من الألبوم؟';
+
+  @override
+  String get photoDeletedSuccess => 'تمت إزالة الصورة من الألبوم بنجاح!';
 }

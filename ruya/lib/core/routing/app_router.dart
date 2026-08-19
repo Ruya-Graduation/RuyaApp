@@ -1,10 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ruya/core/di/injection.dart';
 import 'package:ruya/core/presentation/cubit/bottom_nav_cubit.dart';
 import 'package:ruya/core/widgets/main_layout.dart';
-import 'package:ruya/core/widgets/placeholder_page.dart';
 import 'package:ruya/features/chat/presentation/pages/chat_history_page.dart';
 import 'package:ruya/features/chat/presentation/pages/ai_chat_page.dart';
 import 'package:ruya/features/profile/presentation/screens/profile_screen.dart';
@@ -20,6 +20,17 @@ import 'package:ruya/features/auth/domain/usecases/restore_session_usecase.dart'
 import 'package:ruya/features/home/presentation/pages/home_page.dart';
 import 'package:ruya/features/site_details/domain/entities/site_detail_entity.dart';
 import 'package:ruya/features/booking/domain/entities/booking_entity.dart';
+
+// Moments Feature
+import 'package:ruya/features/moments/presentation/cubit/moments_cubit.dart';
+import 'package:ruya/features/moments/presentation/pages/moments_page.dart';
+import 'package:ruya/features/moments/presentation/pages/memory_details_page.dart';
+import 'package:ruya/features/moments/presentation/pages/add_moment_page.dart';
+import 'package:ruya/features/moments/domain/entities/moment_item.dart';
+
+// Camera & Scanner Feature
+import 'package:ruya/features/camera_scanner/presentation/pages/camera_scanner_page.dart';
+import 'package:ruya/features/camera_scanner/presentation/pages/post_capture_page.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final _forgotPasswordNavigatorKey =
@@ -65,8 +76,58 @@ class AppRouter {
       GoRoute(
         path: '/ai-chat',
         builder: (context, state) {
-          final conversationId = state.extra as int?;
-          return AiChatPage(initialConversationId: conversationId);
+          int? conversationId;
+          File? imageFile;
+          if (state.extra is int) {
+            conversationId = state.extra as int;
+          } else if (state.extra is Map<String, dynamic>) {
+            final map = state.extra as Map<String, dynamic>;
+            conversationId = map['conversationId'] as int?;
+            imageFile = map['imageFile'] as File?;
+          }
+          return AiChatPage(
+            initialConversationId: conversationId,
+            initialImage: imageFile,
+          );
+        },
+      ),
+
+      // Moments Routes
+      GoRoute(
+        path: '/moments/add',
+        builder: (context, state) {
+          final initialCover = state.extra as File?;
+          return BlocProvider.value(
+            value: getIt<MomentsCubit>(),
+            child: AddMomentPage(initialCoverImage: initialCover),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/moments/details/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          final moment = state.extra as MomentItem?;
+          return BlocProvider.value(
+            value: getIt<MomentsCubit>(),
+            child: MemoryDetailsPage(momentId: id, initialMoment: moment),
+          );
+        },
+      ),
+
+      // Camera & Scanner Routes
+      GoRoute(
+        path: '/camera-scanner',
+        builder: (context, state) => const CameraScannerPage(),
+      ),
+      GoRoute(
+        path: '/post-capture',
+        builder: (context, state) {
+          final photo = state.extra as File;
+          return BlocProvider.value(
+            value: getIt<MomentsCubit>(),
+            child: PostCapturePage(photoFile: photo),
+          );
         },
       ),
 
@@ -110,8 +171,11 @@ class AppRouter {
       // -----------------------------------------------------------------------
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          return BlocProvider(
-            create: (_) => getIt<BottomNavCubit>(),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => getIt<BottomNavCubit>()),
+              BlocProvider.value(value: getIt<MomentsCubit>()),
+            ],
             child: MainLayout(navigationShell: navigationShell),
           );
         },
@@ -136,8 +200,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/memories',
-                builder: (context, state) =>
-                    const PlaceholderPage(title: 'Memories Page'),
+                builder: (context, state) => const MomentsPage(),
               ),
             ],
           ),

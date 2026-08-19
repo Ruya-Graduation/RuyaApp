@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ruya/core/network/api_exception.dart';
+
 import 'package:ruya/core/network/dio_client.dart';
 import 'package:ruya/core/session/token_local_data_source.dart';
 

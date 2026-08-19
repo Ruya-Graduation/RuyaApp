@@ -138,5 +138,57 @@
   "errorLoadingMessages": "فشل تحميل الرسائل.",
   "failedToSendMessage": "فشل إرسال الرسالة.",
   "retry": "إعادة المحاولة",
-  "viewArtifact": "عرض المعلم"
+  "viewArtifact": "عرض المعلم",
+  "memoryVault": "خزينة الذكريات",
+  "yourJourneyArchive": "أرشيف رحلاتك",
+  "tripsCount": "{count, plural, =1{رحلة واحدة} =2{رحلتان} few{{count} رحلات} many{{count} رحلة} other{{count} رحلة}}",
+  "@tripsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "routeTimeline": "الجدول الزمني للرحلة",
+  "shareJourney": "مشاركة الرحلة",
+  "downloadPdf": "تحميل PDF",
+  "addNewMoment": "إضافة لحظة جديدة",
+  "createMomentTitle": "إنشاء ألبوم ذكريات",
+  "momentTitleLabel": "عنوان الرحلة / الألبوم",
+  "momentTitleHint": "مثال: الأقصر ووادي الملوك",
+  "tripDateLabel": "شهر وسنة البدء",
+  "tripDateHint": "مثال: يناير ٢٠٢٦",
+  "coverPhotoLabel": "صورة الغلاف",
+  "tapToSelectCover": "انقر لاختيار صورة الغلاف",
+  "photosSectionTitle": "صور الرحلة",
+  "addPhotosButton": "إضافة صور",
+  "createMomentBtn": "إنشاء الألبوم",
+  "momentCreatedSuccess": "تم إنشاء ألبوم الذكريات بنجاح!",
+  "titleRequiredError": "العنوان مطلوب",
+  "dateRequiredError": "شهر وسنة البدء مطلوبة",
+  "coverRequiredError": "يرجى اختيار صورة الغلاف",
+  "noPhotosAddedYet": "لم تتم إضافة أي صور بعد",
+  "scanTitle": "جارٍ المسح",
+  "scanCapturePrompt": "وجّه الكاميرا نحو المعالم أو الآثار القديمة",
+  "postCaptureTitle": "تم التقاط الصورة",
+  "postCaptureSubtitle": "ماذا تود أن تفعل بهذه الصورة؟",
+  "addToChatOption": "اسأل الذكاء الاصطناعي في الدردشة",
+  "addToChatOptionDesc": "ابدأ محادثة ذكية لتحليل الصورة واكتشاف معلومات تاريخية",
+  "addToMemoriesOption": "إضافة إلى الذكريات",
+  "addToMemoriesOptionDesc": "احفظ هذه الصورة في ألبوم ذكريات حالي أو جديد",
+  "selectAlbum": "اختر الألبوم",
+  "selectAlbumToAddTo": "اختر الألبوم الذي تريد إضافة هذه الصورة إليه:",
+  "confirmAddToAlbumTitle": "إضافة الصورة إلى الألبوم؟",
+  "confirmAddToAlbumBody": "هل أنت متأكد أنك تريد إضافة هذه الصورة إلى \"{albumTitle}\"؟",
+  "@confirmAddToAlbumBody": {
+    "placeholders": {
+      "albumTitle": { "type": "String" }
+    }
+  },
+  "photoAddedSuccess": "تمت إضافة الصورة إلى الألبوم بنجاح!",
+  "createNewAlbum": "إنشاء ألبوم جديد",
+  "confirm": "تأكيد",
+  "pdfSavedSuccess": "تم تجهيز مستند PDF بنجاح!",
+  "deletePhotoConfirmTitle": "حذف الصورة؟",
+  "deletePhotoConfirmBody": "هل أنت متأكد أنك تريد حذف هذه الصورة من الألبوم؟",
+  "photoDeletedSuccess": "تمت إزالة الصورة من الألبوم بنجاح!"
 }
+

@@ -81,7 +81,7 @@ class MainLayout extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Implement scan functionality
+          context.push('/camera-scanner');
         },
         backgroundColor: const Color(0xFFD4A373), // Accent color from mockup
         elevation: 2,

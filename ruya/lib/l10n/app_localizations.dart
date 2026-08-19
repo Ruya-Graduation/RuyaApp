@@ -907,6 +907,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View Artifact'**
   String get viewArtifact;
+
+  /// No description provided for @memoryVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory Vault'**
+  String get memoryVault;
+
+  /// No description provided for @yourJourneyArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Journey Archive'**
+  String get yourJourneyArchive;
+
+  /// No description provided for @tripsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 trip} other{{count} trips}}'**
+  String tripsCount(int count);
+
+  /// No description provided for @routeTimeline.
+  ///
+  /// In en, this message translates to:
+  /// **'ROUTE TIMELINE'**
+  String get routeTimeline;
+
+  /// No description provided for @shareJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Journey'**
+  String get shareJourney;
+
+  /// No description provided for @downloadPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Download PDF'**
+  String get downloadPdf;
+
+  /// No description provided for @addNewMoment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Moment'**
+  String get addNewMoment;
+
+  /// No description provided for @createMomentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Memory Album'**
+  String get createMomentTitle;
+
+  /// No description provided for @momentTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip / Album Title'**
+  String get momentTitleLabel;
+
+  /// No description provided for @momentTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Luxor & Valley of the Kings'**
+  String get momentTitleHint;
+
+  /// No description provided for @tripDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Month & Year'**
+  String get tripDateLabel;
+
+  /// No description provided for @tripDateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Jan 2026'**
+  String get tripDateHint;
+
+  /// No description provided for @coverPhotoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover Photo'**
+  String get coverPhotoLabel;
+
+  /// No description provided for @tapToSelectCover.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to select cover image'**
+  String get tapToSelectCover;
+
+  /// No description provided for @photosSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Photos'**
+  String get photosSectionTitle;
+
+  /// No description provided for @addPhotosButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Photos'**
+  String get addPhotosButton;
+
+  /// No description provided for @createMomentBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Moment'**
+  String get createMomentBtn;
+
+  /// No description provided for @momentCreatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory album created successfully!'**
+  String get momentCreatedSuccess;
+
+  /// No description provided for @titleRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Title is required'**
+  String get titleRequiredError;
+
+  /// No description provided for @dateRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Start month & year is required'**
+  String get dateRequiredError;
+
+  /// No description provided for @coverRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a cover photo'**
+  String get coverRequiredError;
+
+  /// No description provided for @noPhotosAddedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos added yet'**
+  String get noPhotosAddedYet;
+
+  /// No description provided for @scanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SCANNING'**
+  String get scanTitle;
+
+  /// No description provided for @scanCapturePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Point camera at ancient ruins or artifacts'**
+  String get scanCapturePrompt;
+
+  /// No description provided for @postCaptureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo Captured'**
+  String get postCaptureTitle;
+
+  /// No description provided for @postCaptureSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What would you like to do with this photo?'**
+  String get postCaptureSubtitle;
+
+  /// No description provided for @addToChatOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI in Chat'**
+  String get addToChatOption;
+
+  /// No description provided for @addToChatOptionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Start an AI conversation to analyze and discover historical insights'**
+  String get addToChatOptionDesc;
+
+  /// No description provided for @addToMemoriesOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Memories'**
+  String get addToMemoriesOption;
+
+  /// No description provided for @addToMemoriesOptionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this photo into an existing or new memory album'**
+  String get addToMemoriesOptionDesc;
+
+  /// No description provided for @selectAlbum.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Album'**
+  String get selectAlbum;
+
+  /// No description provided for @selectAlbumToAddTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an album to add this photo to:'**
+  String get selectAlbumToAddTo;
+
+  /// No description provided for @confirmAddToAlbumTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Photo to Album?'**
+  String get confirmAddToAlbumTitle;
+
+  /// No description provided for @confirmAddToAlbumBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to add this photo to \"{albumTitle}\"?'**
+  String confirmAddToAlbumBody(String albumTitle);
+
+  /// No description provided for @photoAddedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo added to album successfully!'**
+  String get photoAddedSuccess;
+
+  /// No description provided for @createNewAlbum.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Album'**
+  String get createNewAlbum;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @pdfSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF document prepared successfully!'**
+  String get pdfSavedSuccess;
+
+  /// No description provided for @deletePhotoConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Photo?'**
+  String get deletePhotoConfirmTitle;
+
+  /// No description provided for @deletePhotoConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this photo from the album?'**
+  String get deletePhotoConfirmBody;
+
+  /// No description provided for @photoDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo removed from album successfully!'**
+  String get photoDeletedSuccess;
 }
 
 class _AppLocalizationsDelegate

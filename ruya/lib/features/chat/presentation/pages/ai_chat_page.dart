@@ -16,20 +16,31 @@ import 'package:ruya/l10n/app_localizations.dart';
 
 class AiChatPage extends StatelessWidget {
   final int? initialConversationId;
+  final File? initialImage;
 
-  const AiChatPage({super.key, this.initialConversationId});
+  const AiChatPage({
+    super.key,
+    this.initialConversationId,
+    this.initialImage,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<ChatCubit>(
-          create: (_) => ChatCubit(
-            sendChatMessageUseCase: getIt(),
-            getConversationUseCase: getIt(),
-            ttsService: getIt(),
-            initialConversationId: initialConversationId,
-          ),
+          create: (_) {
+            final cubit = ChatCubit(
+              sendChatMessageUseCase: getIt(),
+              getConversationUseCase: getIt(),
+              ttsService: getIt(),
+              initialConversationId: initialConversationId,
+            );
+            if (initialImage != null) {
+              cubit.selectImage(initialImage);
+            }
+            return cubit;
+          },
         ),
         BlocProvider<VoiceInputCubit>(
           create: (_) => VoiceInputCubit(

@@ -81,6 +81,20 @@ import 'package:ruya/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:ruya/features/chat/presentation/cubit/voice_input_cubit.dart';
 import 'package:ruya/features/chat/presentation/cubit/chat_history_cubit.dart';
 
+// Moments — Data
+import 'package:ruya/features/moments/data/datasources/moments_local_data_source.dart';
+import 'package:ruya/features/moments/data/repositories/moments_repository_impl.dart';
+
+// Moments — Domain
+import 'package:ruya/features/moments/domain/repositories/moments_repository.dart';
+import 'package:ruya/features/moments/domain/usecases/get_moments_usecase.dart';
+import 'package:ruya/features/moments/domain/usecases/add_moment_usecase.dart';
+import 'package:ruya/features/moments/domain/usecases/add_photo_to_moment_usecase.dart';
+import 'package:ruya/features/moments/domain/usecases/delete_photo_from_moment_usecase.dart';
+
+// Moments — Presentation
+import 'package:ruya/features/moments/presentation/cubit/moments_cubit.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> configureDependencies() async {
@@ -247,4 +261,27 @@ Future<void> configureDependencies() async {
         getConversationsUseCase: getIt(),
         deleteConversationUseCase: getIt(),
       ));
+
+  // ---------------------------------------------------------------------------
+  // Moments Feature
+  // ---------------------------------------------------------------------------
+  getIt.registerLazySingleton<MomentsLocalDataSource>(
+    () => MomentsLocalDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<MomentsRepository>(
+    () => MomentsRepositoryImpl(getIt<MomentsLocalDataSource>()),
+  );
+  getIt.registerLazySingleton(() => GetMomentsUseCase(getIt()));
+  getIt.registerLazySingleton(() => AddMomentUseCase(getIt()));
+  getIt.registerLazySingleton(() => AddPhotoToMomentUseCase(getIt()));
+  getIt.registerLazySingleton(() => DeletePhotoFromMomentUseCase(getIt()));
+
+  // LazySingleton so moments stay persistent in memory across navigation
+  getIt.registerLazySingleton(() => MomentsCubit(
+        getMomentsUseCase: getIt(),
+        addMomentUseCase: getIt(),
+        addPhotoToMomentUseCase: getIt(),
+        deletePhotoFromMomentUseCase: getIt(),
+      )..loadMoments());
 }
+

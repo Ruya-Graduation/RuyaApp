@@ -138,5 +138,57 @@
   "errorLoadingMessages": "Failed to load messages.",
   "failedToSendMessage": "Failed to send message.",
   "retry": "Retry",
-  "viewArtifact": "View Artifact"
+  "viewArtifact": "View Artifact",
+  "memoryVault": "Memory Vault",
+  "yourJourneyArchive": "Your Journey Archive",
+  "tripsCount": "{count, plural, =1{1 trip} other{{count} trips}}",
+  "@tripsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "routeTimeline": "ROUTE TIMELINE",
+  "shareJourney": "Share Journey",
+  "downloadPdf": "Download PDF",
+  "addNewMoment": "Add New Moment",
+  "createMomentTitle": "Create Memory Album",
+  "momentTitleLabel": "Trip / Album Title",
+  "momentTitleHint": "e.g. Luxor & Valley of the Kings",
+  "tripDateLabel": "Start Month & Year",
+  "tripDateHint": "e.g. Jan 2026",
+  "coverPhotoLabel": "Cover Photo",
+  "tapToSelectCover": "Tap to select cover image",
+  "photosSectionTitle": "Trip Photos",
+  "addPhotosButton": "Add Photos",
+  "createMomentBtn": "Create Moment",
+  "momentCreatedSuccess": "Memory album created successfully!",
+  "titleRequiredError": "Title is required",
+  "dateRequiredError": "Start month & year is required",
+  "coverRequiredError": "Please select a cover photo",
+  "noPhotosAddedYet": "No photos added yet",
+  "scanTitle": "SCANNING",
+  "scanCapturePrompt": "Point camera at ancient ruins or artifacts",
+  "postCaptureTitle": "Photo Captured",
+  "postCaptureSubtitle": "What would you like to do with this photo?",
+  "addToChatOption": "Ask AI in Chat",
+  "addToChatOptionDesc": "Start an AI conversation to analyze and discover historical insights",
+  "addToMemoriesOption": "Add to Memories",
+  "addToMemoriesOptionDesc": "Save this photo into an existing or new memory album",
+  "selectAlbum": "Select Album",
+  "selectAlbumToAddTo": "Choose an album to add this photo to:",
+  "confirmAddToAlbumTitle": "Add Photo to Album?",
+  "confirmAddToAlbumBody": "Are you sure you want to add this photo to \"{albumTitle}\"?",
+  "@confirmAddToAlbumBody": {
+    "placeholders": {
+      "albumTitle": { "type": "String" }
+    }
+  },
+  "photoAddedSuccess": "Photo added to album successfully!",
+  "createNewAlbum": "Create New Album",
+  "confirm": "Confirm",
+  "pdfSavedSuccess": "PDF document prepared successfully!",
+  "deletePhotoConfirmTitle": "Delete Photo?",
+  "deletePhotoConfirmBody": "Are you sure you want to delete this photo from the album?",
+  "photoDeletedSuccess": "Photo removed from album successfully!"
 }
+
