@@ -6,6 +6,7 @@ abstract class MomentsLocalDataSource {
   Future<MomentItem> addMoment(MomentItem moment);
   Future<MomentItem> addPhotoToMoment(String momentId, MomentPhoto photo);
   Future<MomentItem> deletePhotoFromMoment(String momentId, String photoId);
+  Future<MomentItem> updateMoment(MomentItem updatedMoment);
 }
 
 class MomentsLocalDataSourceImpl implements MomentsLocalDataSource {
@@ -142,6 +143,16 @@ class MomentsLocalDataSourceImpl implements MomentsLocalDataSource {
       final updatedPhotos =
           existing.photos.where((p) => p.id != photoId).toList();
       final updatedMoment = existing.copyWith(photos: updatedPhotos);
+      _moments[index] = updatedMoment;
+      return updatedMoment;
+    }
+    throw Exception('Moment not found');
+  }
+
+  @override
+  Future<MomentItem> updateMoment(MomentItem updatedMoment) async {
+    final index = _moments.indexWhere((m) => m.id == updatedMoment.id);
+    if (index != -1) {
       _moments[index] = updatedMoment;
       return updatedMoment;
     }

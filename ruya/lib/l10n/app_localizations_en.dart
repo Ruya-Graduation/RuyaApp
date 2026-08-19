@@ -564,4 +564,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoDeletedSuccess => 'Photo removed from album successfully!';
+
+  @override
+  String get editMomentTitle => 'Edit Memory Album';
+
+  @override
+  String get editMomentBtn => 'Save Changes';
+
+  @override
+  String get momentUpdatedSuccess => 'Memory album updated successfully!';
+
+  @override
+  String get confirmEditAlbumTitle => 'Save Album Changes?';
+
+  @override
+  String get confirmEditAlbumBody =>
+      'Are you sure you want to save the changes made to this album?';
+
+  @override
+  String get editAlbumTooltip => 'Edit Album';
 }

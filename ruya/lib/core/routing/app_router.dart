@@ -26,6 +26,7 @@ import 'package:ruya/features/moments/presentation/cubit/moments_cubit.dart';
 import 'package:ruya/features/moments/presentation/pages/moments_page.dart';
 import 'package:ruya/features/moments/presentation/pages/memory_details_page.dart';
 import 'package:ruya/features/moments/presentation/pages/add_moment_page.dart';
+import 'package:ruya/features/moments/presentation/pages/edit_moment_page.dart';
 import 'package:ruya/features/moments/domain/entities/moment_item.dart';
 
 // Camera & Scanner Feature
@@ -33,8 +34,9 @@ import 'package:ruya/features/camera_scanner/presentation/pages/camera_scanner_p
 import 'package:ruya/features/camera_scanner/presentation/pages/post_capture_page.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-final _forgotPasswordNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: 'forgotPassword');
+final _forgotPasswordNavigatorKey = GlobalKey<NavigatorState>(
+  debugLabel: 'forgotPassword',
+);
 
 class AppRouter {
   static final router = GoRouter(
@@ -111,6 +113,16 @@ class AppRouter {
           return BlocProvider.value(
             value: getIt<MomentsCubit>(),
             child: MemoryDetailsPage(momentId: id, initialMoment: moment),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/moments/edit',
+        builder: (context, state) {
+          final moment = state.extra as MomentItem;
+          return BlocProvider.value(
+            value: getIt<MomentsCubit>(),
+            child: EditMomentPage(moment: moment),
           );
         },
       ),

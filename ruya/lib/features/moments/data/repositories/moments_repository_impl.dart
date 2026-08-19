@@ -61,4 +61,15 @@ class MomentsRepositoryImpl implements MomentsRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, MomentItem>> updateMoment(
+      MomentItem updatedMoment) async {
+    try {
+      final item = await localDataSource.updateMoment(updatedMoment);
+      return Right(item);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

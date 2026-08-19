@@ -4,6 +4,7 @@ import 'package:ruya/features/moments/domain/usecases/add_moment_usecase.dart';
 import 'package:ruya/features/moments/domain/usecases/add_photo_to_moment_usecase.dart';
 import 'package:ruya/features/moments/domain/usecases/delete_photo_from_moment_usecase.dart';
 import 'package:ruya/features/moments/domain/usecases/get_moments_usecase.dart';
+import 'package:ruya/features/moments/domain/usecases/update_moment_usecase.dart';
 import 'package:ruya/features/moments/presentation/cubit/moments_state.dart';
 
 class MomentsCubit extends Cubit<MomentsState> {
@@ -11,12 +12,14 @@ class MomentsCubit extends Cubit<MomentsState> {
   final AddMomentUseCase addMomentUseCase;
   final AddPhotoToMomentUseCase addPhotoToMomentUseCase;
   final DeletePhotoFromMomentUseCase deletePhotoFromMomentUseCase;
+  final UpdateMomentUseCase updateMomentUseCase;
 
   MomentsCubit({
     required this.getMomentsUseCase,
     required this.addMomentUseCase,
     required this.addPhotoToMomentUseCase,
     required this.deletePhotoFromMomentUseCase,
+    required this.updateMomentUseCase,
   }) : super(const MomentsState());
 
   Future<void> loadMoments() async {
@@ -109,6 +112,32 @@ class MomentsCubit extends Cubit<MomentsState> {
           selectedMoment: state.selectedMoment?.id == albumId
               ? updatedMoment
               : state.selectedMoment,
+        ));
+        return true;
+      },
+    );
+  }
+
+  Future<bool> updateAlbum(MomentItem updatedMoment) async {
+    final result = await updateMomentUseCase(updatedMoment);
+    return result.fold(
+      (failure) {
+        emit(state.copyWith(
+          status: MomentsStatus.error,
+          errorMessage: failure.message,
+        ));
+        return false;
+      },
+      (saved) {
+        final updatedList = state.moments.map((m) {
+          if (m.id == saved.id) return saved;
+          return m;
+        }).toList();
+        emit(state.copyWith(
+          status: MomentsStatus.loaded,
+          moments: updatedList,
+          selectedMoment:
+              state.selectedMoment?.id == saved.id ? saved : state.selectedMoment,
         ));
         return true;
       },

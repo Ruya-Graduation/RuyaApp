@@ -1153,6 +1153,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photo removed from album successfully!'**
   String get photoDeletedSuccess;
+
+  /// No description provided for @editMomentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Memory Album'**
+  String get editMomentTitle;
+
+  /// No description provided for @editMomentBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get editMomentBtn;
+
+  /// No description provided for @momentUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory album updated successfully!'**
+  String get momentUpdatedSuccess;
+
+  /// No description provided for @confirmEditAlbumTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Album Changes?'**
+  String get confirmEditAlbumTitle;
+
+  /// No description provided for @confirmEditAlbumBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to save the changes made to this album?'**
+  String get confirmEditAlbumBody;
+
+  /// No description provided for @editAlbumTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Album'**
+  String get editAlbumTooltip;
 }
 
 class _AppLocalizationsDelegate

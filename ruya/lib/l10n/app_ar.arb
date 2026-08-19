@@ -189,6 +189,12 @@
   "pdfSavedSuccess": "تم تجهيز مستند PDF بنجاح!",
   "deletePhotoConfirmTitle": "حذف الصورة؟",
   "deletePhotoConfirmBody": "هل أنت متأكد أنك تريد حذف هذه الصورة من الألبوم؟",
-  "photoDeletedSuccess": "تمت إزالة الصورة من الألبوم بنجاح!"
+  "photoDeletedSuccess": "تمت إزالة الصورة من الألبوم بنجاح!",
+  "editMomentTitle": "تعديل ألبوم الذكريات",
+  "editMomentBtn": "حفظ التغييرات",
+  "momentUpdatedSuccess": "تم تحديث ألبوم الذكريات بنجاح!",
+  "confirmEditAlbumTitle": "حفظ تغييرات الألبوم؟",
+  "confirmEditAlbumBody": "هل أنت متأكد أنك تريد حفظ التغييرات على هذا الألبوم؟",
+  "editAlbumTooltip": "تعديل الألبوم"
 }
 

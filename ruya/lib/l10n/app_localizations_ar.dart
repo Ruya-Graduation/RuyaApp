@@ -566,4 +566,23 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get photoDeletedSuccess => 'تمت إزالة الصورة من الألبوم بنجاح!';
+
+  @override
+  String get editMomentTitle => 'تعديل ألبوم الذكريات';
+
+  @override
+  String get editMomentBtn => 'حفظ التغييرات';
+
+  @override
+  String get momentUpdatedSuccess => 'تم تحديث ألبوم الذكريات بنجاح!';
+
+  @override
+  String get confirmEditAlbumTitle => 'حفظ تغييرات الألبوم؟';
+
+  @override
+  String get confirmEditAlbumBody =>
+      'هل أنت متأكد أنك تريد حفظ التغييرات على هذا الألبوم؟';
+
+  @override
+  String get editAlbumTooltip => 'تعديل الألبوم';
 }

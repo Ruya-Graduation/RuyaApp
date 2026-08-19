@@ -6,6 +6,8 @@ import 'package:ruya/l10n/app_localizations.dart';
 
 class ImagePickerBox extends StatelessWidget {
   final File? selectedImage;
+  final String? existingImagePath;
+  final bool existingIsAsset;
   final VoidCallback onTap;
   final VoidCallback? onClear;
   final String? errorText;
@@ -13,10 +15,22 @@ class ImagePickerBox extends StatelessWidget {
   const ImagePickerBox({
     super.key,
     required this.selectedImage,
+    this.existingImagePath,
+    this.existingIsAsset = false,
     required this.onTap,
     this.onClear,
     this.errorText,
   });
+
+  Widget _buildExistingImage() {
+    if (existingImagePath == null || existingImagePath!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    if (existingIsAsset) {
+      return Image.asset(existingImagePath!, fit: BoxFit.cover);
+    }
+    return Image.file(File(existingImagePath!), fit: BoxFit.cover);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,21 +56,22 @@ class ImagePickerBox extends StatelessWidget {
               ),
             ),
             clipBehavior: Clip.antiAlias,
-            child: selectedImage != null
+            child: selectedImage != null || existingImagePath != null
                 ? Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.file(
-                        selectedImage!,
-                        fit: BoxFit.cover,
-                      ),
+                      selectedImage != null
+                          ? Image.file(selectedImage!, fit: BoxFit.cover)
+                          : _buildExistingImage(),
                       if (onClear != null)
                         Positioned(
                           top: 8,
                           right: 8,
                           child: CircleAvatar(
                             radius: 16,
-                            backgroundColor: Colors.black.withValues(alpha: 0.6),
+                            backgroundColor: Colors.black.withValues(
+                              alpha: 0.6,
+                            ),
                             child: IconButton(
                               padding: EdgeInsets.zero,
                               icon: const Icon(
@@ -76,7 +91,9 @@ class ImagePickerBox extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.getBrandPrimary(context).withValues(alpha: 0.12),
+                          color: AppColors.getBrandPrimary(
+                            context,
+                          ).withValues(alpha: 0.12),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -102,10 +119,7 @@ class ImagePickerBox extends StatelessWidget {
           AppSpacing.verticalGapXxs,
           Text(
             errorText!,
-            style: const TextStyle(
-              color: AppColors.errorRed,
-              fontSize: 12,
-            ),
+            style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
           ),
         ],
       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_snackbar.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
@@ -28,7 +29,9 @@ class MemoryDetailsPage extends StatelessWidget {
         // Look up either from state or initial fallback
         final moment = state.moments.firstWhere(
           (m) => m.id == momentId,
-          orElse: () => initialMoment ?? state.selectedMoment ??
+          orElse: () =>
+              initialMoment ??
+              state.selectedMoment ??
               const MomentItem(
                 id: 'unknown',
                 title: 'Memory Detail',
@@ -44,7 +47,10 @@ class MemoryDetailsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Hero Header with Cover Photo and Title
-                MemoryHeroHeader(moment: moment),
+                MemoryHeroHeader(
+                  moment: moment,
+                  onEdit: () => context.push('/moments/edit', extra: moment),
+                ),
                 AppSpacing.verticalGapLg,
                 // Timeline Gallery Row with delete capability
                 MemoryTimelineGallery(
@@ -55,7 +61,10 @@ class MemoryDetailsPage extends StatelessWidget {
                         .read<MomentsCubit>()
                         .deletePhotoFromAlbum(moment.id, photo.id);
                     if (context.mounted && success) {
-                      AppSnackBar.showSuccess(context, l10n.photoDeletedSuccess);
+                      AppSnackBar.showSuccess(
+                        context,
+                        l10n.photoDeletedSuccess,
+                      );
                     }
                   },
                 ),

@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 import 'package:ruya/features/moments/domain/entities/moment_item.dart';
+import 'package:ruya/l10n/app_localizations.dart';
 
 class MemoryHeroHeader extends StatelessWidget {
   final MomentItem moment;
+  final VoidCallback onEdit;
 
   const MemoryHeroHeader({
     super.key,
     required this.moment,
+    required this.onEdit,
   });
 
   Widget _buildImage() {
@@ -83,6 +86,22 @@ class MemoryHeroHeader extends StatelessWidget {
             ),
           ),
         ),
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 8,
+          right: 16,
+          child: CircleAvatar(
+            backgroundColor: Colors.black.withValues(alpha: 0.4),
+            child: IconButton(
+              tooltip: AppLocalizations.of(context)!.editAlbumTooltip,
+              icon: const Icon(
+                Icons.edit_outlined,
+                color: Colors.white,
+                size: 20,
+              ),
+              onPressed: onEdit,
+            ),
+          ),
+        ),
         // Bottom Title & Pill Badge
         Positioned(
           left: AppSpacing.pagePadding(context),
@@ -94,7 +113,10 @@ class MemoryHeroHeader extends StatelessWidget {
             children: [
               // Keepsake pill badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFD4A373).withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(20),

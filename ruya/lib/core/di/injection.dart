@@ -91,6 +91,7 @@ import 'package:ruya/features/moments/domain/usecases/get_moments_usecase.dart';
 import 'package:ruya/features/moments/domain/usecases/add_moment_usecase.dart';
 import 'package:ruya/features/moments/domain/usecases/add_photo_to_moment_usecase.dart';
 import 'package:ruya/features/moments/domain/usecases/delete_photo_from_moment_usecase.dart';
+import 'package:ruya/features/moments/domain/usecases/update_moment_usecase.dart';
 
 // Moments — Presentation
 import 'package:ruya/features/moments/presentation/cubit/moments_cubit.dart';
@@ -275,6 +276,7 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton(() => AddMomentUseCase(getIt()));
   getIt.registerLazySingleton(() => AddPhotoToMomentUseCase(getIt()));
   getIt.registerLazySingleton(() => DeletePhotoFromMomentUseCase(getIt()));
+  getIt.registerLazySingleton(() => UpdateMomentUseCase(getIt()));
 
   // LazySingleton so moments stay persistent in memory across navigation
   getIt.registerLazySingleton(() => MomentsCubit(
@@ -282,6 +284,7 @@ Future<void> configureDependencies() async {
         addMomentUseCase: getIt(),
         addPhotoToMomentUseCase: getIt(),
         deletePhotoFromMomentUseCase: getIt(),
+        updateMomentUseCase: getIt(),
       )..loadMoments());
 }
 

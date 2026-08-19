@@ -8,4 +8,5 @@ abstract class MomentsRepository {
   Future<Either<Failure, MomentItem>> addMoment(MomentItem moment);
   Future<Either<Failure, MomentItem>> addPhotoToMoment(String momentId, MomentPhoto photo);
   Future<Either<Failure, MomentItem>> deletePhotoFromMoment(String momentId, String photoId);
+  Future<Either<Failure, MomentItem>> updateMoment(MomentItem updatedMoment);
 }
