@@ -1,66 +1,64 @@
 import 'package:equatable/equatable.dart';
 
 class MomentItem extends Equatable {
-  final String id;
+  final int id;
   final String title;
-  final String monthYear; // e.g. "Jan 2026"
-  final String coverImagePath;
-  final bool isCoverAsset;
-  final List<MomentPhoto> photos;
+  final String startDate; // e.g. "Jan 2026" — free text, matches backend StartDate
+  final String? coverImageUrl; // Cloudinary URL, nullable
+  final int photoCount;
+  final DateTime createdAt;
+  final List<MomentPhoto> photos; // empty for list view, populated for details view
 
   const MomentItem({
     required this.id,
     required this.title,
-    required this.monthYear,
-    required this.coverImagePath,
-    this.isCoverAsset = true,
+    required this.startDate,
+    required this.coverImageUrl,
+    required this.photoCount,
+    required this.createdAt,
     this.photos = const [],
   });
 
   MomentItem copyWith({
-    String? id,
+    int? id,
     String? title,
-    String? monthYear,
-    String? coverImagePath,
-    bool? isCoverAsset,
+    String? startDate,
+    String? coverImageUrl,
+    int? photoCount,
+    DateTime? createdAt,
     List<MomentPhoto>? photos,
   }) {
     return MomentItem(
       id: id ?? this.id,
       title: title ?? this.title,
-      monthYear: monthYear ?? this.monthYear,
-      coverImagePath: coverImagePath ?? this.coverImagePath,
-      isCoverAsset: isCoverAsset ?? this.isCoverAsset,
+      startDate: startDate ?? this.startDate,
+      coverImageUrl: coverImageUrl ?? this.coverImageUrl,
+      photoCount: photoCount ?? this.photoCount,
+      createdAt: createdAt ?? this.createdAt,
       photos: photos ?? this.photos,
     );
   }
 
   @override
-  List<Object?> get props => [
-        id,
-        title,
-        monthYear,
-        coverImagePath,
-        isCoverAsset,
-        photos,
-      ];
+  List<Object?> get props =>
+      [id, title, startDate, coverImageUrl, photoCount, createdAt, photos];
 }
 
 class MomentPhoto extends Equatable {
-  final String id;
-  final String imagePath;
-  final bool isAsset;
+  final int id;
+  final String imageUrl; // Cloudinary URL
   final String? caption;
-  final String? dayLabel; // e.g. "DAY 1"
+  final String? dayLabel;
+  final DateTime createdAt;
 
   const MomentPhoto({
     required this.id,
-    required this.imagePath,
-    this.isAsset = true,
+    required this.imageUrl,
     this.caption,
     this.dayLabel,
+    required this.createdAt,
   });
 
   @override
-  List<Object?> get props => [id, imagePath, isAsset, caption, dayLabel];
+  List<Object?> get props => [id, imageUrl, caption, dayLabel, createdAt];
 }

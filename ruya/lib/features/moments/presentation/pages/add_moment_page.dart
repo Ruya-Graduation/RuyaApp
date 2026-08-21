@@ -10,7 +10,6 @@ import 'package:ruya/core/utils/app_snackbar.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 import 'package:ruya/core/widgets/app_primary_button.dart';
 import 'package:ruya/core/widgets/app_text_field.dart';
-import 'package:ruya/features/moments/domain/entities/moment_item.dart';
 import 'package:ruya/features/moments/presentation/cubit/moments_cubit.dart';
 import 'package:ruya/features/moments/presentation/widgets/horizontal_image_list.dart';
 import 'package:ruya/features/moments/presentation/widgets/image_picker_box.dart';
@@ -19,10 +18,7 @@ import 'package:ruya/l10n/app_localizations.dart';
 class AddMomentPage extends StatefulWidget {
   final File? initialCoverImage;
 
-  const AddMomentPage({
-    super.key,
-    this.initialCoverImage,
-  });
+  const AddMomentPage({super.key, this.initialCoverImage});
 
   @override
   State<AddMomentPage> createState() => _AddMomentPageState();
@@ -31,7 +27,7 @@ class AddMomentPage extends StatefulWidget {
 class _AddMomentPageState extends State<AddMomentPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
-  final _monthYearController = TextEditingController();
+  final _startDateController = TextEditingController();
   final _picker = ImagePicker();
 
   File? _coverImage;
@@ -53,7 +49,7 @@ class _AddMomentPageState extends State<AddMomentPage> {
   @override
   void dispose() {
     _titleController.dispose();
-    _monthYearController.dispose();
+    _startDateController.dispose();
     super.dispose();
   }
 
@@ -72,7 +68,7 @@ class _AddMomentPageState extends State<AddMomentPage> {
         });
       }
     } catch (_) {
-      // Ignored or logged
+      // Ignored
     } finally {
       _isPickingImage = false;
     }
@@ -89,7 +85,7 @@ class _AddMomentPageState extends State<AddMomentPage> {
         });
       }
     } catch (_) {
-      // Ignored or logged
+      // Ignored
     } finally {
       _isPickingImage = false;
     }
@@ -131,7 +127,7 @@ class _AddMomentPageState extends State<AddMomentPage> {
     if (pickedDate != null) {
       final formatted = DateFormat('MMM yyyy').format(pickedDate);
       setState(() {
-        _monthYearController.text = formatted;
+        _startDateController.text = formatted;
         _dateError = null;
       });
     }
@@ -150,7 +146,7 @@ class _AddMomentPageState extends State<AddMomentPage> {
     if (_titleController.text.trim().isEmpty) {
       titleErr = l10n.titleRequiredError;
     }
-    if (_monthYearController.text.trim().isEmpty) {
+    if (_startDateController.text.trim().isEmpty) {
       dateErr = l10n.dateRequiredError;
     }
 
@@ -165,42 +161,52 @@ class _AddMomentPageState extends State<AddMomentPage> {
 
     setState(() => _isSubmitting = true);
 
-    final momentId = 'moment_${DateTime.now().millisecondsSinceEpoch}';
-    final photos = <MomentPhoto>[];
+    final title = _titleController.text.trim();
+    final startDate = _startDateController.text.trim();
+    final cubit = context.read<MomentsCubit>();
 
-    // Include additional photos
-    for (int i = 0; i < _additionalPhotos.length; i++) {
-      photos.add(
-        MomentPhoto(
-          id: 'p_${DateTime.now().millisecondsSinceEpoch}_$i',
-          imagePath: _additionalPhotos[i].path,
-          isAsset: false,
-          caption: 'Photo ${i + 1}',
-          dayLabel: 'DAY 1',
-        ),
-      );
-    }
-
-    final newMoment = MomentItem(
-      id: momentId,
-      title: _titleController.text.trim(),
-      monthYear: _monthYearController.text.trim(),
-      coverImagePath: _coverImage!.path,
-      isCoverAsset: false,
-      photos: photos,
+    final createdAlbum = await cubit.createMoment(
+      title: title,
+      startDate: startDate,
+      coverPhoto: _coverImage,
     );
 
-    final success = await context.read<MomentsCubit>().createMoment(newMoment);
+    if (!mounted) return;
 
+    if (createdAlbum == null) {
+      setState(() => _isSubmitting = false);
+      AppSnackBar.showError(context, 'Failed to create memory album');
+      return;
+    }
+
+    int failedPhotos = 0;
+    if (_additionalPhotos.isNotEmpty) {
+      for (int i = 0; i < _additionalPhotos.length; i++) {
+        final photoFile = _additionalPhotos[i];
+        final ok = await cubit.addPhotoToAlbum(
+          createdAlbum.id,
+          photo: photoFile,
+          caption: 'Photo ${i + 1}',
+          dayLabel: 'DAY 1',
+        );
+        if (!ok) {
+          failedPhotos++;
+        }
+      }
+    }
+
+    if (!mounted) return;
     setState(() => _isSubmitting = false);
 
-    if (mounted) {
-      if (success) {
-        AppSnackBar.showSuccess(context, l10n.momentCreatedSuccess);
-        context.pop();
-      } else {
-        AppSnackBar.showError(context, 'Failed to create memory album');
-      }
+    if (failedPhotos == 0) {
+      AppSnackBar.showSuccess(context, l10n.momentCreatedSuccess);
+      context.pop();
+    } else {
+      AppSnackBar.showWarning(
+        context,
+        'Album created, but $failedPhotos photo(s) failed to upload',
+      );
+      context.pop();
     }
   }
 
@@ -244,10 +250,7 @@ class _AddMomentPageState extends State<AddMomentPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Cover photo section
-                Text(
-                  l10n.coverPhotoLabel,
-                  style: AppTextStyles.label(context),
-                ),
+                Text(l10n.coverPhotoLabel, style: AppTextStyles.label(context)),
                 AppSpacing.verticalGapXs,
                 ImagePickerBox(
                   selectedImage: _coverImage,
@@ -271,13 +274,13 @@ class _AddMomentPageState extends State<AddMomentPage> {
                 ),
                 AppSpacing.verticalGapMd,
 
-                // Month & Year input field
+                // Start Date input field
                 GestureDetector(
                   onTap: _selectDate,
                   behavior: HitTestBehavior.opaque,
                   child: AbsorbPointer(
                     child: AppTextField(
-                      controller: _monthYearController,
+                      controller: _startDateController,
                       label: l10n.tripDateLabel,
                       hint: l10n.tripDateHint,
                       errorText: _dateError,

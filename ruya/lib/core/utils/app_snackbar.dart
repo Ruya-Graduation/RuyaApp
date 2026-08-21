@@ -80,6 +80,22 @@ abstract class AppSnackBar {
     );
   }
 
+  /// Displays an alert with warning styling
+  static void showWarning(BuildContext context, String message) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    _show(
+      context,
+      message: message,
+      icon: Icons.warning_amber_rounded,
+      backgroundColor: isDark
+          ? const Color(0x35F59E0B)
+          : const Color(0xFFD97706),
+      foregroundColor: isDark
+          ? const Color(0xFFFDE68A)
+          : Colors.white,
+    );
+  }
+
   /// Displays an informational snackbar (e.g. proximity "near site" alerts).
   ///
   /// The [emoji] is rendered inline in the message text rather than as an

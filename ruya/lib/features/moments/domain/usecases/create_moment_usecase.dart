@@ -1,22 +1,23 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:ruya/core/error/failure.dart';
 import 'package:ruya/features/moments/domain/entities/moment_item.dart';
 import 'package:ruya/features/moments/domain/repositories/moments_repository.dart';
 
-class UpdateMomentUseCase {
+class CreateMomentUseCase {
   final MomentsRepository repository;
 
-  UpdateMomentUseCase(this.repository);
+  CreateMomentUseCase(this.repository);
 
-  Future<Either<Failure, MomentItem>> call(
-    int momentId, {
-    String? title,
-    String? startDate,
+  Future<Either<Failure, MomentItem>> call({
+    required String title,
+    required String startDate,
+    File? coverPhoto,
   }) {
-    return repository.updateMoment(
-      momentId,
+    return repository.createMoment(
       title: title,
       startDate: startDate,
+      coverPhoto: coverPhoto,
     );
   }
 }

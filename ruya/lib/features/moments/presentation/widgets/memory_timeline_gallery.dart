@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
@@ -29,9 +28,8 @@ class MemoryTimelineGallery extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           l10n.deletePhotoConfirmTitle,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : Colors.black87,
           ),
         ),
         content: Text(
@@ -68,32 +66,28 @@ class MemoryTimelineGallery extends StatelessWidget {
   Widget _buildPhotoTile(BuildContext context, MomentPhoto photo) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    Widget imageWidget;
-    if (photo.isAsset) {
-      imageWidget = Image.asset(
-        photo.imagePath,
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-        errorBuilder: (context, error, stackTrace) => Container(
-          color: Colors.grey.shade400,
-          child: const Icon(Icons.image, color: Colors.white70),
-        ),
-      );
-    } else {
-      final file = File(photo.imagePath);
-      imageWidget = file.existsSync()
-          ? Image.file(
-              file,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-            )
-          : Container(
-              color: Colors.grey.shade400,
-              child: const Icon(Icons.broken_image, color: Colors.white70),
-            );
-    }
+    Widget imageWidget = Image.network(
+      photo.imageUrl,
+      fit: BoxFit.cover,
+      width: double.infinity,
+      height: double.infinity,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Container(
+          color: Colors.grey.shade900,
+          child: const Center(
+            child: CircularProgressIndicator(
+              color: AppColors.brandPrimaryLight,
+              strokeWidth: 2,
+            ),
+          ),
+        );
+      },
+      errorBuilder: (context, error, stackTrace) => Container(
+        color: Colors.grey.shade800,
+        child: const Icon(Icons.broken_image, color: Colors.white70),
+      ),
+    );
 
     return Container(
       width: 140,

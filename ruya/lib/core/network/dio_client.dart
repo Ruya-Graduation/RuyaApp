@@ -167,7 +167,8 @@ class DioClient {
     if (statusCode == 401) {
       return const ApiException(
         statusCode: 401,
-        message: 'Your session has expired or you are not authorized. Please sign in again.',
+        message:
+            'Your session has expired or you are not authorized. Please sign in again.',
       );
     } else if (statusCode == 403) {
       return const ApiException(

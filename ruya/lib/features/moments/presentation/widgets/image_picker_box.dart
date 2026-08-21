@@ -6,8 +6,7 @@ import 'package:ruya/l10n/app_localizations.dart';
 
 class ImagePickerBox extends StatelessWidget {
   final File? selectedImage;
-  final String? existingImagePath;
-  final bool existingIsAsset;
+  final String? existingImageUrl;
   final VoidCallback onTap;
   final VoidCallback? onClear;
   final String? errorText;
@@ -15,27 +14,42 @@ class ImagePickerBox extends StatelessWidget {
   const ImagePickerBox({
     super.key,
     required this.selectedImage,
-    this.existingImagePath,
-    this.existingIsAsset = false,
+    this.existingImageUrl,
     required this.onTap,
     this.onClear,
     this.errorText,
   });
 
   Widget _buildExistingImage() {
-    if (existingImagePath == null || existingImagePath!.isEmpty) {
+    if (existingImageUrl == null || existingImageUrl!.isEmpty) {
       return const SizedBox.shrink();
     }
-    if (existingIsAsset) {
-      return Image.asset(existingImagePath!, fit: BoxFit.cover);
-    }
-    return Image.file(File(existingImagePath!), fit: BoxFit.cover);
+    return Image.network(
+      existingImageUrl!,
+      fit: BoxFit.cover,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return const Center(
+          child: CircularProgressIndicator(
+            color: AppColors.brandPrimaryLight,
+            strokeWidth: 2,
+          ),
+        );
+      },
+      errorBuilder: (context, error, stackTrace) => Container(
+        color: Colors.grey.shade800,
+        child: const Icon(Icons.broken_image, size: 40, color: Colors.white54),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final hasImage = selectedImage != null ||
+        (existingImageUrl != null && existingImageUrl!.isNotEmpty);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +70,7 @@ class ImagePickerBox extends StatelessWidget {
               ),
             ),
             clipBehavior: Clip.antiAlias,
-            child: selectedImage != null || existingImagePath != null
+            child: hasImage
                 ? Stack(
                     fit: StackFit.expand,
                     children: [

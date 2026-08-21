@@ -32,62 +32,68 @@ class MomentsPage extends StatelessWidget {
 
             final moments = state.moments;
 
-            return CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: MomentsHeader(totalTrips: moments.length),
-                ),
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppSpacing.pagePadding(context),
-                    vertical: AppSpacing.xs,
+            return RefreshIndicator(
+              color: AppColors.brandPrimaryLight,
+              onRefresh: () => context.read<MomentsCubit>().loadMoments(),
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: MomentsHeader(totalTrips: moments.length),
                   ),
-                  sliver: moments.isEmpty
-                      ? SliverToBoxAdapter(
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 48),
-                              child: Text(
-                                l10n.noPhotosAddedYet,
-                                style: TextStyle(
-                                  color: isDark ? Colors.white60 : Colors.black54,
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.pagePadding(context),
+                      vertical: AppSpacing.xs,
+                    ),
+                    sliver: moments.isEmpty
+                        ? SliverToBoxAdapter(
+                            child: Center(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 48),
+                                child: Text(
+                                  l10n.noPhotosAddedYet,
+                                  style: TextStyle(
+                                    color:
+                                        isDark ? Colors.white60 : Colors.black54,
+                                  ),
                                 ),
                               ),
                             ),
+                          )
+                        : SliverGrid(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: AppSpacing.md,
+                              mainAxisSpacing: AppSpacing.md,
+                              childAspectRatio: 0.82,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                final moment = moments[index];
+                                return MomentCard(
+                                  moment: moment,
+                                  onTap: () {
+                                    context
+                                        .read<MomentsCubit>()
+                                        .selectMoment(moment);
+                                    context.push(
+                                      '/moments/details/${moment.id}',
+                                      extra: moment,
+                                    );
+                                  },
+                                );
+                              },
+                              childCount: moments.length,
+                            ),
                           ),
-                        )
-                      : SliverGrid(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: AppSpacing.md,
-                            mainAxisSpacing: AppSpacing.md,
-                            childAspectRatio: 0.82,
-                          ),
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              final moment = moments[index];
-                              return MomentCard(
-                                moment: moment,
-                                onTap: () {
-                                  context
-                                      .read<MomentsCubit>()
-                                      .selectMoment(moment);
-                                  context.push(
-                                    '/moments/details/${moment.id}',
-                                    extra: moment,
-                                  );
-                                },
-                              );
-                            },
-                            childCount: moments.length,
-                          ),
-                        ),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 80), // Padding for bottom navbar
-                ),
-              ],
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 80), // Padding for bottom navbar
+                  ),
+                ],
+              ),
             );
           },
         ),

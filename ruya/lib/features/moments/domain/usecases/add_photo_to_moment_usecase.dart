@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:ruya/core/error/failure.dart';
 import 'package:ruya/features/moments/domain/entities/moment_item.dart';
@@ -8,7 +9,17 @@ class AddPhotoToMomentUseCase {
 
   AddPhotoToMomentUseCase(this.repository);
 
-  Future<Either<Failure, MomentItem>> call(String momentId, MomentPhoto photo) {
-    return repository.addPhotoToMoment(momentId, photo);
+  Future<Either<Failure, MomentItem>> call(
+    int momentId, {
+    required File photo,
+    String? caption,
+    String? dayLabel,
+  }) {
+    return repository.addPhotoToMoment(
+      momentId,
+      photo: photo,
+      caption: caption,
+      dayLabel: dayLabel,
+    );
   }
 }

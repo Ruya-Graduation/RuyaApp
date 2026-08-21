@@ -10,18 +10,19 @@ import 'package:ruya/features/moments/presentation/cubit/moments_cubit.dart';
 import 'package:ruya/features/moments/presentation/cubit/moments_state.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
-class SelectAlbumDialog extends StatelessWidget {
+class SelectAlbumDialog extends StatefulWidget {
   final File photoFile;
 
-  const SelectAlbumDialog({
-    super.key,
-    required this.photoFile,
-  });
+  const SelectAlbumDialog({super.key, required this.photoFile});
 
-  Future<void> _confirmAndAddToAlbum(
-    BuildContext context,
-    MomentItem album,
-  ) async {
+  @override
+  State<SelectAlbumDialog> createState() => _SelectAlbumDialogState();
+}
+
+class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
+  bool _isUploading = false;
+
+  Future<void> _confirmAndAddToAlbum(MomentItem album) async {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -32,16 +33,11 @@ class SelectAlbumDialog extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           l10n.confirmAddToAlbumTitle,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : Colors.black87,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         content: Text(
           l10n.confirmAddToAlbumBody(album.title),
-          style: TextStyle(
-            color: isDark ? Colors.white70 : Colors.black54,
-          ),
+          style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
         ),
         actions: [
           TextButton(
@@ -63,28 +59,61 @@ class SelectAlbumDialog extends StatelessWidget {
       ),
     );
 
-    if (confirmed == true && context.mounted) {
-      final newPhoto = MomentPhoto(
-        id: 'p_${DateTime.now().millisecondsSinceEpoch}',
-        imagePath: photoFile.path,
-        isAsset: false,
+    if (confirmed == true && mounted) {
+      final cubit = context.read<MomentsCubit>();
+      setState(() => _isUploading = true);
+
+      final success = await cubit.addPhotoToAlbum(
+        album.id,
+        photo: widget.photoFile,
         caption: 'Scanned Artifact',
         dayLabel: 'DAY 1',
       );
 
-      final success =
-          await context.read<MomentsCubit>().addPhotoToAlbum(album.id, newPhoto);
+      if (!mounted) return;
+      setState(() => _isUploading = false);
 
-      if (context.mounted) {
-        if (success) {
-          AppSnackBar.showSuccess(context, l10n.photoAddedSuccess);
-          Navigator.pop(context); // Close sheet
-          context.go('/memories'); // Navigate to memories
-        } else {
-          AppSnackBar.showError(context, 'Failed to add photo to album');
-        }
+      if (success) {
+        AppSnackBar.showSuccess(context, l10n.photoAddedSuccess);
+        Navigator.pop(context); // Close sheet
+        context.go('/memories'); // Navigate to memories
+      } else {
+        AppSnackBar.showError(context, 'Failed to add photo to album');
       }
     }
+  }
+
+  Widget _buildAlbumThumbnail(String? url) {
+    if (url != null && url.isNotEmpty) {
+      return Image.network(
+        url,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey.shade900,
+            child: const Center(
+              child: SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                  color: AppColors.brandPrimaryLight,
+                ),
+              ),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) => Container(
+          color: Colors.grey.shade800,
+          child: const Icon(Icons.image, size: 24, color: Colors.white54),
+        ),
+      );
+    }
+    return Container(
+      color: Colors.grey.shade800,
+      child: const Icon(Icons.image, size: 24, color: Colors.white54),
+    );
   }
 
   @override
@@ -96,131 +125,185 @@ class SelectAlbumDialog extends StatelessWidget {
       builder: (context, state) {
         final albums = state.moments;
 
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade400,
-                    borderRadius: BorderRadius.circular(2),
+        return Stack(
+          children: [
+            AbsorbPointer(
+              absorbing: _isUploading,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
                   ),
                 ),
-              ),
-
-              Text(
-                l10n.selectAlbum,
-                style: TextStyle(
-                  fontFamily: 'Playfair Display',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-              ),
-              AppSpacing.verticalGapXxs,
-              Text(
-                l10n.selectAlbumToAddTo,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: isDark ? Colors.white60 : Colors.black54,
-                ),
-              ),
-              AppSpacing.verticalGapMd,
-
-              // List of Albums
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 280),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: albums.length,
-                  separatorBuilder: (context, index) => const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    final album = albums[index];
-                    return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 4,
-                        horizontal: 8,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Handle
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade400,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: SizedBox(
-                          width: 48,
-                          height: 48,
-                          child: album.isCoverAsset
-                              ? Image.asset(
-                                  album.coverImagePath,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.file(
-                                  File(album.coverImagePath),
-                                  fit: BoxFit.cover,
+                    ),
+
+                    Text(
+                      l10n.selectAlbum,
+                      style: TextStyle(
+                        fontFamily: 'Playfair Display',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                    AppSpacing.verticalGapXxs,
+                    Text(
+                      l10n.selectAlbumToAddTo,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? Colors.white60 : Colors.black54,
+                      ),
+                    ),
+                    AppSpacing.verticalGapMd,
+
+                    // List of Albums
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxHeight: 280),
+                      child: albums.isEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 24),
+                              child: Center(
+                                child: Text(
+                                  l10n.noPhotosAddedYet,
+                                  style: TextStyle(
+                                    color: isDark
+                                        ? Colors.white60
+                                        : Colors.black54,
+                                  ),
                                 ),
+                              ),
+                            )
+                          : ListView.separated(
+                              shrinkWrap: true,
+                              itemCount: albums.length,
+                              separatorBuilder: (context, index) =>
+                                  const Divider(height: 1),
+                              itemBuilder: (context, index) {
+                                final album = albums[index];
+                                return ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 4,
+                                    horizontal: 8,
+                                  ),
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: SizedBox(
+                                      width: 48,
+                                      height: 48,
+                                      child: _buildAlbumThumbnail(
+                                        album.coverImageUrl,
+                                      ),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    album.title,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: isDark
+                                          ? Colors.white
+                                          : Colors.black87,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    album.startDate,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: isDark
+                                          ? Colors.white60
+                                          : Colors.black54,
+                                    ),
+                                  ),
+                                  trailing: Icon(
+                                    Icons.add_circle_outline,
+                                    color: AppColors.getBrandPrimary(context),
+                                  ),
+                                  onTap: () => _confirmAndAddToAlbum(album),
+                                );
+                              },
+                            ),
+                    ),
+                    AppSpacing.verticalGapMd,
+
+                    // Or Create New Album Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context); // Close bottom sheet
+                          context.push('/moments/add', extra: widget.photoFile);
+                        },
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n.createNewAlbum),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.getBrandPrimary(context),
+                          side: BorderSide(
+                            color: AppColors.getBrandPrimary(context),
+                            width: 1.5,
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                       ),
-                      title: Text(
-                        album.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.white : Colors.black87,
-                        ),
-                      ),
-                      subtitle: Text(
-                        album.monthYear,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: isDark ? Colors.white60 : Colors.black54,
-                        ),
-                      ),
-                      trailing: Icon(
-                        Icons.add_circle_outline,
-                        color: AppColors.getBrandPrimary(context),
-                      ),
-                      onTap: () => _confirmAndAddToAlbum(context, album),
-                    );
-                  },
+                    ),
+                    AppSpacing.verticalGapSm,
+                  ],
                 ),
               ),
-              AppSpacing.verticalGapMd,
-
-              // Or Create New Album Button
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context); // Close bottom sheet
-                    context.push('/moments/add', extra: photoFile);
-                  },
-                  icon: const Icon(Icons.add),
-                  label: Text(l10n.createNewAlbum),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.getBrandPrimary(context),
-                    side: BorderSide(
-                      color: AppColors.getBrandPrimary(context),
-                      width: 1.5,
+            ),
+            if (_isUploading)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(24),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(
+                          color: AppColors.brandPrimaryLight,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'Uploading photo...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              AppSpacing.verticalGapSm,
-            ],
-          ),
+          ],
         );
       },
     );
