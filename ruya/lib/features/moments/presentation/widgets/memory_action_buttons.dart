@@ -18,7 +18,7 @@ class MemoryActionButtons extends StatelessWidget {
   });
 
   Future<void> _shareJourney(BuildContext context) async {
-    final text = '✨ Ruya Memory: ${moment.title} (${moment.monthYear})\n'
+    final text = '✨ Ruya Memory: ${moment.title} (${moment.startDate})\n'
         'Check out my Egyptian heritage journey on Ruya!';
     await Share.share(text, subject: moment.title);
   }
@@ -54,7 +54,7 @@ class MemoryActionButtons extends StatelessWidget {
                     fontWeight: pw.FontWeight.bold,
                   ),
                 ),
-                pw.Text('Date: ${moment.monthYear}',
+                pw.Text('Date: ${moment.startDate}',
                     style: const pw.TextStyle(fontSize: 14)),
                 pw.SizedBox(height: 16),
                 pw.Text(

@@ -27,12 +27,11 @@ class EditMomentPage extends StatefulWidget {
 
 class _EditMomentPageState extends State<EditMomentPage> {
   final _titleController = TextEditingController();
-  final _monthYearController = TextEditingController();
+  final _startDateController = TextEditingController();
   final _picker = ImagePicker();
 
-  // Cover image — null means keep the existing one
+  // Cover image — null means keep existing cover
   File? _newCoverImage;
-  bool _coverRemoved = false;
   bool _isPickingImage = false;
   bool _isSubmitting = false;
 
@@ -40,24 +39,21 @@ class _EditMomentPageState extends State<EditMomentPage> {
   final List<File> _addedPhotos = [];
 
   String? _titleError;
-  String? _coverError;
   String? _dateError;
 
   @override
   void initState() {
     super.initState();
     _titleController.text = widget.moment.title;
-    _monthYearController.text = widget.moment.monthYear;
+    _startDateController.text = widget.moment.startDate;
   }
 
   @override
   void dispose() {
     _titleController.dispose();
-    _monthYearController.dispose();
+    _startDateController.dispose();
     super.dispose();
   }
-
-  // ─── Helpers ─────────────────────────────────────────────────────────────
 
   Future<void> _pickCoverImage() async {
     if (_isPickingImage) return;
@@ -70,12 +66,10 @@ class _EditMomentPageState extends State<EditMomentPage> {
       if (picked != null && mounted) {
         setState(() {
           _newCoverImage = File(picked.path);
-          _coverRemoved = false;
-          _coverError = null;
         });
       }
     } catch (_) {
-      // Swallow concurrent-picker error
+      // Ignored
     } finally {
       _isPickingImage = false;
     }
@@ -92,7 +86,7 @@ class _EditMomentPageState extends State<EditMomentPage> {
         });
       }
     } catch (_) {
-      // Swallow concurrent-picker error
+      // Ignored
     } finally {
       _isPickingImage = false;
     }
@@ -130,7 +124,7 @@ class _EditMomentPageState extends State<EditMomentPage> {
     );
     if (picked != null && mounted) {
       setState(() {
-        _monthYearController.text = DateFormat('MMM yyyy').format(picked);
+        _startDateController.text = DateFormat('MMM yyyy').format(picked);
         _dateError = null;
       });
     }
@@ -139,26 +133,20 @@ class _EditMomentPageState extends State<EditMomentPage> {
   bool _validate() {
     String? titleErr;
     String? dateErr;
-    String? coverErr;
     final l10n = AppLocalizations.of(context)!;
 
     if (_titleController.text.trim().isEmpty) {
       titleErr = l10n.titleRequiredError;
     }
-    if (_monthYearController.text.trim().isEmpty) {
+    if (_startDateController.text.trim().isEmpty) {
       dateErr = l10n.dateRequiredError;
-    }
-    if (_newCoverImage == null &&
-        (_coverRemoved || widget.moment.coverImagePath.isEmpty)) {
-      coverErr = l10n.coverRequiredError;
     }
 
     setState(() {
       _titleError = titleErr;
       _dateError = dateErr;
-      _coverError = coverErr;
     });
-    return titleErr == null && dateErr == null && coverErr == null;
+    return titleErr == null && dateErr == null;
   }
 
   Future<void> _onSave() async {
@@ -174,10 +162,7 @@ class _EditMomentPageState extends State<EditMomentPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           l10n.confirmEditAlbumTitle,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : Colors.black87,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         content: Text(
           l10n.confirmEditAlbumBody,
@@ -205,61 +190,107 @@ class _EditMomentPageState extends State<EditMomentPage> {
 
     if (confirmed != true || !mounted) return;
 
+    final cubit = context.read<MomentsCubit>();
     setState(() => _isSubmitting = true);
 
-    // Merge existing photos with newly added ones
-    final newPhotos = List<MomentPhoto>.from(widget.moment.photos);
-    for (int i = 0; i < _addedPhotos.length; i++) {
-      newPhotos.add(
-        MomentPhoto(
-          id: 'p_edit_${DateTime.now().millisecondsSinceEpoch}_$i',
-          imagePath: _addedPhotos[i].path,
-          isAsset: false,
-          caption: 'Photo ${newPhotos.length + 1}',
-          dayLabel: 'DAY 1',
-        ),
-      );
-    }
-
-    final updated = widget.moment.copyWith(
+    // 1. Update text metadata (title & start date)
+    final updateSuccess = await cubit.updateAlbum(
+      widget.moment.id,
       title: _titleController.text.trim(),
-      monthYear: _monthYearController.text.trim(),
-      coverImagePath: _newCoverImage != null
-          ? _newCoverImage!.path
-          : widget.moment.coverImagePath,
-      isCoverAsset: _newCoverImage != null ? false : widget.moment.isCoverAsset,
-      photos: newPhotos,
+      startDate: _startDateController.text.trim(),
     );
 
-    final success = await context.read<MomentsCubit>().updateAlbum(updated);
+    if (!updateSuccess) {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        AppSnackBar.showError(context, 'Failed to update album details');
+      }
+      return;
+    }
 
+    int failedUploads = 0;
+
+    // 2. If new cover photo was picked, upload it as a photo
+    if (_newCoverImage != null) {
+      final ok = await cubit.addPhotoToAlbum(
+        widget.moment.id,
+        photo: _newCoverImage!,
+        caption: 'Cover update',
+        dayLabel: null,
+      );
+      if (!ok) {
+        failedUploads++;
+      }
+    }
+
+    // 3. Upload any additional photos
+    for (int i = 0; i < _addedPhotos.length; i++) {
+      final photoFile = _addedPhotos[i];
+      final ok = await cubit.addPhotoToAlbum(
+        widget.moment.id,
+        photo: photoFile,
+        caption: 'Photo ${_addedPhotos.length + 1}',
+        dayLabel: 'DAY 1',
+      );
+      if (!ok) {
+        failedUploads++;
+      }
+    }
+
+    if (!mounted) return;
     setState(() => _isSubmitting = false);
 
-    if (mounted) {
-      if (success) {
-        AppSnackBar.showSuccess(context, l10n.momentUpdatedSuccess);
-        context.pop(); // Return to MemoryDetailsPage
-      } else {
-        AppSnackBar.showError(context, 'Failed to update album');
-      }
+    if (failedUploads == 0) {
+      AppSnackBar.showSuccess(context, l10n.momentUpdatedSuccess);
+      context.pop();
+    } else {
+      AppSnackBar.showWarning(
+        context,
+        'Album updated, but $failedUploads photo(s) failed to upload',
+      );
+      context.pop();
     }
   }
 
-  // ─── Build ────────────────────────────────────────────────────────────────
-
   Widget _buildCurrentCoverPreview() {
-    return ImagePickerBox(
-      selectedImage: _newCoverImage,
-      onTap: _pickCoverImage,
-      onClear: () => setState(() {
-        _newCoverImage = null;
-        _coverRemoved = true;
-      }),
-      errorText: _coverError,
-      existingImagePath: _coverRemoved || _newCoverImage != null
-          ? null
-          : widget.moment.coverImagePath,
-      existingIsAsset: widget.moment.isCoverAsset,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ImagePickerBox(
+          selectedImage: _newCoverImage,
+          onTap: _pickCoverImage,
+          onClear: () => setState(() {
+            _newCoverImage = null;
+          }),
+          existingImageUrl: _newCoverImage != null
+              ? null
+              : widget.moment.coverImageUrl,
+        ),
+        AppSpacing.verticalGapXxs,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.info_outline_rounded,
+              size: 14,
+              color: isDark ? Colors.white60 : Colors.black54,
+            ),
+            AppSpacing.horizontalGapXxs,
+            Expanded(
+              child: Text(
+                'New cover photos are added to your album timeline.',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isDark ? Colors.white60 : Colors.black54,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -320,13 +351,13 @@ class _EditMomentPageState extends State<EditMomentPage> {
               ),
               AppSpacing.verticalGapMd,
 
-              // Month & Year
+              // Start Date
               GestureDetector(
                 onTap: _selectDate,
                 behavior: HitTestBehavior.opaque,
                 child: AbsorbPointer(
                   child: AppTextField(
-                    controller: _monthYearController,
+                    controller: _startDateController,
                     label: l10n.tripDateLabel,
                     hint: l10n.tripDateHint,
                     errorText: _dateError,

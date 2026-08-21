@@ -57,10 +57,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
       final formData = FormData.fromMap(formMap);
 
-      final response = await _dio.post(
-        '/Chat/message',
-        data: formData,
-      );
+      final response = await _dio.post('/Chat/message', data: formData);
 
       final body = response.data;
       if (body is! Map<String, dynamic>) {

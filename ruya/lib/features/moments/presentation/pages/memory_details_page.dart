@@ -12,7 +12,7 @@ import 'package:ruya/features/moments/presentation/widgets/memory_hero_header.da
 import 'package:ruya/features/moments/presentation/widgets/memory_timeline_gallery.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
-class MemoryDetailsPage extends StatelessWidget {
+class MemoryDetailsPage extends StatefulWidget {
   final String momentId;
   final MomentItem? initialMoment;
 
@@ -23,22 +23,50 @@ class MemoryDetailsPage extends StatelessWidget {
   });
 
   @override
+  State<MemoryDetailsPage> createState() => _MemoryDetailsPageState();
+}
+
+class _MemoryDetailsPageState extends State<MemoryDetailsPage> {
+  @override
+  void initState() {
+    super.initState();
+    final parsedId = int.tryParse(widget.momentId);
+    if (parsedId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.read<MomentsCubit>().loadMomentDetails(parsedId);
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final parsedId = int.tryParse(widget.momentId) ?? -1;
+
     return BlocBuilder<MomentsCubit, MomentsState>(
       builder: (context, state) {
-        // Look up either from state or initial fallback
-        final moment = state.moments.firstWhere(
-          (m) => m.id == momentId,
-          orElse: () =>
-              initialMoment ??
-              state.selectedMoment ??
-              const MomentItem(
-                id: 'unknown',
-                title: 'Memory Detail',
-                monthYear: '',
-                coverImagePath: 'assets/images/egyptian_pyramids.png',
-              ),
-        );
+        MomentItem? foundMoment;
+        for (final m in state.moments) {
+          if (m.id == parsedId) {
+            foundMoment = m;
+            break;
+          }
+        }
+
+        final moment = foundMoment ??
+            (state.selectedMoment?.id == parsedId
+                ? state.selectedMoment
+                : null) ??
+            widget.initialMoment ??
+            MomentItem(
+              id: parsedId,
+              title: 'Memory Detail',
+              startDate: '',
+              coverImageUrl: null,
+              photoCount: 0,
+              createdAt: DateTime.now(),
+            );
 
         return Scaffold(
           backgroundColor: AppColors.getBackground(context),

@@ -20,12 +20,14 @@ class MomentsState extends Equatable {
     MomentsStatus? status,
     List<MomentItem>? moments,
     MomentItem? selectedMoment,
+    bool clearSelectedMoment = false,
     String? errorMessage,
   }) {
     return MomentsState(
       status: status ?? this.status,
       moments: moments ?? this.moments,
-      selectedMoment: selectedMoment ?? this.selectedMoment,
+      selectedMoment:
+          clearSelectedMoment ? null : (selectedMoment ?? this.selectedMoment),
       errorMessage: errorMessage,
     );
   }

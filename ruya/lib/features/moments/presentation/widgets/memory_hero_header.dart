@@ -1,8 +1,11 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ruya/core/theme/app_colors.dart';
+import 'package:ruya/core/utils/app_snackbar.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 import 'package:ruya/features/moments/domain/entities/moment_item.dart';
+import 'package:ruya/features/moments/presentation/cubit/moments_cubit.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
 class MemoryHeroHeader extends StatelessWidget {
@@ -16,31 +19,87 @@ class MemoryHeroHeader extends StatelessWidget {
   });
 
   Widget _buildImage() {
-    if (moment.isCoverAsset) {
-      return Image.asset(
-        moment.coverImagePath,
+    final url = moment.coverImageUrl;
+    if (url != null && url.isNotEmpty) {
+      return Image.network(
+        url,
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey.shade900,
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.brandPrimaryLight,
+                strokeWidth: 2,
+              ),
+            ),
+          );
+        },
         errorBuilder: (context, error, stackTrace) => Container(
           color: Colors.grey.shade800,
           child: const Icon(Icons.image, size: 64, color: Colors.white54),
         ),
       );
-    } else {
-      final file = File(moment.coverImagePath);
-      if (file.existsSync()) {
-        return Image.file(
-          file,
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-        );
+    }
+    return Container(
+      color: Colors.grey.shade800,
+      child: const Icon(Icons.image, size: 64, color: Colors.white54),
+    );
+  }
+
+  Future<void> _confirmAndDeleteAlbum(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Delete Album',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to delete "${moment.title}" and all its photos? This action cannot be undone.',
+          style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              l10n.cancel,
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.errorRed,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      final success =
+          await context.read<MomentsCubit>().deleteAlbum(moment.id);
+      if (context.mounted) {
+        if (success) {
+          AppSnackBar.showSuccess(context, 'Album deleted successfully');
+          context.go('/memories');
+        } else {
+          AppSnackBar.showError(context, 'Failed to delete album');
+        }
       }
-      return Container(
-        color: Colors.grey.shade800,
-        child: const Icon(Icons.broken_image, size: 64, color: Colors.white54),
-      );
     }
   }
 
@@ -86,20 +145,39 @@ class MemoryHeroHeader extends StatelessWidget {
             ),
           ),
         ),
+        // Action Buttons: Edit and Delete
         Positioned(
           top: MediaQuery.of(context).padding.top + 8,
           right: 16,
-          child: CircleAvatar(
-            backgroundColor: Colors.black.withValues(alpha: 0.4),
-            child: IconButton(
-              tooltip: AppLocalizations.of(context)!.editAlbumTooltip,
-              icon: const Icon(
-                Icons.edit_outlined,
-                color: Colors.white,
-                size: 20,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.black.withValues(alpha: 0.4),
+                child: IconButton(
+                  tooltip: AppLocalizations.of(context)!.editAlbumTooltip,
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  onPressed: onEdit,
+                ),
               ),
-              onPressed: onEdit,
-            ),
+              AppSpacing.horizontalGapXs,
+              CircleAvatar(
+                backgroundColor: Colors.black.withValues(alpha: 0.4),
+                child: IconButton(
+                  tooltip: 'Delete Album',
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  onPressed: () => _confirmAndDeleteAlbum(context),
+                ),
+              ),
+            ],
           ),
         ),
         // Bottom Title & Pill Badge
@@ -138,9 +216,9 @@ class MemoryHeroHeader extends StatelessWidget {
                 ),
               ),
               AppSpacing.verticalGapSm,
-              // Title — Month Year
+              // Title — Start Date
               Text(
-                '${moment.title} — ${moment.monthYear}',
+                '${moment.title} — ${moment.startDate}',
                 style: const TextStyle(
                   fontFamily: 'Playfair Display',
                   fontSize: 26,

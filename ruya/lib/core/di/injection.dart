@@ -82,16 +82,18 @@ import 'package:ruya/features/chat/presentation/cubit/voice_input_cubit.dart';
 import 'package:ruya/features/chat/presentation/cubit/chat_history_cubit.dart';
 
 // Moments — Data
-import 'package:ruya/features/moments/data/datasources/moments_local_data_source.dart';
+import 'package:ruya/features/moments/data/datasources/moments_remote_data_source.dart';
 import 'package:ruya/features/moments/data/repositories/moments_repository_impl.dart';
 
 // Moments — Domain
 import 'package:ruya/features/moments/domain/repositories/moments_repository.dart';
 import 'package:ruya/features/moments/domain/usecases/get_moments_usecase.dart';
-import 'package:ruya/features/moments/domain/usecases/add_moment_usecase.dart';
+import 'package:ruya/features/moments/domain/usecases/get_moment_by_id_usecase.dart';
+import 'package:ruya/features/moments/domain/usecases/create_moment_usecase.dart';
 import 'package:ruya/features/moments/domain/usecases/add_photo_to_moment_usecase.dart';
 import 'package:ruya/features/moments/domain/usecases/delete_photo_from_moment_usecase.dart';
 import 'package:ruya/features/moments/domain/usecases/update_moment_usecase.dart';
+import 'package:ruya/features/moments/domain/usecases/delete_album_usecase.dart';
 
 // Moments — Presentation
 import 'package:ruya/features/moments/presentation/cubit/moments_cubit.dart';
@@ -266,25 +268,29 @@ Future<void> configureDependencies() async {
   // ---------------------------------------------------------------------------
   // Moments Feature
   // ---------------------------------------------------------------------------
-  getIt.registerLazySingleton<MomentsLocalDataSource>(
-    () => MomentsLocalDataSourceImpl(),
+  getIt.registerLazySingleton<MomentsRemoteDataSource>(
+    () => MomentsRemoteDataSourceImpl(getIt<Dio>()),
   );
   getIt.registerLazySingleton<MomentsRepository>(
-    () => MomentsRepositoryImpl(getIt<MomentsLocalDataSource>()),
+    () => MomentsRepositoryImpl(getIt<MomentsRemoteDataSource>()),
   );
   getIt.registerLazySingleton(() => GetMomentsUseCase(getIt()));
-  getIt.registerLazySingleton(() => AddMomentUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetMomentByIdUseCase(getIt()));
+  getIt.registerLazySingleton(() => CreateMomentUseCase(getIt()));
   getIt.registerLazySingleton(() => AddPhotoToMomentUseCase(getIt()));
   getIt.registerLazySingleton(() => DeletePhotoFromMomentUseCase(getIt()));
   getIt.registerLazySingleton(() => UpdateMomentUseCase(getIt()));
+  getIt.registerLazySingleton(() => DeleteAlbumUseCase(getIt()));
 
   // LazySingleton so moments stay persistent in memory across navigation
   getIt.registerLazySingleton(() => MomentsCubit(
         getMomentsUseCase: getIt(),
-        addMomentUseCase: getIt(),
+        getMomentByIdUseCase: getIt(),
+        createMomentUseCase: getIt(),
         addPhotoToMomentUseCase: getIt(),
         deletePhotoFromMomentUseCase: getIt(),
         updateMomentUseCase: getIt(),
+        deleteAlbumUseCase: getIt(),
       )..loadMoments());
 }
 

@@ -2,98 +2,102 @@ import 'package:ruya/features/moments/domain/entities/moment_item.dart';
 
 abstract class MomentsLocalDataSource {
   Future<List<MomentItem>> getMoments();
-  Future<MomentItem> getMomentById(String id);
+  Future<MomentItem> getMomentById(int id);
   Future<MomentItem> addMoment(MomentItem moment);
-  Future<MomentItem> addPhotoToMoment(String momentId, MomentPhoto photo);
-  Future<MomentItem> deletePhotoFromMoment(String momentId, String photoId);
+  Future<MomentItem> addPhotoToMoment(int momentId, MomentPhoto photo);
+  Future<MomentItem> deletePhotoFromMoment(int momentId, int photoId);
   Future<MomentItem> updateMoment(MomentItem updatedMoment);
 }
 
 class MomentsLocalDataSourceImpl implements MomentsLocalDataSource {
   // Prepopulated static mock memories as shown in design
   final List<MomentItem> _moments = [
-    const MomentItem(
-      id: 'luxor-2026',
+    MomentItem(
+      id: 1,
       title: 'Luxor & Valley of the Kings',
-      monthYear: 'Jan 2026',
-      coverImagePath: 'assets/images/egyptian_pyramids.png',
-      isCoverAsset: true,
+      startDate: 'Jan 2026',
+      coverImageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
+      photoCount: 3,
+      createdAt: DateTime(2026, 1, 1),
       photos: [
         MomentPhoto(
-          id: 'p1',
-          imagePath: 'assets/images/egyptian_pyramids.png',
-          isAsset: true,
+          id: 101,
+          imageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
           caption: 'Karnak',
           dayLabel: 'DAY 1',
+          createdAt: DateTime(2026, 1, 1),
         ),
         MomentPhoto(
-          id: 'p2',
-          imagePath: 'assets/images/egyptian_pyramids.png',
-          isAsset: true,
+          id: 102,
+          imageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
           caption: 'Luxor',
           dayLabel: 'DAY 2',
+          createdAt: DateTime(2026, 1, 2),
         ),
         MomentPhoto(
-          id: 'p3',
-          imagePath: 'assets/images/egyptian_pyramids.png',
-          isAsset: true,
+          id: 103,
+          imageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
           caption: 'Valley',
           dayLabel: 'DAY 2',
+          createdAt: DateTime(2026, 1, 2),
         ),
       ],
     ),
-    const MomentItem(
-      id: 'giza-2025',
+    MomentItem(
+      id: 2,
       title: 'Giza Pyramid Complex',
-      monthYear: 'Nov 2025',
-      coverImagePath: 'assets/images/egyptian_pyramids.png',
-      isCoverAsset: true,
+      startDate: 'Nov 2025',
+      coverImageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
+      photoCount: 2,
+      createdAt: DateTime(2025, 11, 1),
       photos: [
         MomentPhoto(
-          id: 'p4',
-          imagePath: 'assets/images/egyptian_pyramids.png',
-          isAsset: true,
+          id: 104,
+          imageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
           caption: 'Great Pyramid',
           dayLabel: 'DAY 1',
+          createdAt: DateTime(2025, 11, 1),
         ),
         MomentPhoto(
-          id: 'p5',
-          imagePath: 'assets/images/egyptian_pyramids.png',
-          isAsset: true,
+          id: 105,
+          imageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
           caption: 'Sphinx',
           dayLabel: 'DAY 1',
+          createdAt: DateTime(2025, 11, 1),
         ),
       ],
     ),
-    const MomentItem(
-      id: 'aswan-2025',
+    MomentItem(
+      id: 3,
       title: 'Aswan & Philae Temple',
-      monthYear: 'Sep 2025',
-      coverImagePath: 'assets/images/egyptian_pyramids.png',
-      isCoverAsset: true,
+      startDate: 'Sep 2025',
+      coverImageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
+      photoCount: 1,
+      createdAt: DateTime(2025, 9, 1),
       photos: [
         MomentPhoto(
-          id: 'p6',
-          imagePath: 'assets/images/egyptian_pyramids.png',
-          isAsset: true,
+          id: 106,
+          imageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
           caption: 'Philae',
           dayLabel: 'DAY 1',
+          createdAt: DateTime(2025, 9, 1),
         ),
       ],
     ),
-    const MomentItem(
-      id: 'cairo-2025',
+    MomentItem(
+      id: 4,
       title: 'Cairo Museum Tour',
-      monthYear: 'Jul 2025',
-      coverImagePath: 'assets/images/egyptian_pyramids.png',
-      isCoverAsset: true,
+      startDate: 'Jul 2025',
+      coverImageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
+      photoCount: 1,
+      createdAt: DateTime(2025, 7, 1),
       photos: [
         MomentPhoto(
-          id: 'p7',
-          imagePath: 'assets/images/egyptian_pyramids.png',
-          isAsset: true,
+          id: 107,
+          imageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
           caption: 'Tahrir Museum',
           dayLabel: 'DAY 1',
+          createdAt: DateTime(2025, 7, 1),
         ),
       ],
     ),
@@ -107,7 +111,7 @@ class MomentsLocalDataSourceImpl implements MomentsLocalDataSource {
   }
 
   @override
-  Future<MomentItem> getMomentById(String id) async {
+  Future<MomentItem> getMomentById(int id) async {
     final moment = _moments.firstWhere(
       (m) => m.id == id,
       orElse: () => _moments.first,
@@ -122,7 +126,7 @@ class MomentsLocalDataSourceImpl implements MomentsLocalDataSource {
   }
 
   @override
-  Future<MomentItem> addPhotoToMoment(String momentId, MomentPhoto photo) async {
+  Future<MomentItem> addPhotoToMoment(int momentId, MomentPhoto photo) async {
     final index = _moments.indexWhere((m) => m.id == momentId);
     if (index != -1) {
       final existing = _moments[index];
@@ -135,8 +139,7 @@ class MomentsLocalDataSourceImpl implements MomentsLocalDataSource {
   }
 
   @override
-  Future<MomentItem> deletePhotoFromMoment(
-      String momentId, String photoId) async {
+  Future<MomentItem> deletePhotoFromMoment(int momentId, int photoId) async {
     final index = _moments.indexWhere((m) => m.id == momentId);
     if (index != -1) {
       final existing = _moments[index];

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
@@ -15,32 +14,35 @@ class MomentCard extends StatelessWidget {
   });
 
   Widget _buildCoverImage() {
-    if (moment.isCoverAsset) {
-      return Image.asset(
-        moment.coverImagePath,
+    final url = moment.coverImageUrl;
+    if (url != null && url.isNotEmpty) {
+      return Image.network(
+        url,
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey.shade900,
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.brandPrimaryLight,
+                strokeWidth: 2,
+              ),
+            ),
+          );
+        },
         errorBuilder: (context, error, stackTrace) => Container(
-          color: Colors.grey.shade300,
-          child: const Icon(Icons.image, size: 40, color: Colors.grey),
+          color: Colors.grey.shade800,
+          child: const Icon(Icons.image, size: 40, color: Colors.white54),
         ),
       );
-    } else {
-      final file = File(moment.coverImagePath);
-      if (file.existsSync()) {
-        return Image.file(
-          file,
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-        );
-      }
-      return Container(
-        color: Colors.grey.shade300,
-        child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
-      );
     }
+    return Container(
+      color: Colors.grey.shade800,
+      child: const Icon(Icons.image, size: 40, color: Colors.white54),
+    );
   }
 
   @override
@@ -112,7 +114,7 @@ class MomentCard extends StatelessWidget {
                   ],
                 ),
               ),
-              // Bottom Details Bar (Month & Year)
+              // Bottom Details Bar (Start Date)
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
@@ -129,7 +131,7 @@ class MomentCard extends StatelessWidget {
                     AppSpacing.horizontalGapXxs,
                     Expanded(
                       child: Text(
-                        moment.monthYear,
+                        moment.startDate,
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark ? Colors.white60 : Colors.black54,
