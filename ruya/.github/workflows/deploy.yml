@@ -1,4 +1,4 @@
-name: Deploy Flutter Web v2
+name: Deploy Flutter Web
 
 on:
   push:
@@ -11,8 +11,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages-flutter-app
-  cancel-in-progress: true
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -31,7 +31,13 @@ jobs:
       - name: Create environment file
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
-        run: printf '%s' "$ENV_FILE" > .env
+        run: |
+          if [ -z "$ENV_FILE" ]; then
+            echo "ENV_FILE secret not set, creating empty .env"
+            touch .env
+          else
+            printf '%s' "$ENV_FILE" > .env
+          fi
 
       - name: Install dependencies
         run: flutter pub get
