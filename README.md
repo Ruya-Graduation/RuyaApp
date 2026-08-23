@@ -1,7 +1,8 @@
 <div align="center">
 
-  # 🏛️ RUYA (رؤية)
-  ### *AI-Powered Smart Tourism & Heritage Exploration for Ancient Egypt*
+# 🏛️ RUYA (رؤية)
+
+### _AI-Powered Smart Tourism & Heritage Exploration for Ancient Egypt_
 
   <p align="center">
     <strong>Reimagining Egypt’s timeless legacy through conversational AI, computer vision, smart ticketing, and real-time geofenced discovery.</strong>
@@ -139,19 +140,19 @@ graph TD
 
 ### 🧰 Core Dependencies & Libraries
 
-| Category | Technology / Package | Purpose |
-|:---|:---|:---|
-| **Core Framework** | `Flutter (v3.x)` & `Dart (v3.x)` | Multi-platform UI toolkit |
-| **State Management** | `flutter_bloc` / `bloc` | Predictable, reactive state handling |
-| **Architecture / DI** | `get_it` | High-performance dependency injection container |
-| **Routing** | `go_router` | Declarative URL-based navigation & deep linking |
-| **Networking** | `dio` | HTTP client with custom Auth, Language, and Normalised error interceptors |
-| **Security & Storage** | `flutter_secure_storage` & `shared_preferences` | Encrypted JWT token vault & app preferences |
-| **Localization** | `flutter_localizations` & `intl` | Official ARB-driven bilingual translation (EN / AR + RTL) |
-| **AI Voice & Speech** | `speech_to_text` & `flutter_tts` | Real-time speech recognition & audio narration |
-| **Location & GPS** | `geolocator` & `permission_handler` | High-accuracy geofencing & proximity site detection |
-| **Notifications** | `flutter_local_notifications` & `timezone` | Scheduled local notifications & exact alarm dispatch |
-| **Ticketing & Media** | `pdf`, `printing`, `screenshot`, `gal`, `share_plus` | Digital ticket rendering, PDF export, saving to gallery, and sharing |
+| Category               | Technology / Package                                 | Purpose                                                                   |
+| :--------------------- | :--------------------------------------------------- | :------------------------------------------------------------------------ |
+| **Core Framework**     | `Flutter (v3.x)` & `Dart (v3.x)`                     | Multi-platform UI toolkit                                                 |
+| **State Management**   | `flutter_bloc` / `bloc`                              | Predictable, reactive state handling                                      |
+| **Architecture / DI**  | `get_it`                                             | High-performance dependency injection container                           |
+| **Routing**            | `go_router`                                          | Declarative URL-based navigation & deep linking                           |
+| **Networking**         | `dio`                                                | HTTP client with custom Auth, Language, and Normalised error interceptors |
+| **Security & Storage** | `flutter_secure_storage` & `shared_preferences`      | Encrypted JWT token vault & app preferences                               |
+| **Localization**       | `flutter_localizations` & `intl`                     | Official ARB-driven bilingual translation (EN / AR + RTL)                 |
+| **AI Voice & Speech**  | `speech_to_text` & `flutter_tts`                     | Real-time speech recognition & audio narration                            |
+| **Location & GPS**     | `geolocator` & `permission_handler`                  | High-accuracy geofencing & proximity site detection                       |
+| **Notifications**      | `flutter_local_notifications` & `timezone`           | Scheduled local notifications & exact alarm dispatch                      |
+| **Ticketing & Media**  | `pdf`, `printing`, `screenshot`, `gal`, `share_plus` | Digital ticket rendering, PDF export, saving to gallery, and sharing      |
 
 ---
 
@@ -195,25 +196,31 @@ ruya/
 ## ⚙️ Getting Started
 
 ### 📋 Prerequisites
+
 Ensure you have the following installed on your development machine:
+
 - **Flutter SDK**: `>= 3.12.1` ([Install Guide](https://docs.flutter.dev/get-started/install))
 - **Dart SDK**: `>= 3.12.1`
 - **Android Studio / Xcode** (for mobile emulators & native toolchains)
 - **Java JDK**: Version 17
 
 ### 📥 1. Clone the Repository
+
 ```bash
 git clone https://github.com/Ruya-Graduation/RuyaMobile.git
 cd RuyaMobile/ruya
 ```
 
 ### 🔑 2. Environment Configuration
+
 Create a `.env` file in the `ruya/` directory (or copy from `.env.example`):
+
 ```env
 BASE_URL=https://ruya.runasp.net
 ```
 
 ### 📦 3. Install Dependencies & Generate Code
+
 ```bash
 # Fetch pub packages
 flutter pub get
@@ -223,12 +230,15 @@ flutter gen-l10n
 ```
 
 ### 🧪 4. Run Automated Tests
+
 Execute the entire test suite to verify project health:
+
 ```bash
 flutter test
 ```
 
 ### 📱 5. Launch the Application
+
 ```bash
 # Run on connected Android / iOS device or Emulator
 flutter run
@@ -238,9 +248,11 @@ flutter run -d chrome
 ```
 
 ### 📦 6. Build Standalone Release APK
+
 ```bash
 flutter build apk --release
 ```
+
 The output APK will be available at:
 `build/app/outputs/flutter-apk/app-release.apk`
 
@@ -249,9 +261,10 @@ The output APK will be available at:
 ## 🧪 Quality Assurance & Testing
 
 Ruya is tested with unit and widget test suites covering:
-* **State Management**: Complete state transition verification across all Cubits (`ThemeCubit`, `LocaleCubit`, `ChatCubit`, `HomeCubit`, `SiteDetailsCubit`, `VoiceInputCubit`).
-* **Network & Interceptors**: Dio language injection, auth token headers, and ASP.NET problem details normalization.
-* **Domain & Data**: Offline booking storage, repository error mapping, and model serialization.
+
+- **State Management**: Complete state transition verification across all Cubits (`ThemeCubit`, `LocaleCubit`, `ChatCubit`, `HomeCubit`, `SiteDetailsCubit`, `VoiceInputCubit`).
+- **Network & Interceptors**: Dio language injection, auth token headers, and ASP.NET problem details normalization.
+- **Domain & Data**: Offline booking storage, repository error mapping, and model serialization.
 
 ```bash
 00:04 +50: All tests passed!
@@ -261,19 +274,19 @@ Ruya is tested with unit and widget test suites covering:
 
 ## 🛡️ Security & Reliability
 
-* **Zero-Leak Token Vault**: JWT tokens are encrypted at rest via hardware-backed keystore (`flutter_secure_storage`).
-* **Resilient Interceptors**: HTTP headers automatically adapt to runtime locale changes (`Accept-Language: ar|en`).
-* **Offline Synchronization**: Bookings and travel memories are preserved locally even without internet connectivity.
+- **Zero-Leak Token Vault**: JWT tokens are encrypted at rest via hardware-backed keystore (`flutter_secure_storage`).
+- **Resilient Interceptors**: HTTP headers automatically adapt to runtime locale changes (`Accept-Language: ar|en`).
+- **Offline Synchronization**: Bookings and travel memories are preserved locally even without internet connectivity.
 
 ---
 
 ## 👥 Authors & Acknowledgments
 
-Developed with ❤️ as an **ITI Graduation Project (Intake 44)**.
+Developed with ❤️ as an **ITI Graduation Project (Intake 46)**.
 
-* **Project Name**: Ruya (رؤية)
-* **Organization**: Information Technology Institute (ITI)
-* **Target Industry**: Tourism, Cultural Heritage & Artificial Intelligence
+- **Project Name**: Ruya (رؤية)
+- **Organization**: Information Technology Institute (ITI)
+- **Target Industry**: Tourism, Cultural Heritage & Artificial Intelligence
 
 ---
 

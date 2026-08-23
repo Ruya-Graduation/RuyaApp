@@ -41,7 +41,8 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
   void _initDefaultReminderTime() {
     final now = DateTime.now();
     final visitDate = widget.booking.visitDate;
-    final isToday = visitDate.year == now.year &&
+    final isToday =
+        visitDate.year == now.year &&
         visitDate.month == now.month &&
         visitDate.day == now.day;
 
@@ -50,7 +51,10 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
       if (nextHour < 24) {
         _reminderTime = TimeOfDay(hour: nextHour, minute: 0);
       } else {
-        _reminderTime = TimeOfDay(hour: now.hour, minute: (now.minute + 15) % 60);
+        _reminderTime = TimeOfDay(
+          hour: now.hour,
+          minute: (now.minute + 15) % 60,
+        );
       }
     } else {
       _reminderTime = const TimeOfDay(hour: 8, minute: 0);
@@ -82,37 +86,9 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
 
   Future<void> _handleReminderToggle(bool enabled) async {
     final l10n = AppLocalizations.of(context)!;
-    if (enabled) {
-      var scheduledDateTime = DateTime(
-        widget.booking.visitDate.year,
-        widget.booking.visitDate.month,
-        widget.booking.visitDate.day,
-        _reminderTime.hour,
-        _reminderTime.minute,
-      );
-
-      // If default/current reminder time is in the past, prompt time picker
-      if (scheduledDateTime.isBefore(DateTime.now())) {
-        final now = DateTime.now();
-        final initial = widget.booking.visitDate.day == now.day &&
-                widget.booking.visitDate.month == now.month &&
-                widget.booking.visitDate.year == now.year
-            ? TimeOfDay.fromDateTime(now.add(const Duration(minutes: 30)))
-            : _reminderTime;
-
-        final picked = await showTimePicker(
-          context: context,
-          initialTime: initial,
-          helpText: l10n.pickAFutureTime,
-        );
-
-        if (picked == null || !mounted) {
-          setState(() => _reminderEnabled = false);
-          return;
-        }
-
-        _reminderTime = picked;
-        scheduledDateTime = DateTime(
+    try {
+      if (enabled) {
+        var scheduledDateTime = DateTime(
           widget.booking.visitDate.year,
           widget.booking.visitDate.month,
           widget.booking.visitDate.day,
@@ -120,109 +96,168 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
           _reminderTime.minute,
         );
 
+        // If default/current reminder time is in the past, prompt time picker
         if (scheduledDateTime.isBefore(DateTime.now())) {
-          if (mounted) {
-            AppSnackBar.showError(context, l10n.pickAFutureTime);
+          final now = DateTime.now();
+          final initial =
+              widget.booking.visitDate.day == now.day &&
+                  widget.booking.visitDate.month == now.month &&
+                  widget.booking.visitDate.year == now.year
+              ? TimeOfDay.fromDateTime(now.add(const Duration(minutes: 30)))
+              : _reminderTime;
+
+          final picked = await showTimePicker(
+            context: context,
+            initialTime: initial,
+            helpText: l10n.pickAFutureTime,
+          );
+
+          if (picked == null || !mounted) {
             setState(() => _reminderEnabled = false);
+            return;
+          }
+
+          _reminderTime = picked;
+          scheduledDateTime = DateTime(
+            widget.booking.visitDate.year,
+            widget.booking.visitDate.month,
+            widget.booking.visitDate.day,
+            _reminderTime.hour,
+            _reminderTime.minute,
+          );
+
+          if (scheduledDateTime.isBefore(DateTime.now())) {
+            if (mounted) {
+              AppSnackBar.showError(context, l10n.pickAFutureTime);
+              setState(() => _reminderEnabled = false);
+            }
+            return;
+          }
+        }
+
+        final hasPermission =
+            await getIt<NotificationService>().requestPermission();
+        if (!hasPermission) {
+          if (mounted) {
+            setState(() => _reminderEnabled = false);
+            AppSnackBar.showError(
+              context,
+              'Notification permission denied. Please allow notifications in settings.',
+            );
           }
           return;
         }
+
+        await getIt<NotificationService>().scheduleBookingReminder(
+          notificationId: _deterministicNotifId,
+          title: l10n.bookingReminderNotifTitle,
+          body: l10n.bookingReminderNotifBody(
+            widget.booking.siteName,
+            widget.booking.referenceNumber,
+          ),
+          scheduledDateTime: scheduledDateTime,
+        );
+
+        final updated =
+            (_localModel ??
+                    LocalBookingModel(
+                      referenceNumber: widget.booking.referenceNumber,
+                      siteId: widget.booking.siteId,
+                      siteName: widget.booking.siteName,
+                      visitDate: widget.booking.visitDate,
+                      timeSlot: widget.booking.timeSlot,
+                      ticketCount: widget.booking.ticketCount,
+                      pricePerTicket: widget.booking.pricePerTicket,
+                      currency: widget.booking.currency,
+                      createdAt: widget.booking.createdAt,
+                    ))
+                .copyWith(
+                  reminderEnabled: true,
+                  reminderDateTime: scheduledDateTime,
+                  notificationId: _deterministicNotifId,
+                );
+
+        await getIt<SaveBookingUseCase>()(updated);
+
+        if (mounted) {
+          setState(() {
+            _reminderEnabled = true;
+            _localModel = updated;
+          });
+          AppSnackBar.showSuccess(context, l10n.reminderScheduled);
+        }
+      } else {
+        await getIt<NotificationService>().cancelReminder(_deterministicNotifId);
+
+        final updated =
+            (_localModel ??
+                    LocalBookingModel(
+                      referenceNumber: widget.booking.referenceNumber,
+                      siteId: widget.booking.siteId,
+                      siteName: widget.booking.siteName,
+                      visitDate: widget.booking.visitDate,
+                      timeSlot: widget.booking.timeSlot,
+                      ticketCount: widget.booking.ticketCount,
+                      pricePerTicket: widget.booking.pricePerTicket,
+                      currency: widget.booking.currency,
+                      createdAt: widget.booking.createdAt,
+                    ))
+                .copyWith(
+                  reminderEnabled: false,
+                  clearReminderDateTime: true,
+                  clearNotificationId: true,
+                );
+        await getIt<SaveBookingUseCase>()(updated);
+        _localModel = updated;
+
+        if (mounted) {
+          setState(() => _reminderEnabled = false);
+          AppSnackBar.showSuccess(context, l10n.reminderCancelled);
+        }
       }
-
-      await getIt<NotificationService>().requestPermission();
-
-      await getIt<NotificationService>().scheduleBookingReminder(
-        notificationId: _deterministicNotifId,
-        title: l10n.bookingReminderNotifTitle,
-        body: l10n.bookingReminderNotifBody(
-          widget.booking.siteName,
-          widget.booking.referenceNumber,
-        ),
-        scheduledDateTime: scheduledDateTime,
-      );
-
-      final updated = (_localModel ??
-              LocalBookingModel(
-                referenceNumber: widget.booking.referenceNumber,
-                siteId: widget.booking.siteId,
-                siteName: widget.booking.siteName,
-                visitDate: widget.booking.visitDate,
-                timeSlot: widget.booking.timeSlot,
-                ticketCount: widget.booking.ticketCount,
-                pricePerTicket: widget.booking.pricePerTicket,
-                currency: widget.booking.currency,
-                createdAt: widget.booking.createdAt,
-              ))
-          .copyWith(
-        reminderEnabled: true,
-        reminderDateTime: scheduledDateTime,
-        notificationId: _deterministicNotifId,
-      );
-
-      await getIt<SaveBookingUseCase>()(updated);
-
+    } catch (e, stackTrace) {
+      debugPrint('[BookingConfirmationScreen] Reminder error: $e\n$stackTrace');
       if (mounted) {
-        setState(() {
-          _reminderEnabled = true;
-          _localModel = updated;
-        });
-        AppSnackBar.showSuccess(context, l10n.reminderScheduled);
-      }
-    } else {
-      await getIt<NotificationService>().cancelReminder(_deterministicNotifId);
-
-      final updated = (_localModel ??
-              LocalBookingModel(
-                referenceNumber: widget.booking.referenceNumber,
-                siteId: widget.booking.siteId,
-                siteName: widget.booking.siteName,
-                visitDate: widget.booking.visitDate,
-                timeSlot: widget.booking.timeSlot,
-                ticketCount: widget.booking.ticketCount,
-                pricePerTicket: widget.booking.pricePerTicket,
-                currency: widget.booking.currency,
-                createdAt: widget.booking.createdAt,
-              ))
-          .copyWith(
-        reminderEnabled: false,
-        clearReminderDateTime: true,
-        clearNotificationId: true,
-      );
-      await getIt<SaveBookingUseCase>()(updated);
-      _localModel = updated;
-
-      if (mounted) {
-        setState(() => _reminderEnabled = false);
-        AppSnackBar.showSuccess(context, l10n.reminderCancelled);
+        setState(() => _reminderEnabled = _localModel?.reminderEnabled ?? false);
+        AppSnackBar.showError(context, 'Could not set reminder: $e');
       }
     }
   }
 
   Future<void> _pickReminderTime() async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: _reminderTime,
-    );
-    if (picked != null && mounted) {
-      final scheduledDateTime = DateTime(
-        widget.booking.visitDate.year,
-        widget.booking.visitDate.month,
-        widget.booking.visitDate.day,
-        picked.hour,
-        picked.minute,
+    try {
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: _reminderTime,
       );
-
-      if (scheduledDateTime.isBefore(DateTime.now())) {
-        AppSnackBar.showError(
-          context,
-          AppLocalizations.of(context)!.pickAFutureTime,
+      if (picked != null && mounted) {
+        final scheduledDateTime = DateTime(
+          widget.booking.visitDate.year,
+          widget.booking.visitDate.month,
+          widget.booking.visitDate.day,
+          picked.hour,
+          picked.minute,
         );
-        return;
-      }
 
-      setState(() => _reminderTime = picked);
-      if (_reminderEnabled) {
-        await _handleReminderToggle(true);
+        if (scheduledDateTime.isBefore(DateTime.now())) {
+          AppSnackBar.showError(
+            context,
+            AppLocalizations.of(context)!.pickAFutureTime,
+          );
+          return;
+        }
+
+        setState(() => _reminderTime = picked);
+        if (_reminderEnabled) {
+          await _handleReminderToggle(true);
+        }
+      }
+    } catch (e, stackTrace) {
+      debugPrint(
+        '[BookingConfirmationScreen] Pick reminder error: $e\n$stackTrace',
+      );
+      if (mounted) {
+        AppSnackBar.showError(context, 'Could not update reminder: $e');
       }
     }
   }
@@ -232,8 +267,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
     setState(() => _isExporting = true);
     final l10n = AppLocalizations.of(context)!;
 
-    final success =
-        await _exportService.saveOrShareTicketAsPdf(widget.booking);
+    final success = await _exportService.saveOrShareTicketAsPdf(widget.booking);
     if (!mounted) return;
 
     setState(() => _isExporting = false);
@@ -306,9 +340,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.getSurface(context),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: AppColors.getDivider(context),
-                  ),
+                  border: Border.all(color: AppColors.getDivider(context)),
                 ),
                 child: Column(
                   children: [
@@ -317,8 +349,9 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: AppColors.getBrandPrimary(context)
-                                .withValues(alpha: 0.1),
+                            color: AppColors.getBrandPrimary(
+                              context,
+                            ).withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -357,18 +390,14 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                       ],
                     ),
                     if (_reminderEnabled) ...[
-                      Divider(
-                        height: 24,
-                        color: AppColors.getDivider(context),
-                      ),
+                      Divider(height: 24, color: AppColors.getDivider(context)),
                       InkWell(
                         onTap: _pickReminderTime,
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 l10n.reminderTime,

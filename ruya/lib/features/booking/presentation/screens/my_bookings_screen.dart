@@ -84,122 +84,146 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
 
   Future<void> _handleToggleReminder(LocalBookingModel booking) async {
     final l10n = AppLocalizations.of(context)!;
-    if (booking.reminderEnabled) {
-      final action = await showModalBottomSheet<String>(
-        context: context,
-        backgroundColor: AppColors.getSurface(context),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        builder: (ctx) => SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: Icon(
-                    Icons.access_time,
-                    color: AppColors.getBrandPrimary(ctx),
+    try {
+      if (booking.reminderEnabled) {
+        final action = await showModalBottomSheet<String>(
+          context: context,
+          backgroundColor: AppColors.getSurface(context),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          builder: (ctx) => SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    leading: Icon(
+                      Icons.access_time,
+                      color: AppColors.getBrandPrimary(ctx),
+                    ),
+                    title: Text(l10n.reminderTime),
+                    subtitle: Text(
+                      booking.reminderDateTime != null
+                          ? DateFormat.jm().format(booking.reminderDateTime!)
+                          : '',
+                    ),
+                    trailing: const Icon(Icons.edit, size: 18),
+                    onTap: () => Navigator.pop(ctx, 'edit'),
                   ),
-                  title: Text(l10n.reminderTime),
-                  subtitle: Text(
-                    booking.reminderDateTime != null
-                        ? DateFormat.jm().format(booking.reminderDateTime!)
-                        : '',
+                  ListTile(
+                    leading: const Icon(
+                      Icons.notifications_off_outlined,
+                      color: AppColors.errorRed,
+                    ),
+                    title: Text(
+                      l10n.reminderCancelled,
+                      style: const TextStyle(color: AppColors.errorRed),
+                    ),
+                    onTap: () => Navigator.pop(ctx, 'cancel'),
                   ),
-                  trailing: const Icon(Icons.edit, size: 18),
-                  onTap: () => Navigator.pop(ctx, 'edit'),
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.notifications_off_outlined,
-                    color: AppColors.errorRed,
-                  ),
-                  title: Text(
-                    l10n.reminderCancelled,
-                    style: const TextStyle(color: AppColors.errorRed),
-                  ),
-                  onTap: () => Navigator.pop(ctx, 'cancel'),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      if (action == 'cancel') {
-        await getIt<CancelBookingReminderUseCase>()(booking);
-        if (mounted) {
-          AppSnackBar.showSuccess(context, l10n.reminderCancelled);
-          _loadBookings();
+        if (action == 'cancel') {
+          await getIt<CancelBookingReminderUseCase>()(booking);
+          if (mounted) {
+            AppSnackBar.showSuccess(context, l10n.reminderCancelled);
+            _loadBookings();
+          }
+        } else if (action == 'edit') {
+          await _pickAndSaveReminder(booking);
         }
-      } else if (action == 'edit') {
+      } else {
         await _pickAndSaveReminder(booking);
       }
-    } else {
-      await _pickAndSaveReminder(booking);
+    } catch (e, stackTrace) {
+      debugPrint('[MyBookingsScreen] Toggle reminder error: $e\n$stackTrace');
+      if (mounted) {
+        AppSnackBar.showError(context, 'Could not update reminder: $e');
+      }
     }
   }
 
   Future<void> _pickAndSaveReminder(LocalBookingModel booking) async {
     final l10n = AppLocalizations.of(context)!;
-    final now = DateTime.now();
-    final isToday = booking.visitDate.year == now.year &&
-        booking.visitDate.month == now.month &&
-        booking.visitDate.day == now.day;
+    try {
+      final now = DateTime.now();
+      final isToday = booking.visitDate.year == now.year &&
+          booking.visitDate.month == now.month &&
+          booking.visitDate.day == now.day;
 
-    final initialTime = booking.reminderDateTime != null
-        ? TimeOfDay.fromDateTime(booking.reminderDateTime!)
-        : (isToday
-            ? TimeOfDay.fromDateTime(now.add(const Duration(minutes: 30)))
-            : const TimeOfDay(hour: 8, minute: 0));
+      final initialTime = booking.reminderDateTime != null
+          ? TimeOfDay.fromDateTime(booking.reminderDateTime!)
+          : (isToday
+              ? TimeOfDay.fromDateTime(now.add(const Duration(minutes: 30)))
+              : const TimeOfDay(hour: 8, minute: 0));
 
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: initialTime,
-      helpText: l10n.pickAFutureTime,
-    );
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: initialTime,
+        helpText: l10n.pickAFutureTime,
+      );
 
-    if (picked == null || !mounted) return;
+      if (picked == null || !mounted) return;
 
-    final scheduled = DateTime(
-      booking.visitDate.year,
-      booking.visitDate.month,
-      booking.visitDate.day,
-      picked.hour,
-      picked.minute,
-    );
+      final scheduled = DateTime(
+        booking.visitDate.year,
+        booking.visitDate.month,
+        booking.visitDate.day,
+        picked.hour,
+        picked.minute,
+      );
 
-    if (scheduled.isBefore(DateTime.now())) {
-      AppSnackBar.showError(context, l10n.pickAFutureTime);
-      return;
-    }
+      if (scheduled.isBefore(DateTime.now())) {
+        AppSnackBar.showError(context, l10n.pickAFutureTime);
+        return;
+      }
 
-    await getIt<NotificationService>().requestPermission();
+      final hasPermission =
+          await getIt<NotificationService>().requestPermission();
+      if (!hasPermission) {
+        if (mounted) {
+          AppSnackBar.showError(
+            context,
+            'Notification permission denied. Please allow notifications in settings.',
+          );
+        }
+        return;
+      }
 
-    final notifId = booking.referenceNumber.hashCode & 0x7FFFFFFF;
-    await getIt<NotificationService>().scheduleBookingReminder(
-      notificationId: notifId,
-      title: l10n.bookingReminderNotifTitle,
-      body: l10n.bookingReminderNotifBody(
-        booking.siteName,
-        booking.referenceNumber,
-      ),
-      scheduledDateTime: scheduled,
-    );
+      final notifId = booking.referenceNumber.hashCode & 0x7FFFFFFF;
+      await getIt<NotificationService>().scheduleBookingReminder(
+        notificationId: notifId,
+        title: l10n.bookingReminderNotifTitle,
+        body: l10n.bookingReminderNotifBody(
+          booking.siteName,
+          booking.referenceNumber,
+        ),
+        scheduledDateTime: scheduled,
+      );
 
-    final updated = booking.copyWith(
-      reminderEnabled: true,
-      reminderDateTime: scheduled,
-      notificationId: notifId,
-    );
+      final updated = booking.copyWith(
+        reminderEnabled: true,
+        reminderDateTime: scheduled,
+        notificationId: notifId,
+      );
 
-    await getIt<SaveBookingUseCase>()(updated);
+      await getIt<SaveBookingUseCase>()(updated);
 
-    if (mounted) {
-      AppSnackBar.showSuccess(context, l10n.reminderScheduled);
-      _loadBookings();
+      if (mounted) {
+        AppSnackBar.showSuccess(context, l10n.reminderScheduled);
+        _loadBookings();
+      }
+    } catch (e, stackTrace) {
+      debugPrint('[MyBookingsScreen] Pick/save reminder error: $e\n$stackTrace');
+      if (mounted) {
+        AppSnackBar.showError(context, 'Could not set reminder: $e');
+      }
     }
   }
 
