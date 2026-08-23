@@ -1,8 +1,6 @@
 name: Deploy Flutter Web
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -12,7 +10,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -28,34 +26,45 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
       - name: Create environment file
+        working-directory: ruya
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
           if [ -z "$ENV_FILE" ]; then
-            echo "ENV_FILE secret not set, creating empty .env"
-            touch .env
-          else
-            printf '%s' "$ENV_FILE" > .env
+            echo "ERROR: ENV_FILE secret is not set."
+            exit 1
           fi
 
+          printf '%s' "$ENV_FILE" > .env
+
       - name: Install dependencies
+        working-directory: ruya
         run: flutter pub get
 
-      - name: Build Web app
-        run: flutter build web --release --base-href "/${{ github.event.repository.name }}/"
+      - name: Build Flutter Web
+        working-directory: ruya
+        run: |
+          flutter build web \
+            --release \
+            --base-href "/${{ github.event.repository.name }}/"
 
-      - name: Support client-side routes
+      - name: Create 404 fallback
+        working-directory: ruya
         run: cp build/web/index.html build/web/404.html
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: build/web
+          path: ruya/build/web
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
