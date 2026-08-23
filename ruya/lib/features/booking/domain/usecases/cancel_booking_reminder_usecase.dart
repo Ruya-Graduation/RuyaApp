@@ -17,8 +17,8 @@ class CancelBookingReminderUseCase {
     }
     final updated = booking.copyWith(
       reminderEnabled: false,
-      reminderDateTime: null,
-      notificationId: null,
+      clearReminderDateTime: true,
+      clearNotificationId: true,
     );
     await _localDataSource.update(updated);
   }

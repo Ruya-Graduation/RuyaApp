@@ -102,8 +102,19 @@ class NotificationService {
       return;
     }
 
-    final scheduledTzDateTime =
-        tz.TZDateTime.from(scheduledDateTime, tz.local);
+    tz.TZDateTime scheduledTzDateTime;
+    try {
+      scheduledTzDateTime = tz.TZDateTime(
+        tz.local,
+        scheduledDateTime.year,
+        scheduledDateTime.month,
+        scheduledDateTime.day,
+        scheduledDateTime.hour,
+        scheduledDateTime.minute,
+      );
+    } catch (e) {
+      scheduledTzDateTime = tz.TZDateTime.from(scheduledDateTime, tz.local);
+    }
 
     const androidDetails = AndroidNotificationDetails(
       _channelId,

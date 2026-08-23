@@ -47,6 +47,9 @@ class LocalBookingModel extends Equatable {
     bool? reminderEnabled,
     DateTime? reminderDateTime,
     int? notificationId,
+    bool clearReminderDateTime = false,
+    bool clearNotificationId = false,
+    bool clearBackendReservationId = false,
   }) {
     return LocalBookingModel(
       referenceNumber: referenceNumber ?? this.referenceNumber,
@@ -58,10 +61,16 @@ class LocalBookingModel extends Equatable {
       pricePerTicket: pricePerTicket ?? this.pricePerTicket,
       currency: currency ?? this.currency,
       createdAt: createdAt ?? this.createdAt,
-      backendReservationId: backendReservationId ?? this.backendReservationId,
+      backendReservationId: clearBackendReservationId
+          ? null
+          : (backendReservationId ?? this.backendReservationId),
       reminderEnabled: reminderEnabled ?? this.reminderEnabled,
-      reminderDateTime: reminderDateTime ?? this.reminderDateTime,
-      notificationId: notificationId ?? this.notificationId,
+      reminderDateTime: clearReminderDateTime
+          ? null
+          : (reminderDateTime ?? this.reminderDateTime),
+      notificationId: clearNotificationId
+          ? null
+          : (notificationId ?? this.notificationId),
     );
   }
 
