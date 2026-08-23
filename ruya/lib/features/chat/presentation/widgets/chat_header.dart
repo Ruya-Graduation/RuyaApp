@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/widgets/app_language_toggle.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
@@ -12,7 +13,7 @@ class ChatHeader extends StatelessWidget {
 
     return Row(
       children: [
-        _ChatAiAvatar(),
+        const _ChatAiAvatar(),
         const SizedBox(width: 12),
         Expanded(
           child: _ChatHeaderTitleSection(l10n: l10n, isDark: isDark),
@@ -25,8 +26,12 @@ class ChatHeader extends StatelessWidget {
 
 // ── Sub-widget: Avatar circle with golden gradient ──────────────────────────
 class _ChatAiAvatar extends StatelessWidget {
+  const _ChatAiAvatar();
+
   @override
   Widget build(BuildContext context) {
+    final brandColor = AppColors.getBrandPrimary(context);
+
     return Container(
       width: 44,
       height: 44,
@@ -38,12 +43,12 @@ class _ChatAiAvatar extends StatelessWidget {
           colors: [Color(0xFFD4A373), Color(0xFF8B6914)],
         ),
         border: Border.all(
-          color: const Color(0xFFD4A373).withValues(alpha: 0.6),
+          color: brandColor.withValues(alpha: 0.6),
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFD4A373).withValues(alpha: 0.3),
+            color: brandColor.withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

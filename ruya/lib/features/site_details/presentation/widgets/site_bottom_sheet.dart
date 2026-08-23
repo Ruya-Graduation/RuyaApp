@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/features/site_details/domain/entities/site_detail_entity.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
@@ -11,11 +12,10 @@ class SiteBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.all(20),
-      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+      color: AppColors.getSurface(context),
       child: SafeArea(
         child: SizedBox(
           width: double.infinity,
@@ -25,7 +25,7 @@ class SiteBottomSheet extends StatelessWidget {
               context.push('/ticket-selection', extra: site);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFD4A373),
+              backgroundColor: AppColors.getBrandPrimary(context),
               foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(

@@ -17,6 +17,7 @@ class HomeFilterChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final brandColor = AppColors.getBrandPrimary(context);
 
     return SizedBox(
       height: 40,
@@ -29,17 +30,17 @@ class HomeFilterChips extends StatelessWidget {
           return GestureDetector(
             onTap: () => onSelected(index),
             child: Container(
-              margin: const EdgeInsets.only(right: 8),
+              margin: const EdgeInsetsDirectional.only(end: 8),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.brandPrimaryLight
+                    ? brandColor
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: isSelected
-                      ? AppColors.brandPrimaryLight
-                      : Colors.grey.withValues(alpha: 0.3),
+                      ? brandColor
+                      : AppColors.getDivider(context),
                 ),
               ),
               child: Text(

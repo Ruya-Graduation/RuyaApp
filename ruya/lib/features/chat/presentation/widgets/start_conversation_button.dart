@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 
 /// The "Start New Conversation" button at the bottom of Chat History.
 class StartConversationButton extends StatelessWidget {
@@ -13,15 +14,13 @@ class StartConversationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFAF6F0),
+        color: AppColors.getSurface(context),
         border: Border(
           top: BorderSide(
-            color: isDark ? Colors.white10 : Colors.black12,
+            color: AppColors.getDivider(context),
           ),
         ),
       ),
@@ -38,8 +37,8 @@ class StartConversationButton extends StatelessWidget {
             ),
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFD4A373),
-            foregroundColor: Colors.black87,
+            backgroundColor: AppColors.getBrandPrimary(context),
+            foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),

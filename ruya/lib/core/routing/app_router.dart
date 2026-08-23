@@ -11,6 +11,7 @@ import 'package:ruya/features/profile/presentation/screens/profile_screen.dart';
 import 'package:ruya/features/site_details/presentation/screens/site_details_screen.dart';
 import 'package:ruya/features/booking/presentation/screens/ticket_selection_screen.dart';
 import 'package:ruya/features/booking/presentation/screens/booking_confirmation_screen.dart';
+import 'package:ruya/features/booking/presentation/screens/my_bookings_screen.dart';
 import 'package:ruya/features/auth/presentation/cubit/forget_password_cubit.dart';
 import 'package:ruya/features/auth/presentation/pages/auth_page.dart';
 import 'package:ruya/features/auth/presentation/pages/forget_password_email_page.dart';
@@ -74,6 +75,10 @@ class AppRouter {
           final booking = state.extra as BookingEntity;
           return BookingConfirmationScreen(booking: booking);
         },
+      ),
+      GoRoute(
+        path: '/my-bookings',
+        builder: (context, state) => const MyBookingsScreen(),
       ),
       GoRoute(
         path: '/ai-chat',

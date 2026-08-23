@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ruya/core/di/injection.dart';
+import 'package:ruya/core/theme/app_colors.dart';
+import 'package:ruya/features/booking/data/datasources/booking_remote_data_source.dart';
+import 'package:ruya/features/booking/data/models/local_booking_model.dart';
 import 'package:ruya/features/booking/domain/usecases/create_local_booking_usecase.dart';
+import 'package:ruya/features/booking/domain/usecases/save_booking_usecase.dart';
 import 'package:ruya/features/site_details/domain/entities/site_detail_entity.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
@@ -29,10 +33,10 @@ class TicketSelectionBottomSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getSurface(context),
         border: Border(
           top: BorderSide(
-            color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+            color: AppColors.getDivider(context),
           ),
         ),
       ),
@@ -45,7 +49,10 @@ class TicketSelectionBottomSheet extends StatelessWidget {
               children: [
                 Text(
                   '${l10n.total} ($ticketCount ${l10n.tickets})',
-                  style: const TextStyle(color: Colors.grey, fontSize: 16),
+                  style: TextStyle(
+                    color: AppColors.getMutedText(context),
+                    fontSize: 16,
+                  ),
                 ),
                 Text(
                   '${site.ticketCurrency} ${totalPrice.toStringAsFixed(0)}',
@@ -63,18 +70,51 @@ class TicketSelectionBottomSheet extends StatelessWidget {
               height: 56,
               child: ElevatedButton(
                 onPressed: isButtonEnabled
-                    ? () {
+                    ? () async {
                         final booking = getIt<CreateLocalBookingUseCase>()(
                           site: site,
                           visitDate: selectedDate!,
                           timeSlot: '08:00 AM Entry',
                           ticketCount: ticketCount,
                         );
-                        context.push('/booking-confirmation', extra: booking);
+
+                        // 1. Persist local booking
+                        final initialLocalModel = LocalBookingModel(
+                          referenceNumber: booking.referenceNumber,
+                          siteId: booking.siteId,
+                          siteName: booking.siteName,
+                          visitDate: booking.visitDate,
+                          timeSlot: booking.timeSlot,
+                          ticketCount: booking.ticketCount,
+                          pricePerTicket: booking.pricePerTicket,
+                          currency: booking.currency,
+                          createdAt: booking.createdAt,
+                        );
+                        await getIt<SaveBookingUseCase>()(initialLocalModel);
+
+                        // 2. Non-blocking best-effort backend reservation sync
+                        getIt<BookingRemoteDataSource>()
+                            .createReservation(
+                              museumName: site.name,
+                              reservationDate: selectedDate!,
+                            )
+                            .then((backendId) {
+                              if (backendId != null) {
+                                final updated = initialLocalModel.copyWith(
+                                  backendReservationId: backendId,
+                                );
+                                getIt<SaveBookingUseCase>()(updated);
+                              }
+                            });
+
+                        // 3. Navigate to confirmation
+                        if (context.mounted) {
+                          context.push('/booking-confirmation', extra: booking);
+                        }
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFD4A373),
+                  backgroundColor: AppColors.getBrandPrimary(context),
                   foregroundColor: Colors.white,
                   disabledBackgroundColor:
                       isDark ? Colors.grey[800] : Colors.grey[300],

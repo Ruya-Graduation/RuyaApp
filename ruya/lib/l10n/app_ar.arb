@@ -195,6 +195,41 @@
   "momentUpdatedSuccess": "تم تحديث ألبوم الذكريات بنجاح!",
   "confirmEditAlbumTitle": "حفظ تغييرات الألبوم؟",
   "confirmEditAlbumBody": "هل أنت متأكد أنك تريد حفظ التغييرات على هذا الألبوم؟",
-  "editAlbumTooltip": "تعديل الألبوم"
+  "editAlbumTooltip": "تعديل الألبوم",
+  "darkMode": "الوضع الليلي",
+  "setReminder": "تعيين تذكير",
+  "remindMeOnVisitDay": "تذكيري في يوم الزيارة",
+  "reminderTime": "وقت التذكير",
+  "reminderScheduled": "تمت جدولة التذكير بنجاح!",
+  "reminderCancelled": "تم إلغاء التذكير",
+  "pickAFutureTime": "يرجى تحديد وقت قادم للتذكير.",
+  "myBookings": "حجوزاتي",
+  "noBookingsYet": "لا توجد حجوزات حتى الآن",
+  "cancelBookingConfirmTitle": "إلغاء الحجز؟",
+  "cancelBookingConfirmBody": "هل أنت متأكد من رغبتك في إلغاء حجز {siteName}؟",
+  "@cancelBookingConfirmBody": {
+    "placeholders": {
+      "siteName": { "type": "String" }
+    }
+  },
+  "bookingCancelled": "تم إلغاء الحجز بنجاح",
+  "bookingReminderNotifTitle": "تذكير بزيارتك القادمة 🏛️",
+  "bookingReminderNotifBody": "زيارتك إلى {siteName} اليوم! رقم الحجز: {referenceNumber}",
+  "@bookingReminderNotifBody": {
+    "placeholders": {
+      "siteName": { "type": "String" },
+      "referenceNumber": { "type": "String" }
+    }
+  },
+  "filterAll": "الكل",
+  "filterGiza": "الجيزة",
+  "filterLuxor": "الأقصر",
+  "filterAswan": "أسوان",
+  "filterCairo": "القاهرة",
+  "crowdLow": "ازدحام قليل",
+  "crowdModerate": "ازدحام متوسط",
+  "crowdHigh": "ازدحام شديد",
+  "noMonumentsFound": "لم يتم العثور على معالم.",
+  "retry": "إعادة المحاولة"
 }
 

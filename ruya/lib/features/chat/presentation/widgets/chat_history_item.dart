@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/features/chat/domain/entities/chat_session.dart';
 
 class ChatHistoryItem extends StatelessWidget {
@@ -34,6 +35,7 @@ class ChatHistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final brandColor = AppColors.getBrandPrimary(context);
 
     return Dismissible(
       key: Key(session.id),
@@ -42,8 +44,8 @@ class ChatHistoryItem extends StatelessWidget {
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20.0),
-        color: Colors.red.withValues(alpha: 0.1),
-        child: const Icon(Icons.delete_outline, color: Colors.red),
+        color: AppColors.errorRed.withValues(alpha: 0.1),
+        child: const Icon(Icons.delete_outline, color: AppColors.errorRed),
       ),
       child: InkWell(
         onTap: onTap,
@@ -51,7 +53,7 @@ class ChatHistoryItem extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: isDark ? Colors.white10 : Colors.black12,
+                color: AppColors.getDivider(context),
                 width: 1.0,
               ),
             ),
@@ -66,14 +68,14 @@ class ChatHistoryItem extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: const Color(0xFFD4A373).withValues(alpha: 0.5),
+                    color: brandColor.withValues(alpha: 0.5),
                     width: 1,
                   ),
-                  color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFFAF6F0),
+                  color: AppColors.getSurface(context),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.chat_bubble_outline,
-                  color: Color(0xFFD4A373),
+                  color: brandColor,
                   size: 20,
                 ),
               ),
@@ -102,7 +104,7 @@ class ChatHistoryItem extends StatelessWidget {
                           _formatDate(session.timestamp),
                           style: TextStyle(
                             fontSize: 10,
-                            color: isDark ? Colors.white54 : Colors.black54,
+                            color: AppColors.getMutedText(context),
                           ),
                         ),
                       ],
@@ -112,7 +114,7 @@ class ChatHistoryItem extends StatelessWidget {
                       session.previewText,
                       style: TextStyle(
                         fontSize: 14,
-                        color: isDark ? Colors.white60 : Colors.black54,
+                        color: AppColors.getMutedText(context),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -122,7 +124,7 @@ class ChatHistoryItem extends StatelessWidget {
                       '${session.messageCount} msgs',
                       style: TextStyle(
                         fontSize: 12,
-                        color: isDark ? Colors.white38 : Colors.black38,
+                        color: AppColors.getMutedText(context),
                       ),
                     ),
                   ],
@@ -135,12 +137,12 @@ class ChatHistoryItem extends StatelessWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.1),
+                    color: AppColors.errorRed.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.delete_outline,
-                    color: Colors.red,
+                    color: AppColors.errorRed,
                     size: 20,
                   ),
                 ),

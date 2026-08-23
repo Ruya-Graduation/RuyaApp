@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ruya/core/config/app_config.dart';
+import 'package:ruya/core/localization/locale_cubit.dart';
 import 'package:ruya/core/network/api_exception.dart';
 import 'package:ruya/core/session/token_local_data_source.dart';
 
@@ -12,6 +13,8 @@ import 'package:ruya/core/session/token_local_data_source.dart';
 /// - Auth interceptor: attaches `Authorization: Bearer <token>` when a token
 ///   is stored. This is a no-op for the public auth endpoints; it future-proofs
 ///   any authenticated calls without extra work per request.
+/// - Language interceptor: injects `lang` query param (`en` | `ar`) for `/AdminSites`
+///   and `/AdminArtifacts` endpoints based on current [LocaleCubit] state.
 /// - Error interceptor: normalises **both** backend error shapes into
 ///   [ApiException] so callers never touch raw Dio details:
 ///     1. Envelope `{success: false, message: "..."}` → [ApiException]
@@ -34,12 +37,19 @@ class DioClient {
   ///
   /// [tokenDataSource] must be the same singleton registered in the DI
   /// container so the auth interceptor reads the current token.
-  static Dio getInstance(TokenLocalDataSource tokenDataSource) {
-    _instance ??= _build(tokenDataSource);
+  /// [localeCubit] is used to read the current app language for multilingual endpoints.
+  static Dio getInstance(
+    TokenLocalDataSource tokenDataSource,
+    LocaleCubit localeCubit,
+  ) {
+    _instance ??= _build(tokenDataSource, localeCubit);
     return _instance!;
   }
 
-  static Dio _build(TokenLocalDataSource tokenDataSource) {
+  static Dio _build(
+    TokenLocalDataSource tokenDataSource,
+    LocaleCubit localeCubit,
+  ) {
     final dio = Dio(
       BaseOptions(
         baseUrl: '${AppConfig.baseUrl}/api',
@@ -63,6 +73,28 @@ class DioClient {
             options.headers['Authorization'] = cleanToken.startsWith('Bearer ')
                 ? cleanToken
                 : 'Bearer $cleanToken';
+          }
+          handler.next(options);
+        },
+      ),
+    );
+
+    // ── Language interceptor ──────────────────────────────────────────────────
+    // Only injects ?lang=en|ar for AdminSites and AdminArtifacts endpoints
+    // (the only controllers supporting the lang query param on the backend).
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          final path = options.path;
+          if (path.startsWith('/AdminSites') ||
+              path.startsWith('/AdminArtifacts') ||
+              path.contains('AdminSites') ||
+              path.contains('AdminArtifacts')) {
+            if (!options.queryParameters.containsKey('lang') ||
+                options.queryParameters['lang'] == null) {
+              options.queryParameters['lang'] =
+                  localeCubit.state.languageCode;
+            }
           }
           handler.next(options);
         },

@@ -23,8 +23,8 @@ class AppLinearProgressLoader extends StatelessWidget {
         AppSpacing.verticalGapSm,
         Text(
           caption,
-          style: const TextStyle(
-            color: Colors.grey,
+          style: TextStyle(
+            color: AppColors.getMutedText(context),
             fontSize: 13,
           ),
         ),

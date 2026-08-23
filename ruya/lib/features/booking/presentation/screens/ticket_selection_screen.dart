@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/features/booking/presentation/widgets/booking_calendar_widget.dart';
 import 'package:ruya/features/booking/presentation/widgets/ticket_counter.dart';
 import 'package:ruya/features/booking/presentation/widgets/ticket_selection_bottom_sheet.dart';
@@ -24,24 +25,27 @@ class _TicketSelectionScreenState extends State<TicketSelectionScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final isDark = theme.brightness == Brightness.dark;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFFAF8F5),
+      backgroundColor: AppColors.getBackground(context),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back,
-            color: isDark ? Colors.white : Colors.black,
+            isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
+            size: 20,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           l10n.reserveEntry,
-          style: const TextStyle(color: Color(0xFFD4A373), fontSize: 14),
+          style: TextStyle(
+            color: AppColors.getBrandPrimary(context),
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),

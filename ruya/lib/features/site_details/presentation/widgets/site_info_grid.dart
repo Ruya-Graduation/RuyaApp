@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/features/site_details/domain/entities/site_detail_entity.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
@@ -53,26 +54,25 @@ class _SiteInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       width: 76,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getSurface(context),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+          color: AppColors.getDivider(context),
         ),
       ),
       child: Column(
         children: [
-          Icon(icon, color: const Color(0xFFD4A373), size: 20),
+          Icon(icon, color: AppColors.getBrandPrimary(context), size: 20),
           const SizedBox(height: 8),
           Text(
             title,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: Colors.grey,
+              color: AppColors.getMutedText(context),
             ),
             textAlign: TextAlign.center,
           ),

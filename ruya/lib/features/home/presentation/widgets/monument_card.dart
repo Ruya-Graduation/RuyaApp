@@ -4,6 +4,7 @@ import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 import 'package:ruya/features/home/domain/entities/monument_entity.dart';
 import 'package:ruya/features/home/presentation/widgets/monument_image.dart';
+import 'package:ruya/l10n/app_localizations.dart';
 
 /// Displays a single monument as a card with an image, name, location,
 /// and a crowd-level badge.
@@ -65,18 +66,18 @@ class _MonumentImageSection extends StatelessWidget {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
           child: MonumentImage(imageUrl: imageUrl, height: 180),
         ),
-        Positioned(
+        PositionedDirectional(
           top: 12,
-          right: 12,
+          end: 12,
           child: Container(
             padding: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            decoration: BoxDecoration(
+              color: AppColors.getSurface(context),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.bookmark_border,
-              color: AppColors.brandPrimaryLight,
+              color: AppColors.getBrandPrimary(context),
               size: 20,
             ),
           ),
@@ -112,17 +113,17 @@ class _MonumentDetails extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on_outlined,
                       size: 16,
-                      color: Colors.grey,
+                      color: AppColors.getMutedText(context),
                     ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         monument.location,
-                        style: const TextStyle(
-                          color: Colors.grey,
+                        style: TextStyle(
+                          color: AppColors.getMutedText(context),
                           fontSize: 14,
                         ),
                         maxLines: 1,
@@ -148,6 +149,8 @@ class _CrowdBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = _crowdColor(level);
+    final displayLabel = _localizedCrowd(context, level);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -155,7 +158,7 @@ class _CrowdBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        level,
+        displayLabel,
         style: TextStyle(
           color: color,
           fontWeight: FontWeight.bold,
@@ -165,10 +168,23 @@ class _CrowdBadge extends StatelessWidget {
     );
   }
 
+  String _localizedCrowd(BuildContext context, String rawLevel) {
+    final l10n = AppLocalizations.of(context)!;
+    final lower = rawLevel.toLowerCase();
+    if (lower.contains('low') || lower.contains('قليل') || lower.contains('منخفض')) {
+      return l10n.crowdLow;
+    } else if (lower.contains('moderate') || lower.contains('medium') || lower.contains('متوسط')) {
+      return l10n.crowdModerate;
+    } else if (lower.contains('high') || lower.contains('عالي') || lower.contains('شديد') || lower.contains('كبير')) {
+      return l10n.crowdHigh;
+    }
+    return rawLevel.isNotEmpty ? rawLevel : l10n.crowdLow;
+  }
+
   Color _crowdColor(String level) {
     final lower = level.toLowerCase();
-    if (lower.contains('low')) return Colors.teal;
-    if (lower.contains('moderate')) return Colors.orange;
+    if (lower.contains('low') || lower.contains('قليل') || lower.contains('منخفض')) return Colors.teal;
+    if (lower.contains('moderate') || lower.contains('medium') || lower.contains('متوسط')) return Colors.orange;
     return Colors.red;
   }
 }

@@ -7,9 +7,9 @@ class HomeCubit extends Cubit<HomeState> {
 
   HomeCubit(this._getMonumentsUseCase) : super(const HomeState());
 
-  /// Fetches the list of monuments. Call this once when the page mounts.
-  Future<void> loadMonuments() async {
-    if (state.status == HomeStatus.loading) return;
+  /// Fetches the list of monuments. Call this when the page mounts or language changes.
+  Future<void> loadMonuments({bool force = false}) async {
+    if (!force && state.status == HomeStatus.loading) return;
 
     emit(state.copyWith(status: HomeStatus.loading, errorMessage: null));
 
@@ -30,6 +30,11 @@ class HomeCubit extends Cubit<HomeState> {
         ),
       ),
     );
+  }
+
+  /// Updates the search query filter.
+  void setSearchQuery(String query) {
+    emit(state.copyWith(searchQuery: query));
   }
 
   /// Updates the selected filter chip index.

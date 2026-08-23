@@ -51,7 +51,7 @@ class MomentCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        color: AppColors.getSurface(context),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -120,13 +120,13 @@ class MomentCard extends StatelessWidget {
                   horizontal: AppSpacing.sm,
                   vertical: AppSpacing.xs,
                 ),
-                color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+                color: AppColors.getSurface(context),
                 child: Row(
                   children: [
                     Icon(
                       Icons.calendar_today_outlined,
                       size: 13,
-                      color: isDark ? Colors.white60 : Colors.black54,
+                      color: AppColors.getMutedText(context),
                     ),
                     AppSpacing.horizontalGapXxs,
                     Expanded(
@@ -134,7 +134,7 @@ class MomentCard extends StatelessWidget {
                         moment.startDate,
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDark ? Colors.white60 : Colors.black54,
+                          color: AppColors.getMutedText(context),
                           fontWeight: FontWeight.w500,
                         ),
                         maxLines: 1,

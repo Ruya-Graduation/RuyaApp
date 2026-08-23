@@ -585,4 +585,77 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get editAlbumTooltip => 'تعديل الألبوم';
+
+  @override
+  String get darkMode => 'الوضع الليلي';
+
+  @override
+  String get setReminder => 'تعيين تذكير';
+
+  @override
+  String get remindMeOnVisitDay => 'تذكيري في يوم الزيارة';
+
+  @override
+  String get reminderTime => 'وقت التذكير';
+
+  @override
+  String get reminderScheduled => 'تمت جدولة التذكير بنجاح!';
+
+  @override
+  String get reminderCancelled => 'تم إلغاء التذكير';
+
+  @override
+  String get pickAFutureTime => 'يرجى تحديد وقت قادم للتذكير.';
+
+  @override
+  String get myBookings => 'حجوزاتي';
+
+  @override
+  String get noBookingsYet => 'لا توجد حجوزات حتى الآن';
+
+  @override
+  String get cancelBookingConfirmTitle => 'إلغاء الحجز؟';
+
+  @override
+  String cancelBookingConfirmBody(String siteName) {
+    return 'هل أنت متأكد من رغبتك في إلغاء حجز $siteName؟';
+  }
+
+  @override
+  String get bookingCancelled => 'تم إلغاء الحجز بنجاح';
+
+  @override
+  String get bookingReminderNotifTitle => 'تذكير بزيارتك القادمة 🏛️';
+
+  @override
+  String bookingReminderNotifBody(String siteName, String referenceNumber) {
+    return 'زيارتك إلى $siteName اليوم! رقم الحجز: $referenceNumber';
+  }
+
+  @override
+  String get filterAll => 'الكل';
+
+  @override
+  String get filterGiza => 'الجيزة';
+
+  @override
+  String get filterLuxor => 'الأقصر';
+
+  @override
+  String get filterAswan => 'أسوان';
+
+  @override
+  String get filterCairo => 'القاهرة';
+
+  @override
+  String get crowdLow => 'ازدحام قليل';
+
+  @override
+  String get crowdModerate => 'ازدحام متوسط';
+
+  @override
+  String get crowdHigh => 'ازدحام شديد';
+
+  @override
+  String get noMonumentsFound => 'لم يتم العثور على معالم.';
 }

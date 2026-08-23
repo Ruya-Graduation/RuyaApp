@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
 class SiteSuggestsBanner extends StatelessWidget {
@@ -8,13 +9,16 @@ class SiteSuggestsBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.lightBlue[50],
+        color: isDark ? const Color(0xFF1B2838) : Colors.lightBlue[50],
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.lightBlue[100]!),
+        border: Border.all(
+          color: isDark ? const Color(0xFF2A4260) : Colors.lightBlue[100]!,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +49,7 @@ class SiteSuggestsBanner extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD4A373),
+                    backgroundColor: AppColors.getBrandPrimary(context),
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(

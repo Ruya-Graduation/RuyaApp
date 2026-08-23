@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ruya/core/di/injection.dart';
 import 'package:ruya/core/location/proximity_service.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:ruya/features/profile/presentation/widgets/editable_list_tile.dart';
 import 'package:ruya/l10n/app_localizations.dart';
@@ -13,14 +14,14 @@ class AccountSettingsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final isDark = theme.brightness == Brightness.dark;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getSurface(context),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+          color: AppColors.getDivider(context),
         ),
       ),
       child: Column(
@@ -31,11 +32,40 @@ class AccountSettingsCard extends StatelessWidget {
             child: Text(
               l10n.accountSettings.toUpperCase(),
               style: theme.textTheme.labelLarge?.copyWith(
-                color: const Color(0xFFD4A373),
+                color: AppColors.getBrandPrimary(context),
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
               ),
             ),
+          ),
+          ListTile(
+            leading: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.getBrandPrimary(context).withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.confirmation_number_outlined,
+                color: AppColors.getBrandPrimary(context),
+                size: 20,
+              ),
+            ),
+            title: Text(
+              l10n.myBookings,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            trailing: Icon(
+              isRtl ? Icons.chevron_left : Icons.chevron_right,
+              color: AppColors.getMutedText(context),
+            ),
+            onTap: () => context.push('/my-bookings'),
+          ),
+          Divider(
+            height: 1,
+            color: AppColors.getDivider(context),
           ),
           EditableListTile(
             title: l10n.editDisplayName,
@@ -70,8 +100,8 @@ class AccountSettingsCard extends StatelessWidget {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[50],
-                  foregroundColor: Colors.red,
+                  backgroundColor: AppColors.getErrorContainer(context),
+                  foregroundColor: AppColors.getOnErrorContainer(context),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

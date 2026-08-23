@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ruya/core/presentation/cubit/bottom_nav_cubit.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
 class MainLayout extends StatelessWidget {
@@ -20,8 +21,7 @@ class MainLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: BlocBuilder<BottomNavCubit, int>(
@@ -36,7 +36,7 @@ class MainLayout extends StatelessWidget {
           return BottomAppBar(
             shape: const CircularNotchedRectangle(),
             notchMargin: 8.0,
-            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            color: AppColors.getSurface(context),
             elevation: 10,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -83,7 +83,7 @@ class MainLayout extends StatelessWidget {
         onPressed: () {
           context.push('/camera-scanner');
         },
-        backgroundColor: const Color(0xFFD4A373), // Accent color from mockup
+        backgroundColor: AppColors.getBrandPrimary(context),
         elevation: 2,
         shape: const CircleBorder(),
         child: const Icon(Icons.camera_alt_outlined, color: Colors.white),
@@ -101,7 +101,9 @@ class MainLayout extends StatelessWidget {
     required int currentIndex,
   }) {
     final isSelected = currentIndex == index;
-    final color = isSelected ? const Color(0xFFD4A373) : Colors.grey;
+    final color = isSelected
+        ? AppColors.getBrandPrimary(context)
+        : AppColors.getMutedText(context);
 
     return InkWell(
       onTap: () => _onItemTapped(index, context),

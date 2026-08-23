@@ -50,6 +50,13 @@ jobs:
           printf '{"BASE_URL": "%s"}' "$WEB_BASE_URL" > env.json
           echo "✅ env.json created for this build only (not committed, not deployed)"
 
+      - name: Ensure .env exists for asset bundling
+        working-directory: ruya
+        run: |
+          if [ ! -f .env ]; then
+            touch .env
+          fi
+
       - name: Install dependencies
         working-directory: ruya
         run: flutter pub get

@@ -15,7 +15,6 @@ class MomentsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
@@ -23,9 +22,9 @@ class MomentsPage extends StatelessWidget {
         child: BlocBuilder<MomentsCubit, MomentsState>(
           builder: (context, state) {
             if (state.status == MomentsStatus.loading && state.moments.isEmpty) {
-              return const Center(
+              return Center(
                 child: CircularProgressIndicator(
-                  color: AppColors.brandPrimaryLight,
+                  color: AppColors.getBrandPrimary(context),
                 ),
               );
             }
@@ -33,7 +32,7 @@ class MomentsPage extends StatelessWidget {
             final moments = state.moments;
 
             return RefreshIndicator(
-              color: AppColors.brandPrimaryLight,
+              color: AppColors.getBrandPrimary(context),
               onRefresh: () => context.read<MomentsCubit>().loadMoments(),
               child: CustomScrollView(
                 slivers: [
@@ -54,8 +53,7 @@ class MomentsPage extends StatelessWidget {
                                 child: Text(
                                   l10n.noPhotosAddedYet,
                                   style: TextStyle(
-                                    color:
-                                        isDark ? Colors.white60 : Colors.black54,
+                                    color: AppColors.getMutedText(context),
                                   ),
                                 ),
                               ),

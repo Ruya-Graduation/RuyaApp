@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruya/core/di/injection.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 import 'package:ruya/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:ruya/features/auth/presentation/cubit/sign_in_cubit.dart';
@@ -23,7 +24,6 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return MultiBlocProvider(
       providers: [
@@ -31,7 +31,7 @@ class _AuthPageState extends State<AuthPage> {
         BlocProvider(create: (_) => getIt<RegisterCubit>()),
       ],
       child: Scaffold(
-        backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFFAF9F6),
+        backgroundColor: AppColors.getBackground(context),
         body: SingleChildScrollView(
           child: Column(
             children: [

@@ -1189,6 +1189,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Album'**
   String get editAlbumTooltip;
+
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get darkMode;
+
+  /// No description provided for @setReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a Reminder'**
+  String get setReminder;
+
+  /// No description provided for @remindMeOnVisitDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me on the visit day'**
+  String get remindMeOnVisitDay;
+
+  /// No description provided for @reminderTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder Time'**
+  String get reminderTime;
+
+  /// No description provided for @reminderScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder scheduled successfully!'**
+  String get reminderScheduled;
+
+  /// No description provided for @reminderCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder cancelled'**
+  String get reminderCancelled;
+
+  /// No description provided for @pickAFutureTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Please pick a future time for the reminder.'**
+  String get pickAFutureTime;
+
+  /// No description provided for @myBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'My Bookings'**
+  String get myBookings;
+
+  /// No description provided for @noBookingsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookings yet'**
+  String get noBookingsYet;
+
+  /// No description provided for @cancelBookingConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Booking?'**
+  String get cancelBookingConfirmTitle;
+
+  /// No description provided for @cancelBookingConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel your booking for {siteName}?'**
+  String cancelBookingConfirmBody(String siteName);
+
+  /// No description provided for @bookingCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking cancelled successfully'**
+  String get bookingCancelled;
+
+  /// No description provided for @bookingReminderNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Visit Reminder 🏛️'**
+  String get bookingReminderNotifTitle;
+
+  /// No description provided for @bookingReminderNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your visit to {siteName} is today! Reference: {referenceNumber}'**
+  String bookingReminderNotifBody(String siteName, String referenceNumber);
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterAll;
+
+  /// No description provided for @filterGiza.
+  ///
+  /// In en, this message translates to:
+  /// **'Giza'**
+  String get filterGiza;
+
+  /// No description provided for @filterLuxor.
+  ///
+  /// In en, this message translates to:
+  /// **'Luxor'**
+  String get filterLuxor;
+
+  /// No description provided for @filterAswan.
+  ///
+  /// In en, this message translates to:
+  /// **'Aswan'**
+  String get filterAswan;
+
+  /// No description provided for @filterCairo.
+  ///
+  /// In en, this message translates to:
+  /// **'Cairo'**
+  String get filterCairo;
+
+  /// No description provided for @crowdLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Crowds'**
+  String get crowdLow;
+
+  /// No description provided for @crowdModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate'**
+  String get crowdModerate;
+
+  /// No description provided for @crowdHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get crowdHigh;
+
+  /// No description provided for @noMonumentsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No monuments found.'**
+  String get noMonumentsFound;
 }
 
 class _AppLocalizationsDelegate

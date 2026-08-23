@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 import 'package:ruya/core/widgets/app_social_button.dart';
 
@@ -13,15 +14,18 @@ class SocialLoginRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: Divider(color: Colors.grey.withValues(alpha: 0.3))),
+            Expanded(child: Divider(color: AppColors.getDivider(context))),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: Text(
                 dividerText,
-                style: const TextStyle(color: Colors.grey, fontSize: 13),
+                style: TextStyle(
+                  color: AppColors.getMutedText(context),
+                  fontSize: 13,
+                ),
               ),
             ),
-            Expanded(child: Divider(color: Colors.grey.withValues(alpha: 0.3))),
+            Expanded(child: Divider(color: AppColors.getDivider(context))),
           ],
         ),
         AppSpacing.verticalGapLg,

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ruya/core/di/injection.dart';
+import 'package:ruya/core/services/notification_service.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_snackbar.dart';
+import 'package:ruya/features/booking/data/datasources/booking_local_data_source.dart';
+import 'package:ruya/features/booking/data/models/local_booking_model.dart';
 import 'package:ruya/features/booking/data/services/ticket_export_service.dart';
 import 'package:ruya/features/booking/domain/entities/booking_entity.dart';
+import 'package:ruya/features/booking/domain/usecases/save_booking_usecase.dart';
 import 'package:ruya/features/booking/presentation/widgets/confirmation_ticket_card.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 import 'package:screenshot/screenshot.dart';
@@ -21,11 +26,127 @@ class BookingConfirmationScreen extends StatefulWidget {
 class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
   late final TicketExportService _exportService;
   bool _isExporting = false;
+  bool _reminderEnabled = false;
+  TimeOfDay _reminderTime = const TimeOfDay(hour: 7, minute: 0);
+  LocalBookingModel? _localModel;
 
   @override
   void initState() {
     super.initState();
     _exportService = getIt<TicketExportService>();
+    _loadExistingBooking();
+  }
+
+  Future<void> _loadExistingBooking() async {
+    final list = await getIt<BookingLocalDataSource>().getAll();
+    final match = list.where(
+      (b) => b.referenceNumber == widget.booking.referenceNumber,
+    );
+    if (match.isNotEmpty && mounted) {
+      final found = match.first;
+      setState(() {
+        _localModel = found;
+        _reminderEnabled = found.reminderEnabled;
+        if (found.reminderDateTime != null) {
+          _reminderTime = TimeOfDay(
+            hour: found.reminderDateTime!.hour,
+            minute: found.reminderDateTime!.minute,
+          );
+        }
+      });
+    }
+  }
+
+  int get _deterministicNotifId =>
+      widget.booking.referenceNumber.hashCode & 0x7FFFFFFF;
+
+  Future<void> _handleReminderToggle(bool enabled) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (enabled) {
+      final scheduledDateTime = DateTime(
+        widget.booking.visitDate.year,
+        widget.booking.visitDate.month,
+        widget.booking.visitDate.day,
+        _reminderTime.hour,
+        _reminderTime.minute,
+      );
+
+      if (scheduledDateTime.isBefore(DateTime.now())) {
+        AppSnackBar.showError(context, l10n.pickAFutureTime);
+        setState(() => _reminderEnabled = false);
+        return;
+      }
+
+      await getIt<NotificationService>().requestPermission();
+
+      await getIt<NotificationService>().scheduleBookingReminder(
+        notificationId: _deterministicNotifId,
+        title: l10n.bookingReminderNotifTitle,
+        body: l10n.bookingReminderNotifBody(
+          widget.booking.siteName,
+          widget.booking.referenceNumber,
+        ),
+        scheduledDateTime: scheduledDateTime,
+      );
+
+      final updated = (_localModel ??
+              LocalBookingModel(
+                referenceNumber: widget.booking.referenceNumber,
+                siteId: widget.booking.siteId,
+                siteName: widget.booking.siteName,
+                visitDate: widget.booking.visitDate,
+                timeSlot: widget.booking.timeSlot,
+                ticketCount: widget.booking.ticketCount,
+                pricePerTicket: widget.booking.pricePerTicket,
+                currency: widget.booking.currency,
+                createdAt: widget.booking.createdAt,
+              ))
+          .copyWith(
+        reminderEnabled: true,
+        reminderDateTime: scheduledDateTime,
+        notificationId: _deterministicNotifId,
+      );
+
+      await getIt<SaveBookingUseCase>()(updated);
+
+      if (mounted) {
+        setState(() {
+          _reminderEnabled = true;
+          _localModel = updated;
+        });
+        AppSnackBar.showSuccess(context, l10n.reminderScheduled);
+      }
+    } else {
+      await getIt<NotificationService>().cancelReminder(_deterministicNotifId);
+
+      if (_localModel != null) {
+        final updated = _localModel!.copyWith(
+          reminderEnabled: false,
+          reminderDateTime: null,
+          notificationId: null,
+        );
+        await getIt<SaveBookingUseCase>()(updated);
+        _localModel = updated;
+      }
+
+      if (mounted) {
+        setState(() => _reminderEnabled = false);
+        AppSnackBar.showSuccess(context, l10n.reminderCancelled);
+      }
+    }
+  }
+
+  Future<void> _pickReminderTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _reminderTime,
+    );
+    if (picked != null && mounted) {
+      setState(() => _reminderTime = picked);
+      if (_reminderEnabled) {
+        await _handleReminderToggle(true);
+      }
+    }
   }
 
   Future<void> _handleSaveAsPdf() async {
@@ -65,11 +186,9 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFFAF8F5),
+      backgroundColor: AppColors.getBackground(context),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -89,7 +208,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
               Text(
                 l10n.bookingConfirmedSubtitle,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[600],
+                  color: AppColors.getMutedText(context),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -101,7 +220,111 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                 child: ConfirmationTicketCard(booking: widget.booking),
               ),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 24),
+
+              // --- Reminder Settings Card ---
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.getSurface(context),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.getDivider(context),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.getBrandPrimary(context)
+                                .withValues(alpha: 0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            _reminderEnabled
+                                ? Icons.notifications_active
+                                : Icons.notifications_none_outlined,
+                            color: AppColors.getBrandPrimary(context),
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.setReminder,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                l10n.remindMeOnVisitDay,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: AppColors.getMutedText(context),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Switch(
+                          value: _reminderEnabled,
+                          onChanged: _handleReminderToggle,
+                          activeThumbColor: AppColors.getBrandPrimary(context),
+                        ),
+                      ],
+                    ),
+                    if (_reminderEnabled) ...[
+                      Divider(
+                        height: 24,
+                        color: AppColors.getDivider(context),
+                      ),
+                      InkWell(
+                        onTap: _pickReminderTime,
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                l10n.reminderTime,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    _reminderTime.format(context),
+                                    style: TextStyle(
+                                      color: AppColors.getBrandPrimary(context),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Icon(
+                                    Icons.chevron_right,
+                                    size: 18,
+                                    color: AppColors.getMutedText(context),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
 
               // Back to Discover Primary Button
               SizedBox(
@@ -120,7 +343,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD4A373),
+                    backgroundColor: AppColors.getBrandPrimary(context),
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -152,8 +375,10 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFFD4A373),
-                          side: const BorderSide(color: Color(0xFFD4A373)),
+                          foregroundColor: AppColors.getBrandPrimary(context),
+                          side: BorderSide(
+                            color: AppColors.getBrandPrimary(context),
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -176,8 +401,10 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFFD4A373),
-                          side: const BorderSide(color: Color(0xFFD4A373)),
+                          foregroundColor: AppColors.getBrandPrimary(context),
+                          side: BorderSide(
+                            color: AppColors.getBrandPrimary(context),
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -186,33 +413,6 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                     ),
                   ),
                 ],
-              ),
-
-              const SizedBox(height: 16),
-
-              // Cancel Booking Button (purely local / client-side)
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: OutlinedButton(
-                  onPressed: () {
-                    context.go('/home');
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.red),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: Text(
-                    l10n.cancelBooking,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
               ),
 
               const SizedBox(height: 24),

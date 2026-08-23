@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/features/chat/domain/entities/chat_message.dart';
 import 'package:ruya/features/chat/presentation/widgets/chat_message_bubble.dart';
 import 'package:ruya/l10n/app_localizations.dart';
@@ -25,7 +26,7 @@ class ChatMessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final brandColor = AppColors.getBrandPrimary(context);
 
     if (messages.isEmpty) {
       return Center(
@@ -39,11 +40,11 @@ class ChatMessageList extends StatelessWidget {
                 height: 64,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFFD4A373).withValues(alpha: 0.15),
+                  color: brandColor.withValues(alpha: 0.15),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.auto_awesome,
-                  color: Color(0xFFD4A373),
+                  color: brandColor,
                   size: 28,
                 ),
               ),
@@ -52,7 +53,7 @@ class ChatMessageList extends StatelessWidget {
                 l10n.noMessagesYet,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: isDark ? Colors.white60 : Colors.black54,
+                  color: AppColors.getMutedText(context),
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),

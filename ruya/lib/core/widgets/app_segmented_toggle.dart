@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 
 /// Controls the visual style of [AppSegmentedToggle].
@@ -44,7 +45,7 @@ class AppSegmentedToggle<T> extends StatelessWidget {
       case ToggleVariant.overlay:
         // Glass pill on hero image → amber selected, white text
         pillBg = const Color(0x66000000);
-        selectedBg = const Color(0xFFD0A37A); // brand amber
+        selectedBg = AppColors.getBrandPrimary(context); // brand amber
         selectedFg = Colors.white;
         unselectedFg = const Color(0xCCFFFFFF);
         fontSize = 13;

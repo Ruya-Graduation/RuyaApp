@@ -34,6 +34,14 @@ class AppColors {
   static const Color surfaceDark = Color(0xFF1E1E1E);
   static const Color surfaceLight = Color(0xFFFFFFFF);
 
+  // --- DIVIDER & BORDER TOKENS ---
+  static const Color dividerLight = Color(0xFFEEEEEE); // Matches Colors.grey[200]
+  static const Color dividerDark = Color(0xFF424242); // Matches Colors.grey[800]
+
+  // --- MUTED TEXT TOKENS ---
+  static const Color mutedTextLight = Color(0xFF757575); // Matches Colors.grey[600]
+  static const Color mutedTextDark = Color(0xFF9E9E9E); // Matches Colors.grey[400]
+
   static Color getBrandPrimary(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return isDark ? brandPrimaryDark : brandPrimaryLight;
@@ -48,6 +56,18 @@ class AppColors {
   static Color getSurface(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return isDark ? surfaceDark : surfaceLight;
+  }
+
+  /// Returns the divider / border color for card outlines and separators.
+  static Color getDivider(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? dividerDark : dividerLight;
+  }
+
+  /// Returns the secondary / muted text color.
+  static Color getMutedText(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? mutedTextDark : mutedTextLight;
   }
 
   static Color getSuccessContainer(BuildContext context) {
