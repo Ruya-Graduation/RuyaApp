@@ -21,8 +21,13 @@ class NotificationService {
   Future<void> init() async {
     try {
       tz.initializeTimeZones();
-      final timeZoneName = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(timeZoneName));
+      tz.setLocalLocation(tz.UTC);
+      try {
+        final timeZoneName = await FlutterTimezone.getLocalTimezone();
+        tz.setLocalLocation(tz.getLocation(timeZoneName));
+      } catch (e) {
+        debugPrint('[NotificationService] Local timezone fetch failed ($e), falling back to UTC');
+      }
     } catch (e) {
       debugPrint('[NotificationService] Timezone init fallback: $e');
     }
@@ -113,7 +118,11 @@ class NotificationService {
         scheduledDateTime.minute,
       );
     } catch (e) {
-      scheduledTzDateTime = tz.TZDateTime.from(scheduledDateTime, tz.local);
+      try {
+        scheduledTzDateTime = tz.TZDateTime.from(scheduledDateTime, tz.local);
+      } catch (_) {
+        scheduledTzDateTime = tz.TZDateTime.from(scheduledDateTime, tz.UTC);
+      }
     }
 
     const androidDetails = AndroidNotificationDetails(
