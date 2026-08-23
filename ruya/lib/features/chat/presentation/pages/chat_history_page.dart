@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ruya/core/di/injection.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_snackbar.dart';
 import 'package:ruya/features/chat/domain/entities/chat_session.dart';
 import 'package:ruya/features/chat/presentation/cubit/chat_history_cubit.dart';
@@ -33,13 +34,11 @@ class _ChatHistoryView extends StatelessWidget {
     ChatSession session,
   ) async {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (_) => _DeleteConfirmDialog(
         l10n: l10n,
-        isDark: isDark,
       ),
     );
 
@@ -60,7 +59,7 @@ class _ChatHistoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final brandColor = AppColors.getBrandPrimary(context);
 
     return BlocConsumer<ChatHistoryCubit, ChatHistoryState>(
       listener: (context, state) {
@@ -71,24 +70,23 @@ class _ChatHistoryView extends StatelessWidget {
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor:
-              isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFAF6F0),
-          appBar: _buildAppBar(l10n, isDark),
+          backgroundColor: AppColors.getBackground(context),
+          appBar: _buildAppBar(context, l10n),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _RecentConversationsLabel(l10n: l10n, isDark: isDark),
+              _RecentConversationsLabel(l10n: l10n),
               Expanded(
                 child: RefreshIndicator(
-                  color: const Color(0xFFD4A373),
+                  color: brandColor,
                   onRefresh: () =>
                       context.read<ChatHistoryCubit>().loadConversations(),
                   child: switch (state.status) {
                     ChatHistoryStatus.initial ||
                     ChatHistoryStatus.loading =>
-                      const Center(
+                      Center(
                         child: CircularProgressIndicator(
-                          color: Color(0xFFD4A373),
+                          color: brandColor,
                         ),
                       ),
                     ChatHistoryStatus.error when state.sessions.isEmpty =>
@@ -98,7 +96,7 @@ class _ChatHistoryView extends StatelessWidget {
                           children: [
                             const Icon(
                               Icons.error_outline_rounded,
-                              color: Colors.red,
+                              color: AppColors.errorRed,
                               size: 48,
                             ),
                             const SizedBox(height: 12),
@@ -106,7 +104,7 @@ class _ChatHistoryView extends StatelessWidget {
                               state.errorMessage ??
                                   l10n.errorLoadingConversations,
                               style: TextStyle(
-                                color: isDark ? Colors.white70 : Colors.black54,
+                                color: AppColors.getMutedText(context),
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -139,7 +137,7 @@ class _ChatHistoryView extends StatelessWidget {
     );
   }
 
-  AppBar _buildAppBar(AppLocalizations l10n, bool isDark) {
+  AppBar _buildAppBar(BuildContext context, AppLocalizations l10n) {
     return AppBar(
       title: Text(
         l10n.chatHistory,
@@ -148,8 +146,7 @@ class _ChatHistoryView extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
-      foregroundColor: Colors.white,
+      backgroundColor: AppColors.getSurface(context),
       elevation: 0,
       centerTitle: false,
     );
@@ -159,9 +156,8 @@ class _ChatHistoryView extends StatelessWidget {
 // ── Section Label ─────────────────────────────────────────────────────────────
 class _RecentConversationsLabel extends StatelessWidget {
   final AppLocalizations l10n;
-  final bool isDark;
 
-  const _RecentConversationsLabel({required this.l10n, required this.isDark});
+  const _RecentConversationsLabel({required this.l10n});
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +168,7 @@ class _RecentConversationsLabel extends StatelessWidget {
         style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.bold,
-          color: isDark ? Colors.white54 : Colors.black54,
+          color: AppColors.getMutedText(context),
           letterSpacing: 1.4,
         ),
       ),
@@ -183,14 +179,15 @@ class _RecentConversationsLabel extends StatelessWidget {
 // ── Confirm Delete Dialog ─────────────────────────────────────────────────────
 class _DeleteConfirmDialog extends StatelessWidget {
   final AppLocalizations l10n;
-  final bool isDark;
 
-  const _DeleteConfirmDialog({required this.l10n, required this.isDark});
+  const _DeleteConfirmDialog({required this.l10n});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return AlertDialog(
-      backgroundColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+      backgroundColor: AppColors.getSurface(context),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Text(
         l10n.deleteChatConfirmTitle,
@@ -201,19 +198,19 @@ class _DeleteConfirmDialog extends StatelessWidget {
       ),
       content: Text(
         l10n.deleteChatConfirmBody,
-        style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
+        style: TextStyle(color: AppColors.getMutedText(context)),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(
             l10n.cancel,
-            style: const TextStyle(color: Colors.grey),
+            style: TextStyle(color: AppColors.getMutedText(context)),
           ),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          style: TextButton.styleFrom(foregroundColor: Colors.red),
+          style: TextButton.styleFrom(foregroundColor: AppColors.errorRed),
           child: Text(l10n.delete),
         ),
       ],

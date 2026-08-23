@@ -583,4 +583,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editAlbumTooltip => 'Edit Album';
+
+  @override
+  String get darkMode => 'Dark Mode';
+
+  @override
+  String get setReminder => 'Set a Reminder';
+
+  @override
+  String get remindMeOnVisitDay => 'Remind me on the visit day';
+
+  @override
+  String get reminderTime => 'Reminder Time';
+
+  @override
+  String get reminderScheduled => 'Reminder scheduled successfully!';
+
+  @override
+  String get reminderCancelled => 'Reminder cancelled';
+
+  @override
+  String get pickAFutureTime => 'Please pick a future time for the reminder.';
+
+  @override
+  String get myBookings => 'My Bookings';
+
+  @override
+  String get noBookingsYet => 'No bookings yet';
+
+  @override
+  String get cancelBookingConfirmTitle => 'Cancel Booking?';
+
+  @override
+  String cancelBookingConfirmBody(String siteName) {
+    return 'Are you sure you want to cancel your booking for $siteName?';
+  }
+
+  @override
+  String get bookingCancelled => 'Booking cancelled successfully';
+
+  @override
+  String get bookingReminderNotifTitle => 'Upcoming Visit Reminder 🏛️';
+
+  @override
+  String bookingReminderNotifBody(String siteName, String referenceNumber) {
+    return 'Your visit to $siteName is today! Reference: $referenceNumber';
+  }
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get filterGiza => 'Giza';
+
+  @override
+  String get filterLuxor => 'Luxor';
+
+  @override
+  String get filterAswan => 'Aswan';
+
+  @override
+  String get filterCairo => 'Cairo';
+
+  @override
+  String get crowdLow => 'Low Crowds';
+
+  @override
+  String get crowdModerate => 'Moderate';
+
+  @override
+  String get crowdHigh => 'High';
+
+  @override
+  String get noMonumentsFound => 'No monuments found.';
 }

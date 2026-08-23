@@ -122,8 +122,8 @@ class _ForgetPasswordResetPageState extends State<ForgetPasswordResetPage> {
                           Text(
                             l10n.enterNewPasswordSubtitle,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.grey,
+                            style: TextStyle(
+                              color: AppColors.getMutedText(context),
                               fontSize: 16,
                             ),
                           ),
@@ -160,7 +160,9 @@ class _ForgetPasswordResetPageState extends State<ForgetPasswordResetPage> {
                             onPressed: () => context.pop(),
                             child: Text(
                               l10n.back,
-                              style: const TextStyle(color: Colors.grey),
+                              style: TextStyle(
+                                color: AppColors.getMutedText(context),
+                              ),
                             ),
                           ),
                         ],

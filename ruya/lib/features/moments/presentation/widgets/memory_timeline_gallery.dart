@@ -19,12 +19,11 @@ class MemoryTimelineGallery extends StatelessWidget {
     MomentPhoto photo,
   ) async {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+        backgroundColor: AppColors.getSurface(context),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           l10n.deletePhotoConfirmTitle,
@@ -35,7 +34,7 @@ class MemoryTimelineGallery extends StatelessWidget {
         content: Text(
           l10n.deletePhotoConfirmBody,
           style: TextStyle(
-            color: isDark ? Colors.white70 : Colors.black54,
+            color: AppColors.getMutedText(context),
           ),
         ),
         actions: [
@@ -43,7 +42,7 @@ class MemoryTimelineGallery extends StatelessWidget {
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
               l10n.cancel,
-              style: const TextStyle(color: Colors.grey),
+              style: TextStyle(color: AppColors.getMutedText(context)),
             ),
           ),
           ElevatedButton(
@@ -65,6 +64,7 @@ class MemoryTimelineGallery extends StatelessWidget {
 
   Widget _buildPhotoTile(BuildContext context, MomentPhoto photo) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final brandColor = AppColors.getBrandPrimary(context);
 
     Widget imageWidget = Image.network(
       photo.imageUrl,
@@ -75,9 +75,9 @@ class MemoryTimelineGallery extends StatelessWidget {
         if (loadingProgress == null) return child;
         return Container(
           color: Colors.grey.shade900,
-          child: const Center(
+          child: Center(
             child: CircularProgressIndicator(
-              color: AppColors.brandPrimaryLight,
+              color: brandColor,
               strokeWidth: 2,
             ),
           ),
@@ -93,10 +93,10 @@ class MemoryTimelineGallery extends StatelessWidget {
       width: 140,
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        color: AppColors.getSurface(context),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? Colors.white10 : const Color(0xFFE8DCCF),
+          color: AppColors.getDivider(context),
           width: 1.5,
         ),
         boxShadow: [
@@ -135,7 +135,7 @@ class MemoryTimelineGallery extends StatelessWidget {
                           fontFamily: 'Playfair Display',
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
-                          color: isDark ? Colors.white : const Color(0xFFD4A373),
+                          color: isDark ? Colors.white : brandColor,
                         ),
                       ),
                     if (photo.dayLabel != null && photo.dayLabel!.isNotEmpty)
@@ -145,7 +145,7 @@ class MemoryTimelineGallery extends StatelessWidget {
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 1.1,
-                          color: isDark ? Colors.white54 : Colors.black45,
+                          color: AppColors.getMutedText(context),
                         ),
                       ),
                   ],
@@ -154,9 +154,9 @@ class MemoryTimelineGallery extends StatelessWidget {
             ],
           ),
           if (onDeletePhoto != null)
-            Positioned(
+            PositionedDirectional(
               top: 6,
-              right: 6,
+              end: 6,
               child: CircleAvatar(
                 radius: 14,
                 backgroundColor: Colors.black.withValues(alpha: 0.6),

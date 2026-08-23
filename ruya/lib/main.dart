@@ -6,7 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ruya/core/di/injection.dart';
 import 'package:ruya/core/localization/locale_cubit.dart';
 import 'package:ruya/core/routing/app_router.dart';
-import 'package:ruya/core/theme/app_colors.dart';
+import 'package:ruya/core/services/notification_service.dart';
+import 'package:ruya/core/theme/app_theme.dart';
+import 'package:ruya/core/theme/theme_cubit.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
 void main() async {
@@ -32,9 +34,14 @@ void main() async {
   }
 
   await configureDependencies();
+  await getIt<NotificationService>().init();
+
   runApp(
-    BlocProvider(
-      create: (context) => LocaleCubit(getIt()),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: getIt<LocaleCubit>()),
+        BlocProvider.value(value: getIt<ThemeCubit>()),
+      ],
       child: const MainApp(),
     ),
   );
@@ -45,34 +52,23 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocaleCubit, Locale>(
-      builder: (context, locale) {
-        return MaterialApp.router(
-          title: 'Ruya',
-          routerConfig: AppRouter.router,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: locale,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: AppColors.brandPrimaryLight,
-            ),
-            useMaterial3: true,
-          ),
-          darkTheme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: AppColors.brandPrimaryDark,
-              brightness: Brightness.dark,
-            ),
-            useMaterial3: true,
-          ),
-        );
-      },
+    final themeMode = context.watch<ThemeCubit>().state;
+    final locale = context.watch<LocaleCubit>().state;
+
+    return MaterialApp.router(
+      title: 'Ruya',
+      routerConfig: AppRouter.router,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: locale,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: themeMode,
     );
   }
 }

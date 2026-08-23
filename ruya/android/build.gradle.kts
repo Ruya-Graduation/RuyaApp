@@ -15,8 +15,28 @@ subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
+
 subprojects {
     project.evaluationDependsOn(":app")
+}
+
+subprojects {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        compilerOptions {
+            val javaTarget = project.extensions.findByType(com.android.build.gradle.BaseExtension::class.java)
+                ?.compileOptions
+                ?.targetCompatibility
+            when (javaTarget) {
+                JavaVersion.VERSION_11 -> jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+                JavaVersion.VERSION_17 -> jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+                JavaVersion.VERSION_1_8 -> jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+                else -> jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            }
+        }
+    }
+    tasks.matching { it.name.contains("strip", ignoreCase = true) }.configureEach {
+        enabled = false
+    }
 }
 
 tasks.register<Delete>("clean") {

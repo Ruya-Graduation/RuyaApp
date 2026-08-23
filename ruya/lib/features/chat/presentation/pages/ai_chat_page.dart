@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ruya/core/di/injection.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_snackbar.dart';
 import 'package:ruya/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:ruya/features/chat/presentation/cubit/chat_state.dart';
@@ -147,15 +148,16 @@ class _AiChatViewState extends State<_AiChatView> with WidgetsBindingObserver {
   void _showPermissionDialog(BuildContext context, bool permanentlyDenied) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final brandColor = AppColors.getBrandPrimary(context);
 
     showDialog(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+        backgroundColor: AppColors.getSurface(context),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            const Icon(Icons.mic_none_rounded, color: Color(0xFFD4A373)),
+            Icon(Icons.mic_none_rounded, color: brandColor),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -173,13 +175,16 @@ class _AiChatViewState extends State<_AiChatView> with WidgetsBindingObserver {
           l10n.micPermissionRationale,
           style: TextStyle(
             fontSize: 14,
-            color: isDark ? Colors.white70 : Colors.black54,
+            color: AppColors.getMutedText(context),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx),
-            child: Text(l10n.cancel, style: const TextStyle(color: Colors.grey)),
+            child: Text(
+              l10n.cancel,
+              style: TextStyle(color: AppColors.getMutedText(context)),
+            ),
           ),
           if (permanentlyDenied)
             ElevatedButton(
@@ -188,8 +193,8 @@ class _AiChatViewState extends State<_AiChatView> with WidgetsBindingObserver {
                 openAppSettings();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFD4A373),
-                foregroundColor: Colors.black87,
+                backgroundColor: brandColor,
+                foregroundColor: Colors.white,
               ),
               child: Text(l10n.openSettings),
             ),
@@ -229,7 +234,7 @@ class _AiChatViewState extends State<_AiChatView> with WidgetsBindingObserver {
         ),
       ],
       child: Scaffold(
-        backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF8F4EE),
+        backgroundColor: AppColors.getBackground(context),
         appBar: _buildAppBar(context, isDark),
         body: Column(
           children: [
@@ -237,8 +242,10 @@ class _AiChatViewState extends State<_AiChatView> with WidgetsBindingObserver {
               child: BlocBuilder<ChatCubit, ChatState>(
                 builder: (context, state) {
                   if (state.status == ChatStatus.loading && state.messages.isEmpty) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Color(0xFFD4A373)),
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.getBrandPrimary(context),
+                      ),
                     );
                   }
 
@@ -286,13 +293,15 @@ class _AiChatViewState extends State<_AiChatView> with WidgetsBindingObserver {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context, bool isDark) {
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
     return AppBar(
-      backgroundColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFAF6F0),
+      backgroundColor: AppColors.getSurface(context),
       elevation: 0,
       titleSpacing: 0,
       leading: IconButton(
         icon: Icon(
-          Icons.arrow_back_ios_new_rounded,
+          isRtl ? Icons.arrow_forward_ios_rounded : Icons.arrow_back_ios_new_rounded,
           color: isDark ? Colors.white : Colors.black87,
           size: 20,
         ),
@@ -303,7 +312,7 @@ class _AiChatViewState extends State<_AiChatView> with WidgetsBindingObserver {
         preferredSize: const Size.fromHeight(1),
         child: Container(
           height: 1,
-          color: isDark ? Colors.white10 : Colors.black12,
+          color: AppColors.getDivider(context),
         ),
       ),
     );

@@ -100,8 +100,8 @@ class _ForgetPasswordEmailPageState extends State<ForgetPasswordEmailPage> {
                           Text(
                             l10n.forgetPasswordSubtitle,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.grey,
+                            style: TextStyle(
+                              color: AppColors.getMutedText(context),
                               fontSize: 16,
                             ),
                           ),
@@ -131,7 +131,9 @@ class _ForgetPasswordEmailPageState extends State<ForgetPasswordEmailPage> {
                             onPressed: () => context.pop(),
                             child: Text(
                               l10n.backToSignIn,
-                              style: const TextStyle(color: Colors.grey),
+                              style: TextStyle(
+                                color: AppColors.getMutedText(context),
+                              ),
                             ),
                           ),
                         ],

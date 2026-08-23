@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/features/chat/domain/entities/chat_message.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
@@ -60,10 +61,12 @@ class _AiAvatarSmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brandColor = AppColors.getBrandPrimary(context);
+
     return Container(
       width: 32,
       height: 32,
-      margin: const EdgeInsets.only(right: 10.0, top: 2),
+      margin: const EdgeInsetsDirectional.only(end: 10.0, top: 2),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: const LinearGradient(
@@ -72,7 +75,7 @@ class _AiAvatarSmall extends StatelessWidget {
           colors: [Color(0xFFD4A373), Color(0xFF8B6914)],
         ),
         border: Border.all(
-          color: const Color(0xFFD4A373).withValues(alpha: 0.4),
+          color: brandColor.withValues(alpha: 0.4),
           width: 1,
         ),
       ),
@@ -104,21 +107,22 @@ class _AiBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final bgColor = isDark ? const Color(0xFF2C2C2C) : Colors.white;
+    final brandColor = AppColors.getBrandPrimary(context);
+    final bgColor = AppColors.getSurface(context);
     final textColor = isDark ? Colors.white : Colors.black87;
     final borderColor = message.isWarning
         ? Colors.orange.withValues(alpha: 0.6)
-        : (isDark ? Colors.white10 : Colors.black12);
+        : AppColors.getDivider(context);
 
     return Container(
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(4),
-          topRight: Radius.circular(16),
-          bottomLeft: Radius.circular(16),
-          bottomRight: Radius.circular(16),
+        borderRadius: const BorderRadiusDirectional.only(
+          topStart: Radius.circular(4),
+          topEnd: Radius.circular(16),
+          bottomStart: Radius.circular(16),
+          bottomEnd: Radius.circular(16),
         ),
         border: Border.all(color: borderColor, width: 1),
         boxShadow: [
@@ -139,21 +143,24 @@ class _AiBubble extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD4A373).withValues(alpha: 0.15),
+                  color: brandColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.remove_red_eye_outlined,
-                        color: Color(0xFF8B6914), size: 12),
+                    Icon(
+                      Icons.remove_red_eye_outlined,
+                      color: brandColor,
+                      size: 12,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       l10n.visionBadge,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF8B6914),
+                        color: brandColor,
                       ),
                     ),
                   ],
@@ -174,7 +181,7 @@ class _AiBubble extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: isPlayingTts
-                        ? const Color(0xFFD4A373).withValues(alpha: 0.2)
+                        ? brandColor.withValues(alpha: 0.2)
                         : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.04)),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -187,8 +194,8 @@ class _AiBubble extends StatelessWidget {
                             : Icons.volume_down_outlined,
                         size: 14,
                         color: isPlayingTts
-                            ? const Color(0xFFD4A373)
-                            : (isDark ? Colors.white60 : Colors.black54),
+                            ? brandColor
+                            : AppColors.getMutedText(context),
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -197,8 +204,8 @@ class _AiBubble extends StatelessWidget {
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           color: isPlayingTts
-                              ? const Color(0xFFD4A373)
-                              : (isDark ? Colors.white60 : Colors.black54),
+                              ? brandColor
+                              : AppColors.getMutedText(context),
                         ),
                       ),
                     ],
@@ -226,6 +233,7 @@ class _UserBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final brandColor = AppColors.getBrandPrimary(context);
     final isError = message.status == MessageStatus.error;
     final isSending = message.status == MessageStatus.sending;
 
@@ -236,13 +244,13 @@ class _UserBubble extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
           decoration: BoxDecoration(
             color: isError
-                ? const Color(0xFFE57373)
-                : const Color(0xFFD4A373),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(4),
-              bottomLeft: Radius.circular(16),
-              bottomRight: Radius.circular(16),
+                ? AppColors.errorRed
+                : brandColor,
+            borderRadius: const BorderRadiusDirectional.only(
+              topStart: Radius.circular(16),
+              topEnd: Radius.circular(4),
+              bottomStart: Radius.circular(16),
+              bottomEnd: Radius.circular(16),
             ),
           ),
           child: Column(
@@ -262,7 +270,7 @@ class _UserBubble extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     height: 1.5,
-                    color: Colors.black87,
+                    color: Colors.white,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -270,14 +278,14 @@ class _UserBubble extends StatelessWidget {
           ),
         ),
         if (isSending)
-          const Padding(
-            padding: EdgeInsets.only(top: 4.0, right: 4.0),
+          Padding(
+            padding: const EdgeInsets.only(top: 4.0, right: 4.0),
             child: SizedBox(
               width: 12,
               height: 12,
               child: CircularProgressIndicator(
                 strokeWidth: 1.5,
-                color: Color(0xFFD4A373),
+                color: brandColor,
               ),
             ),
           ),
@@ -290,7 +298,7 @@ class _UserBubble extends StatelessWidget {
                 Text(
                   l10n.failedToSendMessage,
                   style: const TextStyle(
-                    color: Colors.red,
+                    color: AppColors.errorRed,
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
@@ -301,18 +309,18 @@ class _UserBubble extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.1),
+                      color: AppColors.errorRed.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.refresh_rounded, color: Colors.red, size: 12),
+                        const Icon(Icons.refresh_rounded, color: AppColors.errorRed, size: 12),
                         const SizedBox(width: 2),
                         Text(
                           l10n.retry,
                           style: const TextStyle(
-                            color: Colors.red,
+                            color: AppColors.errorRed,
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
                           ),

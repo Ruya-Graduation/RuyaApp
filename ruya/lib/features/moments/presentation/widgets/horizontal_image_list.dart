@@ -59,10 +59,10 @@ class HorizontalImageList extends StatelessWidget {
               ? Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+                    color: AppColors.getSurface(context),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isDark ? Colors.white12 : const Color(0xFFE2D6C5),
+                      color: AppColors.getDivider(context),
                       width: 1,
                     ),
                   ),
@@ -82,7 +82,7 @@ class HorizontalImageList extends StatelessWidget {
                           Text(
                             l10n.addPhotosButton,
                             style: TextStyle(
-                              color: isDark ? Colors.white70 : Colors.black54,
+                              color: AppColors.getMutedText(context),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -101,9 +101,7 @@ class HorizontalImageList extends StatelessWidget {
                         width: 90,
                         margin: const EdgeInsets.only(right: 10),
                         decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.surfaceDark
-                              : AppColors.surfaceLight,
+                          color: AppColors.getSurface(context),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: AppColors.getBrandPrimary(context),
@@ -138,9 +136,9 @@ class HorizontalImageList extends StatelessWidget {
                             file,
                             fit: BoxFit.cover,
                           ),
-                          Positioned(
+                          PositionedDirectional(
                             top: 4,
-                            right: 4,
+                            end: 4,
                             child: CircleAvatar(
                               radius: 12,
                               backgroundColor: Colors.black.withValues(alpha: 0.65),

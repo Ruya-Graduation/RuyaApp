@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/theme/app_text_styles.dart';
 import 'package:ruya/core/utils/app_snackbar.dart';
@@ -108,14 +108,15 @@ class _EditMomentPageState extends State<EditMomentPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: isDark
-                ? const ColorScheme.dark(
+                ? ColorScheme.dark(
                     primary: AppColors.brandPrimaryDark,
                     onPrimary: Colors.black,
-                    surface: Color(0xFF2C2C2C),
+                    surface: AppColors.getSurface(context),
                   )
-                : const ColorScheme.light(
-                    primary: AppColors.brandPrimaryLight,
+                : ColorScheme.light(
+                    primary: AppColors.getBrandPrimary(context),
                     onPrimary: Colors.white,
+                    surface: AppColors.getSurface(context),
                   ),
           ),
           child: child!,
@@ -152,13 +153,12 @@ class _EditMomentPageState extends State<EditMomentPage> {
   Future<void> _onSave() async {
     if (!_validate()) return;
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Confirmation dialog
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+        backgroundColor: AppColors.getSurface(context),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           l10n.confirmEditAlbumTitle,
@@ -166,14 +166,14 @@ class _EditMomentPageState extends State<EditMomentPage> {
         ),
         content: Text(
           l10n.confirmEditAlbumBody,
-          style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
+          style: TextStyle(color: AppColors.getMutedText(context)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
               l10n.cancel,
-              style: const TextStyle(color: Colors.grey),
+              style: TextStyle(color: AppColors.getMutedText(context)),
             ),
           ),
           ElevatedButton(
@@ -253,8 +253,6 @@ class _EditMomentPageState extends State<EditMomentPage> {
   }
 
   Widget _buildCurrentCoverPreview() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -275,7 +273,7 @@ class _EditMomentPageState extends State<EditMomentPage> {
             Icon(
               Icons.info_outline_rounded,
               size: 14,
-              color: isDark ? Colors.white60 : Colors.black54,
+              color: AppColors.getMutedText(context),
             ),
             AppSpacing.horizontalGapXxs,
             Expanded(
@@ -283,7 +281,7 @@ class _EditMomentPageState extends State<EditMomentPage> {
                 'New cover photos are added to your album timeline.',
                 style: TextStyle(
                   fontSize: 11,
-                  color: isDark ? Colors.white60 : Colors.black54,
+                  color: AppColors.getMutedText(context),
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -298,6 +296,7 @@ class _EditMomentPageState extends State<EditMomentPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
@@ -306,7 +305,7 @@ class _EditMomentPageState extends State<EditMomentPage> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
+            isRtl ? Icons.arrow_forward_ios_rounded : Icons.arrow_back_ios_new_rounded,
             color: isDark ? Colors.white : Colors.black87,
             size: 20,
           ),

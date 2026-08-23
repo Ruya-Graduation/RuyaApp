@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 
 class TicketCounter extends StatelessWidget {
   final String title;
@@ -16,15 +17,12 @@ class TicketCounter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getSurface(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isDark ? Colors.grey[800]! : Colors.grey[200]!),
+        border: Border.all(color: AppColors.getDivider(context)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -39,13 +37,17 @@ class TicketCounter extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 price,
-                style: const TextStyle(color: Colors.grey, fontSize: 14),
+                style: TextStyle(
+                  color: AppColors.getMutedText(context),
+                  fontSize: 14,
+                ),
               ),
             ],
           ),
           Row(
             children: [
               _buildCounterButton(
+                context,
                 icon: Icons.remove,
                 onPressed: count > 0 ? () => onChanged(count - 1) : null,
               ),
@@ -56,6 +58,7 @@ class TicketCounter extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               _buildCounterButton(
+                context,
                 icon: Icons.add,
                 onPressed: () => onChanged(count + 1),
                 isActive: true,
@@ -67,20 +70,30 @@ class TicketCounter extends StatelessWidget {
     );
   }
 
-  Widget _buildCounterButton({required IconData icon, VoidCallback? onPressed, bool isActive = false}) {
+  Widget _buildCounterButton(
+    BuildContext context, {
+    required IconData icon,
+    VoidCallback? onPressed,
+    bool isActive = false,
+  }) {
+    final brandColor = AppColors.getBrandPrimary(context);
+    final muted = AppColors.getMutedText(context);
+
     return InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(20),
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: onPressed != null ? const Color(0xFFD4A373).withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.1),
+          color: onPressed != null
+              ? brandColor.withValues(alpha: 0.2)
+              : muted.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(
           icon,
           size: 16,
-          color: onPressed != null ? const Color(0xFFD4A373) : Colors.grey,
+          color: onPressed != null ? brandColor : muted,
         ),
       ),
     );

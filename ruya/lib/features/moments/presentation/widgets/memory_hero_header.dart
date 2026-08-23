@@ -52,12 +52,11 @@ class MemoryHeroHeader extends StatelessWidget {
 
   Future<void> _confirmAndDeleteAlbum(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+        backgroundColor: AppColors.getSurface(context),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text(
           'Delete Album',
@@ -67,14 +66,14 @@ class MemoryHeroHeader extends StatelessWidget {
         ),
         content: Text(
           'Are you sure you want to delete "${moment.title}" and all its photos? This action cannot be undone.',
-          style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
+          style: TextStyle(color: AppColors.getMutedText(context)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
               l10n.cancel,
-              style: const TextStyle(color: Colors.grey),
+              style: TextStyle(color: AppColors.getMutedText(context)),
             ),
           ),
           ElevatedButton(
@@ -107,6 +106,8 @@ class MemoryHeroHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
     final headerHeight = screenHeight * 0.46;
+    final brandColor = AppColors.getBrandPrimary(context);
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Stack(
       children: [
@@ -134,21 +135,25 @@ class MemoryHeroHeader extends StatelessWidget {
           ),
         ),
         // Back Button
-        Positioned(
+        PositionedDirectional(
           top: MediaQuery.of(context).padding.top + 8,
-          left: 16,
+          start: 16,
           child: CircleAvatar(
             backgroundColor: Colors.black.withValues(alpha: 0.4),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
+              icon: Icon(
+                isRtl ? Icons.arrow_forward_ios_rounded : Icons.arrow_back_ios_new_rounded,
+                color: Colors.white,
+                size: 18,
+              ),
               onPressed: () => context.pop(),
             ),
           ),
         ),
         // Action Buttons: Edit and Delete
-        Positioned(
+        PositionedDirectional(
           top: MediaQuery.of(context).padding.top + 8,
-          right: 16,
+          end: 16,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -181,9 +186,9 @@ class MemoryHeroHeader extends StatelessWidget {
           ),
         ),
         // Bottom Title & Pill Badge
-        Positioned(
-          left: AppSpacing.pagePadding(context),
-          right: AppSpacing.pagePadding(context),
+        PositionedDirectional(
+          start: AppSpacing.pagePadding(context),
+          end: AppSpacing.pagePadding(context),
           bottom: AppSpacing.md,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,10 +201,10 @@ class MemoryHeroHeader extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD4A373).withValues(alpha: 0.35),
+                  color: brandColor.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFFD4A373).withValues(alpha: 0.8),
+                    color: brandColor.withValues(alpha: 0.8),
                     width: 1,
                   ),
                 ),
@@ -211,7 +216,7 @@ class MemoryHeroHeader extends StatelessWidget {
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,
-                    color: Color(0xFFFAF6F0),
+                    color: Colors.white,
                   ),
                 ),
               ),

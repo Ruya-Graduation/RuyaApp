@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/theme/app_text_styles.dart';
 import 'package:ruya/core/utils/app_snackbar.dart';
@@ -109,14 +109,15 @@ class _AddMomentPageState extends State<AddMomentPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: isDark
-                ? const ColorScheme.dark(
+                ? ColorScheme.dark(
                     primary: AppColors.brandPrimaryDark,
                     onPrimary: Colors.black,
-                    surface: Color(0xFF2C2C2C),
+                    surface: AppColors.getSurface(context),
                   )
-                : const ColorScheme.light(
-                    primary: AppColors.brandPrimaryLight,
+                : ColorScheme.light(
+                    primary: AppColors.getBrandPrimary(context),
                     onPrimary: Colors.white,
+                    surface: AppColors.getSurface(context),
                   ),
           ),
           child: child!,
@@ -215,6 +216,8 @@ class _AddMomentPageState extends State<AddMomentPage> {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
       appBar: AppBar(
@@ -222,7 +225,7 @@ class _AddMomentPageState extends State<AddMomentPage> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
+            isRtl ? Icons.arrow_forward_ios_rounded : Icons.arrow_back_ios_new_rounded,
             color: isDark ? Colors.white : Colors.black87,
             size: 20,
           ),

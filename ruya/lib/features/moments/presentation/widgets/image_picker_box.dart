@@ -20,7 +20,7 @@ class ImagePickerBox extends StatelessWidget {
     this.errorText,
   });
 
-  Widget _buildExistingImage() {
+  Widget _buildExistingImage(BuildContext context) {
     if (existingImageUrl == null || existingImageUrl!.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -29,9 +29,9 @@ class ImagePickerBox extends StatelessWidget {
       fit: BoxFit.cover,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) return child;
-        return const Center(
+        return Center(
           child: CircularProgressIndicator(
-            color: AppColors.brandPrimaryLight,
+            color: AppColors.getBrandPrimary(context),
             strokeWidth: 2,
           ),
         );
@@ -46,7 +46,6 @@ class ImagePickerBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final hasImage = selectedImage != null ||
         (existingImageUrl != null && existingImageUrl!.isNotEmpty);
@@ -60,12 +59,12 @@ class ImagePickerBox extends StatelessWidget {
             height: 180,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+              color: AppColors.getSurface(context),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: errorText != null
                     ? AppColors.errorRed
-                    : (isDark ? Colors.white12 : const Color(0xFFE2D6C5)),
+                    : AppColors.getDivider(context),
                 width: 1.5,
               ),
             ),
@@ -76,11 +75,11 @@ class ImagePickerBox extends StatelessWidget {
                     children: [
                       selectedImage != null
                           ? Image.file(selectedImage!, fit: BoxFit.cover)
-                          : _buildExistingImage(),
+                          : _buildExistingImage(context),
                       if (onClear != null)
-                        Positioned(
+                        PositionedDirectional(
                           top: 8,
-                          right: 8,
+                          end: 8,
                           child: CircleAvatar(
                             radius: 16,
                             backgroundColor: Colors.black.withValues(
@@ -122,7 +121,7 @@ class ImagePickerBox extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: isDark ? Colors.white70 : Colors.black54,
+                          color: AppColors.getMutedText(context),
                         ),
                       ),
                     ],

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruya/core/di/injection.dart';
+import 'package:ruya/core/localization/locale_cubit.dart';
 import 'package:ruya/core/location/location_permission_status.dart';
 import 'package:ruya/core/location/location_settings_cubit.dart';
 import 'package:ruya/core/location/proximity_event.dart';
@@ -27,29 +28,8 @@ import 'package:ruya/l10n/app_localizations.dart';
 ///   • [HomeMonumentList] — monument cards
 ///
 /// State (loading, loaded, error, selected filter) is managed by [HomeCubit].
-///
-/// GPS proximity streaming is managed here via [ProximityService]:
-///   • Starts once [HomeCubit] emits [HomeStatus.loaded] AND the GPS toggle
-///     is ON AND the user is authenticated.
-///   • Pauses when the app is backgrounded; resumes on foregrounding.
-///
-/// ### Tab-switch decision
-/// The GPS stream is NOT stopped when the user switches to another bottom-nav
-/// tab. Rationale: the user is still in the app (foreground) after the Home
-/// tab has loaded, which satisfies the "foreground only" requirement. Stopping
-/// on every tab-switch would restart permission flows unnecessarily and create
-/// a worse UX for users walking through a site while checking the chat tab.
-/// This decision is intentional and reviewable — flag here if it needs to change.
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
-  static const List<String> _filters = [
-    'All',
-    'Giza',
-    'Luxor',
-    'Aswan',
-    'Cairo',
-  ];
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -100,11 +80,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void dispose() {
     _proximitySubscription?.cancel();
     _proximitySubscription = null;
-    // Note: we do NOT call _proximityService.stop() here on purpose.
-    // Since HomePage lives inside a StatefulShellRoute branch, it is NOT
-    // disposed on tab-switch — only on logout/full teardown. The stream
-    // should keep running while the app is in the foreground.
-    // Logout explicitly calls stop() in account_settings_card.dart.
     WidgetsBinding.instance.removeObserver(this);
     _homeCubit.close();
     super.dispose();
@@ -185,23 +160,34 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         BlocProvider<HomeCubit>.value(value: _homeCubit),
         BlocProvider<LocationSettingsCubit>.value(value: _locationSettingsCubit),
       ],
-      child: BlocListener<HomeCubit, HomeState>(
-        listenWhen: (prev, curr) =>
-            prev.status != curr.status && curr.status == HomeStatus.loaded,
-        listener: (context, state) {
-          // Sites just loaded for the first time → attempt to start GPS.
-          _maybeStartProximity();
-        },
-        child: BlocListener<LocationSettingsCubit, bool>(
-          listener: (context, gpsEnabled) {
-            if (gpsEnabled) {
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<LocaleCubit, Locale>(
+            listener: (context, locale) {
+              // Reload monuments whenever language is switched so the API
+              // returns the appropriate translation for the current language.
+              _homeCubit.loadMonuments(force: true);
+            },
+          ),
+          BlocListener<HomeCubit, HomeState>(
+            listenWhen: (prev, curr) =>
+                prev.status != curr.status && curr.status == HomeStatus.loaded,
+            listener: (context, state) {
+              // Sites just loaded for the first time → attempt to start GPS.
               _maybeStartProximity();
-            } else {
-              _proximityService.stop();
-            }
-          },
-          child: const _HomeView(),
-        ),
+            },
+          ),
+          BlocListener<LocationSettingsCubit, bool>(
+            listener: (context, gpsEnabled) {
+              if (gpsEnabled) {
+                _maybeStartProximity();
+              } else {
+                _proximityService.stop();
+              }
+            },
+          ),
+        ],
+        child: const _HomeView(),
       ),
     );
   }
@@ -215,22 +201,36 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 class _HomeView extends StatelessWidget {
   const _HomeView();
 
+  List<String> _getFilters(AppLocalizations l10n) {
+    return [
+      l10n.filterAll,
+      l10n.filterGiza,
+      l10n.filterLuxor,
+      l10n.filterAswan,
+      l10n.filterCairo,
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final filters = _getFilters(l10n);
 
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
       body: SafeArea(
         child: Column(
           children: [
-            HomeSearchBar(hint: l10n.searchHint),
+            HomeSearchBar(
+              hint: l10n.searchHint,
+              onChanged: context.read<HomeCubit>().setSearchQuery,
+            ),
             BlocBuilder<HomeCubit, HomeState>(
               buildWhen: (prev, curr) =>
                   prev.selectedFilterIndex != curr.selectedFilterIndex,
               builder: (context, state) {
                 return HomeFilterChips(
-                  filters: HomePage._filters,
+                  filters: filters,
                   selectedIndex: state.selectedFilterIndex,
                   onSelected: context.read<HomeCubit>().selectFilter,
                 );
@@ -241,7 +241,9 @@ class _HomeView extends StatelessWidget {
               child: BlocBuilder<HomeCubit, HomeState>(
                 buildWhen: (prev, curr) =>
                     prev.status != curr.status ||
-                    prev.monuments != curr.monuments,
+                    prev.monuments != curr.monuments ||
+                    prev.selectedFilterIndex != curr.selectedFilterIndex ||
+                    prev.searchQuery != curr.searchQuery,
                 builder: (context, state) {
                   return switch (state.status) {
                     HomeStatus.initial || HomeStatus.loading =>
@@ -249,10 +251,10 @@ class _HomeView extends StatelessWidget {
                     HomeStatus.error => _ErrorView(
                         message: state.errorMessage ?? 'Something went wrong.',
                         onRetry: () =>
-                            context.read<HomeCubit>().loadMonuments(),
+                            context.read<HomeCubit>().loadMonuments(force: true),
                       ),
                     HomeStatus.loaded =>
-                      HomeMonumentList(monuments: state.monuments),
+                      HomeMonumentList(monuments: state.filteredMonuments),
                   };
                 },
               ),
@@ -273,6 +275,8 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -288,13 +292,16 @@ class _ErrorView extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey, fontSize: 15),
+              style: TextStyle(
+                color: AppColors.getMutedText(context),
+                fontSize: 15,
+              ),
             ),
             AppSpacing.verticalGapLg,
             TextButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
             ),
           ],
         ),

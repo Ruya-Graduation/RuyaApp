@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({super.key});
@@ -6,6 +7,8 @@ class ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final brandColor = AppColors.getBrandPrimary(context);
+
     return Row(
       children: [
         CircleAvatar(
@@ -13,7 +16,7 @@ class ProfileHeader extends StatelessWidget {
           backgroundImage: const AssetImage(
             'assets/images/placeholder_avatar.png',
           ),
-          backgroundColor: Colors.grey[300],
+          backgroundColor: AppColors.getDivider(context),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -33,13 +36,13 @@ class ProfileHeader extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD4A373).withValues(alpha: 0.2),
+                  color: brandColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
                   'Verified User',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: const Color(0xFFB07D4B),
+                    color: brandColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

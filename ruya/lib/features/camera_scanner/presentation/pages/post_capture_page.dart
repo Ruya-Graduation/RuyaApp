@@ -39,15 +39,16 @@ class PostCapturePage extends StatelessWidget {
     required bool isPrimary,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        color: AppColors.getSurface(context),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isPrimary
               ? AppColors.getBrandPrimary(context)
-              : (isDark ? Colors.white12 : const Color(0xFFE5DACD)),
+              : AppColors.getDivider(context),
           width: isPrimary ? 2 : 1,
         ),
         boxShadow: [
@@ -74,7 +75,7 @@ class PostCapturePage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isPrimary
                         ? AppColors.getBrandPrimary(context)
-                        : (isDark ? Colors.white10 : const Color(0xFFFAF6F0)),
+                        : (isDark ? Colors.white10 : AppColors.getBackground(context)),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -103,17 +104,17 @@ class PostCapturePage extends StatelessWidget {
                         subtitle,
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDark ? Colors.white60 : Colors.black54,
+                          color: AppColors.getMutedText(context),
                           height: 1.3,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const Icon(
-                  Icons.arrow_forward_ios_rounded,
+                Icon(
+                  isRtl ? Icons.arrow_back_ios_new_rounded : Icons.arrow_forward_ios_rounded,
                   size: 16,
-                  color: Colors.grey,
+                  color: AppColors.getMutedText(context),
                 ),
               ],
             ),
@@ -127,6 +128,7 @@ class PostCapturePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
@@ -135,7 +137,7 @@ class PostCapturePage extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
+            isRtl ? Icons.arrow_forward_ios_rounded : Icons.arrow_back_ios_new_rounded,
             color: isDark ? Colors.white : Colors.black87,
             size: 20,
           ),
@@ -190,7 +192,7 @@ class PostCapturePage extends StatelessWidget {
                   fontFamily: 'Playfair Display',
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF1E1E1E),
+                  color: isDark ? Colors.white : Colors.black87,
                 ),
               ),
               AppSpacing.verticalGapLg,

@@ -37,14 +37,10 @@ class _SiteDetailsScreenState extends State<SiteDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return BlocProvider.value(
       value: _cubit,
       child: Scaffold(
-        backgroundColor:
-            isDark ? const Color(0xFF121212) : const Color(0xFFFAF8F5),
+        backgroundColor: AppColors.getBackground(context),
         body: BlocBuilder<SiteDetailsCubit, SiteDetailsState>(
           builder: (context, state) {
             return switch (state.status) {
@@ -106,17 +102,17 @@ class _LoadedSiteDetailsView extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.location_on_outlined,
                         size: 16,
-                        color: Colors.grey,
+                        color: AppColors.getMutedText(context),
                       ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           locationText,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
+                            color: AppColors.getMutedText(context),
                           ),
                         ),
                       ),
@@ -132,7 +128,7 @@ class _LoadedSiteDetailsView extends StatelessWidget {
                   Text(
                     site.description,
                     style: theme.textTheme.bodyLarge?.copyWith(
-                      color: Colors.grey[700],
+                      color: AppColors.getMutedText(context),
                       height: 1.5,
                     ),
                   ),
@@ -170,7 +166,10 @@ class _ErrorView extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey, fontSize: 15),
+              style: TextStyle(
+                color: AppColors.getMutedText(context),
+                fontSize: 15,
+              ),
             ),
             AppSpacing.verticalGapLg,
             TextButton.icon(

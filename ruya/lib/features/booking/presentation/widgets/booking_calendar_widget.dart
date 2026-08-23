@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/l10n/app_localizations.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 enum DayAvailability { avail, filling, sold }
 
@@ -52,7 +53,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
       case DayAvailability.filling:
         return Colors.orange[300]!;
       case DayAvailability.sold:
-        return Colors.red;
+        return AppColors.errorRed;
     }
   }
 
@@ -69,6 +70,8 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final brandColor = AppColors.getBrandPrimary(context);
 
     final now = DateTime.now();
     final firstDay = DateTime(now.year, now.month, now.day);
@@ -77,10 +80,10 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getSurface(context),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+          color: AppColors.getDivider(context),
         ),
       ),
       child: Column(
@@ -96,11 +99,11 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
               // Legend
               Row(
                 children: [
-                  _buildLegendDot(Colors.tealAccent[400]!, l10n.avail),
+                  _buildLegendDot(context, Colors.tealAccent[400]!, l10n.avail),
                   const SizedBox(width: 8),
-                  _buildLegendDot(Colors.orange[300]!, l10n.filling),
+                  _buildLegendDot(context, Colors.orange[300]!, l10n.filling),
                   const SizedBox(width: 8),
-                  _buildLegendDot(Colors.red, l10n.sold),
+                  _buildLegendDot(context, AppColors.errorRed, l10n.sold),
                 ],
               ),
             ],
@@ -121,26 +124,26 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
                   ) ??
                   const TextStyle(fontWeight: FontWeight.bold),
               leftChevronIcon: Icon(
-                Icons.chevron_left,
+                isRtl ? Icons.chevron_right : Icons.chevron_left,
                 color: isDark ? Colors.white : Colors.black,
               ),
               rightChevronIcon: Icon(
-                Icons.chevron_right,
+                isRtl ? Icons.chevron_left : Icons.chevron_right,
                 color: isDark ? Colors.white : Colors.black,
               ),
             ),
             calendarStyle: CalendarStyle(
               outsideDaysVisible: false,
               todayDecoration: BoxDecoration(
-                color: const Color(0xFFD4A373).withValues(alpha: 0.3),
+                color: brandColor.withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
               todayTextStyle: TextStyle(
                 color: isDark ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
               ),
-              selectedDecoration: const BoxDecoration(
-                color: Color(0xFFD4A373),
+              selectedDecoration: BoxDecoration(
+                color: brandColor,
                 shape: BoxShape.circle,
               ),
               selectedTextStyle: const TextStyle(
@@ -148,7 +151,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
                 fontWeight: FontWeight.bold,
               ),
               disabledTextStyle: TextStyle(
-                color: isDark ? Colors.grey[700] : Colors.grey[400],
+                color: AppColors.getMutedText(context),
               ),
             ),
             selectedDayPredicate: (day) => isSameDay(widget.selectedDate, day),
@@ -178,8 +181,8 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
                 final isSold = _availabilityFor(day) == DayAvailability.sold;
                 return _buildCellWithDot(
                   day: day.day,
-                  textColor: isDark ? Colors.grey[700]! : Colors.grey[400]!,
-                  dotColor: isSold ? Colors.red.withValues(alpha: 0.5) : null,
+                  textColor: AppColors.getMutedText(context),
+                  dotColor: isSold ? AppColors.errorRed.withValues(alpha: 0.5) : null,
                 );
               },
               todayBuilder: (context, day, focusedDay) {
@@ -189,7 +192,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
                 return Container(
                   margin: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD4A373).withValues(alpha: 0.2),
+                    color: brandColor.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
                   child: _buildCellWithDot(
@@ -204,8 +207,8 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
                 final dotColor = _colorForAvailability(avail);
                 return Container(
                   margin: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFD4A373),
+                  decoration: BoxDecoration(
+                    color: brandColor,
                     shape: BoxShape.circle,
                   ),
                   child: _buildCellWithDot(
@@ -256,7 +259,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     );
   }
 
-  Widget _buildLegendDot(Color color, String label) {
+  Widget _buildLegendDot(BuildContext context, Color color, String label) {
     return Row(
       children: [
         Container(
@@ -267,7 +270,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         const SizedBox(width: 4),
         Text(
           label,
-          style: const TextStyle(fontSize: 10, color: Colors.grey),
+          style: TextStyle(fontSize: 10, color: AppColors.getMutedText(context)),
         ),
       ],
     );

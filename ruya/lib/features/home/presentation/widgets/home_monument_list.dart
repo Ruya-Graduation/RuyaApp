@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/features/home/domain/entities/monument_entity.dart';
 import 'package:ruya/features/home/presentation/widgets/monument_card.dart';
+import 'package:ruya/l10n/app_localizations.dart';
 
 /// Displays a scrollable list of [MonumentCard] widgets.
 /// Separated from [HomePage] so it can be tested and replaced independently.
@@ -14,11 +16,13 @@ class HomeMonumentList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (monuments.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
-          'No monuments found.',
-          style: TextStyle(color: Colors.grey),
+          l10n.noMonumentsFound,
+          style: TextStyle(color: AppColors.getMutedText(context)),
         ),
       );
     }

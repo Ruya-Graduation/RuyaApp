@@ -41,7 +41,7 @@ class MomentsHeader extends StatelessWidget {
               fontFamily: 'Playfair Display',
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF1E1E1E),
+              color: isDark ? Colors.white : Colors.black87,
             ),
           ),
           AppSpacing.verticalGapXs,
@@ -49,7 +49,7 @@ class MomentsHeader extends StatelessWidget {
             l10n.tripsCount(totalTrips),
             style: AppTextStyles.body(context).copyWith(
               fontSize: AppSpacing.fontSizeSm,
-              color: isDark ? Colors.white60 : Colors.black54,
+              color: AppColors.getMutedText(context),
             ),
           ),
         ],

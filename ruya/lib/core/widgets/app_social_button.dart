@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_spacing.dart';
 
 class AppSocialButton extends StatelessWidget {
@@ -22,7 +23,7 @@ class AppSocialButton extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+          border: Border.all(color: AppColors.getDivider(context)),
           borderRadius: BorderRadius.circular(AppSpacing.xxl),
         ),
         child: icon,

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ruya/core/di/injection.dart';
 import 'package:ruya/core/location/location_settings_cubit.dart';
+import 'package:ruya/core/theme/app_colors.dart';
+import 'package:ruya/core/theme/theme_cubit.dart';
 import 'package:ruya/core/widgets/app_language_toggle.dart';
 import 'package:ruya/l10n/app_localizations.dart';
 
 /// Preferences card shown on the Profile screen.
-///
-/// Reads [LocationSettingsCubit] directly from the DI container (option a —
-/// avoids threading the cubit through the widget tree). The cubit is a
-/// LazySingleton so this card and [HomePage] share the same toggle state.
 class AppPreferencesCard extends StatelessWidget {
   const AppPreferencesCard({super.key});
 
@@ -17,7 +15,7 @@ class AppPreferencesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final isDark = theme.brightness == Brightness.dark;
+    final isDarkModeActive = context.watch<ThemeCubit>().state == ThemeMode.dark;
 
     // Provide the cubit from DI so this pure StatelessWidget stays simple.
     return BlocProvider<LocationSettingsCubit>.value(
@@ -26,10 +24,10 @@ class AppPreferencesCard extends StatelessWidget {
         builder: (context) {
           return Container(
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              color: AppColors.getSurface(context),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+                color: AppColors.getDivider(context),
               ),
             ),
             child: Column(
@@ -40,7 +38,7 @@ class AppPreferencesCard extends StatelessWidget {
                   child: Text(
                     l10n.appPreferences.toUpperCase(),
                     style: theme.textTheme.labelLarge?.copyWith(
-                      color: const Color(0xFFD4A373),
+                      color: AppColors.getBrandPrimary(context),
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
                     ),
@@ -56,12 +54,12 @@ class AppPreferencesCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFD4A373).withValues(alpha: 0.1),
+                          color: AppColors.getBrandPrimary(context).withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.language,
-                          color: Color(0xFFD4A373),
+                          color: AppColors.getBrandPrimary(context),
                           size: 20,
                         ),
                       ),
@@ -80,7 +78,47 @@ class AppPreferencesCard extends StatelessWidget {
                 ),
                 Divider(
                   height: 1,
-                  color: isDark ? Colors.grey[800] : Colors.grey[200],
+                  color: AppColors.getDivider(context),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.purple.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.dark_mode_outlined,
+                          color: Colors.purple,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          l10n.darkMode,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Switch(
+                        value: isDarkModeActive,
+                        onChanged: (_) => context.read<ThemeCubit>().toggle(),
+                        activeThumbColor: AppColors.getBrandPrimary(context),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(
+                  height: 1,
+                  color: AppColors.getDivider(context),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -115,7 +153,7 @@ class AppPreferencesCard extends StatelessWidget {
                             Text(
                               l10n.autoNarrateNearSites,
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: Colors.grey,
+                                color: AppColors.getMutedText(context),
                               ),
                             ),
                           ],
@@ -128,7 +166,7 @@ class AppPreferencesCard extends StatelessWidget {
                             value: gpsEnabled,
                             onChanged: (val) =>
                                 context.read<LocationSettingsCubit>().setGpsEnabled(val),
-                            activeThumbColor: const Color(0xFFD4A373),
+                            activeThumbColor: AppColors.getBrandPrimary(context),
                           );
                         },
                       ),

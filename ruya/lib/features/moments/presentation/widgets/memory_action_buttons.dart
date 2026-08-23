@@ -136,12 +136,12 @@ class MemoryActionButtons extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.white : const Color(0xFF1E1E1E),
+                  color: isDark ? Colors.white : Colors.black87,
                 ),
               ),
               style: OutlinedButton.styleFrom(
                 side: BorderSide(
-                  color: isDark ? Colors.white24 : const Color(0xFFD4A373),
+                  color: AppColors.getDivider(context),
                   width: 1.5,
                 ),
                 shape: RoundedRectangleBorder(

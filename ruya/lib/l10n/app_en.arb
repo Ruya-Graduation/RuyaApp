@@ -195,6 +195,41 @@
   "momentUpdatedSuccess": "Memory album updated successfully!",
   "confirmEditAlbumTitle": "Save Album Changes?",
   "confirmEditAlbumBody": "Are you sure you want to save the changes made to this album?",
-  "editAlbumTooltip": "Edit Album"
+  "editAlbumTooltip": "Edit Album",
+  "darkMode": "Dark Mode",
+  "setReminder": "Set a Reminder",
+  "remindMeOnVisitDay": "Remind me on the visit day",
+  "reminderTime": "Reminder Time",
+  "reminderScheduled": "Reminder scheduled successfully!",
+  "reminderCancelled": "Reminder cancelled",
+  "pickAFutureTime": "Please pick a future time for the reminder.",
+  "myBookings": "My Bookings",
+  "noBookingsYet": "No bookings yet",
+  "cancelBookingConfirmTitle": "Cancel Booking?",
+  "cancelBookingConfirmBody": "Are you sure you want to cancel your booking for {siteName}?",
+  "@cancelBookingConfirmBody": {
+    "placeholders": {
+      "siteName": { "type": "String" }
+    }
+  },
+  "bookingCancelled": "Booking cancelled successfully",
+  "bookingReminderNotifTitle": "Upcoming Visit Reminder 🏛️",
+  "bookingReminderNotifBody": "Your visit to {siteName} is today! Reference: {referenceNumber}",
+  "@bookingReminderNotifBody": {
+    "placeholders": {
+      "siteName": { "type": "String" },
+      "referenceNumber": { "type": "String" }
+    }
+  },
+  "filterAll": "All",
+  "filterGiza": "Giza",
+  "filterLuxor": "Luxor",
+  "filterAswan": "Aswan",
+  "filterCairo": "Cairo",
+  "crowdLow": "Low Crowds",
+  "crowdModerate": "Moderate",
+  "crowdHigh": "High",
+  "noMonumentsFound": "No monuments found.",
+  "retry": "Retry"
 }
 

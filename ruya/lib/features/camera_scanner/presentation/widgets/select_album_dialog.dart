@@ -24,12 +24,11 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
 
   Future<void> _confirmAndAddToAlbum(MomentItem album) async {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+        backgroundColor: AppColors.getSurface(context),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           l10n.confirmAddToAlbumTitle,
@@ -37,14 +36,14 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
         ),
         content: Text(
           l10n.confirmAddToAlbumBody(album.title),
-          style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
+          style: TextStyle(color: AppColors.getMutedText(context)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
               l10n.cancel,
-              style: const TextStyle(color: Colors.grey),
+              style: TextStyle(color: AppColors.getMutedText(context)),
             ),
           ),
           ElevatedButton(
@@ -83,7 +82,7 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
     }
   }
 
-  Widget _buildAlbumThumbnail(String? url) {
+  Widget _buildAlbumThumbnail(BuildContext context, String? url) {
     if (url != null && url.isNotEmpty) {
       return Image.network(
         url,
@@ -92,13 +91,13 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
           if (loadingProgress == null) return child;
           return Container(
             color: Colors.grey.shade900,
-            child: const Center(
+            child: Center(
               child: SizedBox(
                 width: 16,
                 height: 16,
                 child: CircularProgressIndicator(
                   strokeWidth: 1.5,
-                  color: AppColors.brandPrimaryLight,
+                  color: AppColors.getBrandPrimary(context),
                 ),
               ),
             ),
@@ -135,7 +134,7 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
                   vertical: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                  color: AppColors.getSurface(context),
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(24),
                   ),
@@ -151,7 +150,7 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
                         height: 4,
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade400,
+                          color: AppColors.getDivider(context),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -171,7 +170,7 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
                       l10n.selectAlbumToAddTo,
                       style: TextStyle(
                         fontSize: 13,
-                        color: isDark ? Colors.white60 : Colors.black54,
+                        color: AppColors.getMutedText(context),
                       ),
                     ),
                     AppSpacing.verticalGapMd,
@@ -186,9 +185,7 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
                                 child: Text(
                                   l10n.noPhotosAddedYet,
                                   style: TextStyle(
-                                    color: isDark
-                                        ? Colors.white60
-                                        : Colors.black54,
+                                    color: AppColors.getMutedText(context),
                                   ),
                                 ),
                               ),
@@ -197,7 +194,7 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
                               shrinkWrap: true,
                               itemCount: albums.length,
                               separatorBuilder: (context, index) =>
-                                  const Divider(height: 1),
+                                  Divider(height: 1, color: AppColors.getDivider(context)),
                               itemBuilder: (context, index) {
                                 final album = albums[index];
                                 return ListTile(
@@ -211,6 +208,7 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
                                       width: 48,
                                       height: 48,
                                       child: _buildAlbumThumbnail(
+                                        context,
                                         album.coverImageUrl,
                                       ),
                                     ),
@@ -230,9 +228,7 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
                                     album.startDate,
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: isDark
-                                          ? Colors.white60
-                                          : Colors.black54,
+                                      color: AppColors.getMutedText(context),
                                     ),
                                   ),
                                   trailing: Icon(
@@ -283,15 +279,15 @@ class _SelectAlbumDialogState extends State<SelectAlbumDialog> {
                       top: Radius.circular(24),
                     ),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CircularProgressIndicator(
-                          color: AppColors.brandPrimaryLight,
+                          color: AppColors.getBrandPrimary(context),
                         ),
-                        SizedBox(height: 16),
-                        Text(
+                        const SizedBox(height: 16),
+                        const Text(
                           'Uploading photo...',
                           style: TextStyle(
                             color: Colors.white,

@@ -95,8 +95,8 @@ class _ForgetPasswordOtpPageState extends State<ForgetPasswordOtpPage> {
                           Text(
                             l10n.getYourCodeSubtitle,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.grey,
+                            style: TextStyle(
+                              color: AppColors.getMutedText(context),
                               fontSize: 16,
                             ),
                           ),
@@ -129,7 +129,9 @@ class _ForgetPasswordOtpPageState extends State<ForgetPasswordOtpPage> {
                             onPressed: () => context.pop(),
                             child: Text(
                               l10n.back,
-                              style: const TextStyle(color: Colors.grey),
+                              style: TextStyle(
+                                color: AppColors.getMutedText(context),
+                              ),
                             ),
                           ),
                         ],
@@ -222,7 +224,7 @@ class _ResendRow extends StatelessWidget {
       children: [
         Text(
           l10n.resendCodeText,
-          style: const TextStyle(color: Colors.grey),
+          style: TextStyle(color: AppColors.getMutedText(context)),
         ),
         GestureDetector(
           onTap: canResend
@@ -235,7 +237,7 @@ class _ResendRow extends StatelessWidget {
             style: TextStyle(
               color: canResend
                   ? AppColors.getBrandPrimary(context)
-                  : Colors.grey,
+                  : AppColors.getMutedText(context),
               fontWeight: FontWeight.bold,
             ),
           ),

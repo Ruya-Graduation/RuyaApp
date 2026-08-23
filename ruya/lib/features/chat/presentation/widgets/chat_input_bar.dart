@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/core/utils/app_snackbar.dart';
 import 'package:ruya/features/chat/presentation/widgets/mic_button.dart';
 import 'package:ruya/l10n/app_localizations.dart';
@@ -69,10 +70,11 @@ class ChatInputBar extends StatelessWidget {
   void _showImagePickerSheet(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final brandColor = AppColors.getBrandPrimary(context);
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+      backgroundColor: AppColors.getSurface(context),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -88,12 +90,12 @@ class ChatInputBar extends StatelessWidget {
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.white24 : Colors.black12,
+                    color: AppColors.getDivider(context),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
                 ListTile(
-                  leading: const Icon(Icons.camera_alt_outlined, color: Color(0xFFD4A373)),
+                  leading: Icon(Icons.camera_alt_outlined, color: brandColor),
                   title: Text(
                     l10n.takePhoto,
                     style: TextStyle(
@@ -107,7 +109,7 @@ class ChatInputBar extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.photo_library_outlined, color: Color(0xFFD4A373)),
+                  leading: Icon(Icons.photo_library_outlined, color: brandColor),
                   title: Text(
                     l10n.chooseFromGallery,
                     style: TextStyle(
@@ -132,13 +134,14 @@ class ChatInputBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final brandColor = AppColors.getBrandPrimary(context);
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFAF6F0),
+        color: AppColors.getSurface(context),
         border: Border(
           top: BorderSide(
-            color: isDark ? Colors.white10 : Colors.black12,
+            color: AppColors.getDivider(context),
             width: 1.0,
           ),
         ),
@@ -169,7 +172,7 @@ class ChatInputBar extends StatelessWidget {
                   IconButton(
                     icon: Icon(
                       Icons.add_photo_alternate_outlined,
-                      color: isDark ? const Color(0xFFD4A373) : const Color(0xFF8B6914),
+                      color: brandColor,
                       size: 24,
                     ),
                     tooltip: l10n.attachImage,
@@ -189,7 +192,7 @@ class ChatInputBar extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: isRecording ? l10n.recording : l10n.typeMessage,
                         hintStyle: TextStyle(
-                          color: isDark ? Colors.white38 : Colors.black38,
+                          color: AppColors.getMutedText(context),
                           fontSize: 14,
                         ),
                         border: OutlineInputBorder(
@@ -197,7 +200,7 @@ class ChatInputBar extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+                        fillColor: AppColors.getBackground(context),
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 18.0,
                           vertical: 12.0,
@@ -243,9 +246,11 @@ class _SelectedImageThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brandColor = AppColors.getBrandPrimary(context);
+
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-      alignment: Alignment.centerLeft,
+      alignment: AlignmentDirectional.centerStart,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -255,7 +260,7 @@ class _SelectedImageThumbnail extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFFD4A373),
+                color: brandColor,
                 width: 1.5,
               ),
               image: DecorationImage(
@@ -272,7 +277,7 @@ class _SelectedImageThumbnail extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: const BoxDecoration(
-                  color: Colors.red,
+                  color: AppColors.errorRed,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -304,10 +309,10 @@ class _RecordingIndicatorRibbon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: Colors.red.withValues(alpha: isDark ? 0.15 : 0.08),
+      color: AppColors.errorRed.withValues(alpha: isDark ? 0.15 : 0.08),
       child: Row(
         children: [
-          const Icon(Icons.fiber_manual_record, color: Colors.red, size: 14),
+          const Icon(Icons.fiber_manual_record, color: AppColors.errorRed, size: 14),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -326,7 +331,7 @@ class _RecordingIndicatorRibbon extends StatelessWidget {
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,
-              color: Colors.red,
+              color: AppColors.errorRed,
             ),
           ),
         ],
@@ -342,27 +347,29 @@ class _SendButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brandColor = AppColors.getBrandPrimary(context);
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
     return GestureDetector(
       onTap: onSend,
       child: Container(
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFFD4A373), Color(0xFFC49060)],
-          ),
+          color: brandColor,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFD4A373).withValues(alpha: 0.35),
+              color: brandColor.withValues(alpha: 0.35),
               blurRadius: 8,
               offset: const Offset(0, 3),
             ),
           ],
         ),
-        child: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+        child: Transform.flip(
+          flipX: isRtl,
+          child: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+        ),
       ),
     );
   }

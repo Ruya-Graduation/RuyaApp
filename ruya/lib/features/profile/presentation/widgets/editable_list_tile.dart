@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 
 class EditableListTile extends StatefulWidget {
   final String title;
@@ -60,14 +61,15 @@ class _EditableListTileState extends State<EditableListTile> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final brandColor = AppColors.getBrandPrimary(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+            color: AppColors.getDivider(context),
             width: 1,
           ),
         ),
@@ -75,7 +77,7 @@ class _EditableListTileState extends State<EditableListTile> {
       child: _isEditing
           ? Row(
               children: [
-                Icon(widget.leadingIcon, color: const Color(0xFFD4A373)),
+                Icon(widget.leadingIcon, color: brandColor),
                 const SizedBox(width: 16),
                 Expanded(
                   child: TextField(
@@ -88,11 +90,11 @@ class _EditableListTileState extends State<EditableListTile> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.check_circle, color: Colors.green),
+                  icon: const Icon(Icons.check_circle, color: AppColors.successGreen),
                   onPressed: _save,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.cancel, color: Colors.red),
+                  icon: const Icon(Icons.cancel, color: AppColors.errorRed),
                   onPressed: _cancel,
                 ),
               ],
@@ -104,10 +106,10 @@ class _EditableListTileState extends State<EditableListTile> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFD4A373).withValues(alpha: 0.1),
+                      color: brandColor.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(widget.leadingIcon, color: const Color(0xFFD4A373), size: 20),
+                    child: Icon(widget.leadingIcon, color: brandColor, size: 20),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -118,7 +120,10 @@ class _EditableListTileState extends State<EditableListTile> {
                       ),
                     ),
                   ),
-                  Icon(Icons.chevron_right, color: Colors.grey[400]),
+                  Icon(
+                    isRtl ? Icons.chevron_left : Icons.chevron_right,
+                    color: AppColors.getMutedText(context),
+                  ),
                 ],
               ),
             ),

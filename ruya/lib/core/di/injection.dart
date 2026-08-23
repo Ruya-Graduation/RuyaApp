@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Core
 import 'package:ruya/core/presentation/cubit/bottom_nav_cubit.dart';
+import 'package:ruya/core/localization/locale_cubit.dart';
+import 'package:ruya/core/theme/theme_cubit.dart';
 import 'package:ruya/core/network/dio_client.dart';
 import 'package:ruya/core/session/token_local_data_source.dart';
 import 'package:ruya/core/session/session_service.dart';
@@ -56,12 +58,19 @@ import 'package:ruya/features/site_details/domain/usecases/get_site_by_id_usecas
 import 'package:ruya/features/site_details/presentation/cubit/site_details_cubit.dart';
 
 // Booking — Data / Service
+import 'package:ruya/features/booking/data/datasources/booking_local_data_source.dart';
+import 'package:ruya/features/booking/data/datasources/booking_remote_data_source.dart';
 import 'package:ruya/features/booking/data/services/ticket_export_service.dart';
 
 // Booking — Domain
 import 'package:ruya/features/booking/domain/usecases/create_local_booking_usecase.dart';
+import 'package:ruya/features/booking/domain/usecases/save_booking_usecase.dart';
+import 'package:ruya/features/booking/domain/usecases/get_bookings_usecase.dart';
+import 'package:ruya/features/booking/domain/usecases/cancel_booking_reminder_usecase.dart';
+import 'package:ruya/features/booking/domain/usecases/delete_booking_usecase.dart';
 
 // Core — Services
+import 'package:ruya/core/services/notification_service.dart';
 import 'package:ruya/core/services/speech_to_text_service.dart';
 import 'package:ruya/core/services/tts_service.dart';
 
@@ -110,6 +119,13 @@ Future<void> configureDependencies() async {
   const secureStorage = FlutterSecureStorage();
   getIt.registerLazySingleton(() => secureStorage);
 
+  getIt.registerLazySingleton<LocaleCubit>(
+    () => LocaleCubit(getIt<SharedPreferences>()),
+  );
+  getIt.registerLazySingleton<ThemeCubit>(
+    () => ThemeCubit(getIt<SharedPreferences>()),
+  );
+
   getIt.registerFactory(() => BottomNavCubit());
 
   // ---------------------------------------------------------------------------
@@ -125,10 +141,10 @@ Future<void> configureDependencies() async {
   // ---------------------------------------------------------------------------
   // Core — Network
   // ---------------------------------------------------------------------------
-  // Build the Dio singleton. TokenLocalDataSource must be registered first
-  // because DioClient reads the token in its auth interceptor.
+  // Build the Dio singleton. TokenLocalDataSource and LocaleCubit must be registered first
+  // because DioClient reads the token and app locale in its interceptors.
   getIt.registerLazySingleton<Dio>(
-    () => DioClient.getInstance(getIt()),
+    () => DioClient.getInstance(getIt(), getIt()),
   );
 
   // ---------------------------------------------------------------------------
@@ -219,12 +235,25 @@ Future<void> configureDependencies() async {
   // ---------------------------------------------------------------------------
   // Booking Feature
   // ---------------------------------------------------------------------------
+  getIt.registerLazySingleton<BookingLocalDataSource>(
+    () => BookingLocalDataSourceImpl(getIt<SharedPreferences>()),
+  );
+  getIt.registerLazySingleton<BookingRemoteDataSource>(
+    () => BookingRemoteDataSourceImpl(getIt<Dio>()),
+  );
   getIt.registerLazySingleton(() => CreateLocalBookingUseCase());
+  getIt.registerLazySingleton(() => SaveBookingUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetBookingsUseCase(getIt()));
+  getIt.registerLazySingleton(() => CancelBookingReminderUseCase(getIt(), getIt()));
+  getIt.registerLazySingleton(() => DeleteBookingUseCase(getIt(), getIt()));
   getIt.registerFactory(() => TicketExportService());
 
   // ---------------------------------------------------------------------------
-  // Core — Voice & Speech Services
+  // Core — Voice, Speech & Notification Services
   // ---------------------------------------------------------------------------
+  getIt.registerLazySingleton<NotificationService>(
+    () => NotificationService(),
+  );
   getIt.registerLazySingleton<SpeechToTextService>(
     () => SpeechToTextService(),
   );

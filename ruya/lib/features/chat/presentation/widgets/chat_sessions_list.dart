@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ruya/core/theme/app_colors.dart';
 import 'package:ruya/features/chat/domain/entities/chat_session.dart';
 import 'package:ruya/features/chat/presentation/widgets/chat_history_item.dart';
 import 'package:ruya/l10n/app_localizations.dart';
@@ -23,7 +24,7 @@ class ChatSessionsList extends StatelessWidget {
 
     if (sessions.isEmpty) {
       return Container(
-        color: isDark ? const Color(0xFF121212) : Colors.white,
+        color: AppColors.getBackground(context),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -39,7 +40,7 @@ class ChatSessionsList extends StatelessWidget {
                 Text(
                   l10n.noConversations,
                   style: TextStyle(
-                    color: isDark ? Colors.white54 : Colors.black45,
+                    color: AppColors.getMutedText(context),
                     fontSize: 14,
                   ),
                 ),
@@ -51,7 +52,7 @@ class ChatSessionsList extends StatelessWidget {
     }
 
     return Container(
-      color: isDark ? const Color(0xFF121212) : Colors.white,
+      color: AppColors.getBackground(context),
       child: ListView.builder(
         itemCount: sessions.length,
         itemBuilder: (context, index) {
