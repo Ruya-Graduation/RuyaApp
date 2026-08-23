@@ -42,7 +42,7 @@ jobs:
             echo "To fix this:"
             echo "  1. Go to: GitHub Repo → Settings → Secrets and variables → Actions"
             echo "  2. Create secret named 'WEB_BASE_URL'"
-            echo "  3. Set value to the raw URL, e.g.: http://ruya.runasp.net"
+            echo "  3. Set value to the HTTPS URL, e.g.: https://ruya.runasp.net"
             echo "  4. Push to main again"
             exit 1
           fi

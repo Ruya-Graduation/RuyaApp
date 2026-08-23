@@ -18,7 +18,7 @@ class AppConfig {
   /// build run without the define).
   static const String _webBaseUrl = String.fromEnvironment('BASE_URL');
 
-  /// The backend base URL, e.g. `http://ruya.runasp.net`.
+  /// The backend base URL, e.g. `https://ruya.runasp.net`.
   static String get baseUrl {
     final raw = kIsWeb ? _webBaseUrl : dotenv.env['BASE_URL'];
 
@@ -26,20 +26,20 @@ class AppConfig {
       throw StateError(
         kIsWeb
             ? 'BASE_URL is not configured.\n\n'
-              'SETUP (web):\n'
-              '  1. Go to: GitHub Repo → Settings → Secrets and variables → Actions\n'
-              '  2. Create secret "WEB_BASE_URL" with the raw URL, e.g.:\n'
-              '     http://ruya.runasp.net\n'
-              '  3. Push to main - GitHub Actions builds with '
-              '--dart-define-from-file so BASE_URL is compiled in.\n\n'
-              'For local web dev, create ruya/env.json (gitignored) with:\n'
-              '  {"BASE_URL": "http://your.api.url"}\n'
-              'and run: flutter run -d chrome --dart-define-from-file=env.json'
+                  'SETUP (web):\n'
+                  '  1. Go to: GitHub Repo → Settings → Secrets and variables → Actions\n'
+                  '  2. Create secret "WEB_BASE_URL" with the raw URL, e.g.:\n'
+                  '     https://ruya.runasp.net\n'
+                  '  3. Push to main - GitHub Actions builds with '
+                  '--dart-define-from-file so BASE_URL is compiled in.\n\n'
+                  'For local web dev, create ruya/env.json (gitignored) with:\n'
+                  '  {"BASE_URL": "https://your.api.url"}\n'
+                  'and run: flutter run -d chrome --dart-define-from-file=env.json'
             : 'BASE_URL is not configured.\n\n'
-              'SETUP (mobile/desktop):\n'
-              '  1. Copy .env.example to .env in the ruya/ directory\n'
-              '  2. Set BASE_URL=http://your.api.url\n'
-              '  3. Re-run the app',
+                  'SETUP (mobile/desktop):\n'
+                  '  1. Copy .env.example to .env in the ruya/ directory\n'
+                  '  2. Set BASE_URL=https://your.api.url\n'
+                  '  3. Re-run the app',
       );
     }
 
