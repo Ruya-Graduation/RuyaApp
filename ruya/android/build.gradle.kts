@@ -34,9 +34,6 @@ subprojects {
             }
         }
     }
-    tasks.matching { it.name.contains("strip", ignoreCase = true) }.configureEach {
-        enabled = false
-    }
 }
 
 tasks.register<Delete>("clean") {

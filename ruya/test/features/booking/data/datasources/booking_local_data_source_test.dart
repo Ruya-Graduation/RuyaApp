@@ -59,6 +59,32 @@ void main() {
       expect(list.first.notificationId, 12345);
     });
 
+    test('update clears reminder when clearReminderDateTime is true', () async {
+      await dataSource.save(testBooking.copyWith(
+        reminderEnabled: true,
+        reminderDateTime: DateTime(2026, 9, 1, 7, 0),
+        notificationId: 12345,
+      ));
+
+      final saved = (await dataSource.getAll()).first;
+      expect(saved.reminderEnabled, isTrue);
+      expect(saved.reminderDateTime, isNotNull);
+
+      final cleared = saved.copyWith(
+        reminderEnabled: false,
+        clearReminderDateTime: true,
+        clearNotificationId: true,
+      );
+
+      await dataSource.update(cleared);
+      final list = await dataSource.getAll();
+
+      expect(list.length, 1);
+      expect(list.first.reminderEnabled, isFalse);
+      expect(list.first.reminderDateTime, isNull);
+      expect(list.first.notificationId, isNull);
+    });
+
     test('delete removes booking by reference number', () async {
       await dataSource.save(testBooking);
       expect((await dataSource.getAll()).length, 1);

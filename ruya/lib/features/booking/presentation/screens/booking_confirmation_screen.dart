@@ -27,14 +27,34 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
   late final TicketExportService _exportService;
   bool _isExporting = false;
   bool _reminderEnabled = false;
-  TimeOfDay _reminderTime = const TimeOfDay(hour: 7, minute: 0);
+  late TimeOfDay _reminderTime;
   LocalBookingModel? _localModel;
 
   @override
   void initState() {
     super.initState();
     _exportService = getIt<TicketExportService>();
+    _initDefaultReminderTime();
     _loadExistingBooking();
+  }
+
+  void _initDefaultReminderTime() {
+    final now = DateTime.now();
+    final visitDate = widget.booking.visitDate;
+    final isToday = visitDate.year == now.year &&
+        visitDate.month == now.month &&
+        visitDate.day == now.day;
+
+    if (isToday) {
+      final nextHour = now.hour + 1;
+      if (nextHour < 24) {
+        _reminderTime = TimeOfDay(hour: nextHour, minute: 0);
+      } else {
+        _reminderTime = TimeOfDay(hour: now.hour, minute: (now.minute + 15) % 60);
+      }
+    } else {
+      _reminderTime = const TimeOfDay(hour: 8, minute: 0);
+    }
   }
 
   Future<void> _loadExistingBooking() async {
@@ -63,7 +83,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
   Future<void> _handleReminderToggle(bool enabled) async {
     final l10n = AppLocalizations.of(context)!;
     if (enabled) {
-      final scheduledDateTime = DateTime(
+      var scheduledDateTime = DateTime(
         widget.booking.visitDate.year,
         widget.booking.visitDate.month,
         widget.booking.visitDate.day,
@@ -71,10 +91,42 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
         _reminderTime.minute,
       );
 
+      // If default/current reminder time is in the past, prompt time picker
       if (scheduledDateTime.isBefore(DateTime.now())) {
-        AppSnackBar.showError(context, l10n.pickAFutureTime);
-        setState(() => _reminderEnabled = false);
-        return;
+        final now = DateTime.now();
+        final initial = widget.booking.visitDate.day == now.day &&
+                widget.booking.visitDate.month == now.month &&
+                widget.booking.visitDate.year == now.year
+            ? TimeOfDay.fromDateTime(now.add(const Duration(minutes: 30)))
+            : _reminderTime;
+
+        final picked = await showTimePicker(
+          context: context,
+          initialTime: initial,
+          helpText: l10n.pickAFutureTime,
+        );
+
+        if (picked == null || !mounted) {
+          setState(() => _reminderEnabled = false);
+          return;
+        }
+
+        _reminderTime = picked;
+        scheduledDateTime = DateTime(
+          widget.booking.visitDate.year,
+          widget.booking.visitDate.month,
+          widget.booking.visitDate.day,
+          _reminderTime.hour,
+          _reminderTime.minute,
+        );
+
+        if (scheduledDateTime.isBefore(DateTime.now())) {
+          if (mounted) {
+            AppSnackBar.showError(context, l10n.pickAFutureTime);
+            setState(() => _reminderEnabled = false);
+          }
+          return;
+        }
       }
 
       await getIt<NotificationService>().requestPermission();
@@ -119,15 +171,25 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
     } else {
       await getIt<NotificationService>().cancelReminder(_deterministicNotifId);
 
-      if (_localModel != null) {
-        final updated = _localModel!.copyWith(
-          reminderEnabled: false,
-          reminderDateTime: null,
-          notificationId: null,
-        );
-        await getIt<SaveBookingUseCase>()(updated);
-        _localModel = updated;
-      }
+      final updated = (_localModel ??
+              LocalBookingModel(
+                referenceNumber: widget.booking.referenceNumber,
+                siteId: widget.booking.siteId,
+                siteName: widget.booking.siteName,
+                visitDate: widget.booking.visitDate,
+                timeSlot: widget.booking.timeSlot,
+                ticketCount: widget.booking.ticketCount,
+                pricePerTicket: widget.booking.pricePerTicket,
+                currency: widget.booking.currency,
+                createdAt: widget.booking.createdAt,
+              ))
+          .copyWith(
+        reminderEnabled: false,
+        clearReminderDateTime: true,
+        clearNotificationId: true,
+      );
+      await getIt<SaveBookingUseCase>()(updated);
+      _localModel = updated;
 
       if (mounted) {
         setState(() => _reminderEnabled = false);
@@ -142,6 +204,22 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
       initialTime: _reminderTime,
     );
     if (picked != null && mounted) {
+      final scheduledDateTime = DateTime(
+        widget.booking.visitDate.year,
+        widget.booking.visitDate.month,
+        widget.booking.visitDate.day,
+        picked.hour,
+        picked.minute,
+      );
+
+      if (scheduledDateTime.isBefore(DateTime.now())) {
+        AppSnackBar.showError(
+          context,
+          AppLocalizations.of(context)!.pickAFutureTime,
+        );
+        return;
+      }
+
       setState(() => _reminderTime = picked);
       if (_reminderEnabled) {
         await _handleReminderToggle(true);

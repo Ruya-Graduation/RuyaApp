@@ -33,12 +33,6 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-
-    packaging {
-        jniLibs {
-            keepDebugSymbols.add("**/*.so")
-        }
-    }
 }
 
 dependencies {
@@ -53,8 +47,4 @@ kotlin {
 
 flutter {
     source = "../.."
-}
-
-tasks.matching { it.name.contains("strip", ignoreCase = true) }.configureEach {
-    enabled = false
 }
