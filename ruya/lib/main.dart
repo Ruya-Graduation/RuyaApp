@@ -11,9 +11,11 @@ import 'package:ruya/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // On web, the .env is NOT in assets (it's built into the web config by GitHub Actions)
-  // On mobile/desktop, load from the actual .env file
+
+  // On web, BASE_URL is injected at BUILD TIME via --dart-define-from-file
+  // (see .github/workflows/deploy-web.yml) and read as a compile-time
+  // constant in AppConfig — no .env file exists or is fetched on web.
+  // On mobile/desktop, load the real .env file from disk.
   if (!kIsWeb) {
     try {
       await dotenv.load(fileName: '.env');
@@ -28,7 +30,7 @@ void main() async {
       print('Running on web - using injected configuration');
     }
   }
-  
+
   await configureDependencies();
   runApp(
     BlocProvider(
@@ -57,7 +59,9 @@ class MainApp extends StatelessWidget {
           supportedLocales: AppLocalizations.supportedLocales,
           locale: locale,
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: AppColors.brandPrimaryLight),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: AppColors.brandPrimaryLight,
+            ),
             useMaterial3: true,
           ),
           darkTheme: ThemeData(

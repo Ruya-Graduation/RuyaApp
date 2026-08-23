@@ -28,41 +28,27 @@ jobs:
           channel: stable
           cache: true
 
-      # SECURITY: Create .env BEFORE building - secrets stay internal
-      - name: Create environment file from secrets
+      # SECURITY: BASE_URL is injected at BUILD TIME as a compile-time
+      # constant via --dart-define-from-file. No .env file is ever created,
+      # so there is nothing for the web engine to fetch at runtime.
+      - name: Create env.json from secret
         working-directory: ruya
         env:
-          ENV_FILE: ${{ secrets.ENV_FILE }}
+          WEB_BASE_URL: ${{ secrets.WEB_BASE_URL }}
         run: |
-          if [ -z "$ENV_FILE" ]; then
-            echo "❌ ERROR: ENV_FILE secret is not set!"
+          if [ -z "$WEB_BASE_URL" ]; then
+            echo "❌ ERROR: WEB_BASE_URL secret is not set!"
             echo ""
             echo "To fix this:"
             echo "  1. Go to: GitHub Repo → Settings → Secrets and variables → Actions"
-            echo "  2. Create secret named 'ENV_FILE'"
-            echo "  3. Set value to:"
-            echo "     BASE_URL=http://ruya.runasp.net"
+            echo "  2. Create secret named 'WEB_BASE_URL'"
+            echo "  3. Set value to the raw URL, e.g.: http://ruya.runasp.net"
             echo "  4. Push to main again"
             exit 1
           fi
-          
-          echo "✅ ENV_FILE secret found - creating .env file"
-          printf '%s' "$ENV_FILE" > .env
-          
-          # Verify it was created correctly
-          if [ -f .env ]; then
-            echo "✅ .env file created successfully"
-            # Show that it contains BASE_URL (without exposing the actual value)
-            if grep -q "BASE_URL" .env; then
-              echo "✅ BASE_URL is configured"
-            else
-              echo "❌ ERROR: BASE_URL not found in ENV_FILE secret"
-              exit 1
-            fi
-          else
-            echo "❌ ERROR: Failed to create .env file"
-            exit 1
-          fi
+
+          printf '{"BASE_URL": "%s"}' "$WEB_BASE_URL" > env.json
+          echo "✅ env.json created for this build only (not committed, not deployed)"
 
       - name: Install dependencies
         working-directory: ruya
@@ -73,21 +59,21 @@ jobs:
         run: |
           flutter build web \
             --release \
+            --dart-define-from-file=env.json \
             --base-href "/${{ github.event.repository.name }}/"
 
       - name: Create 404 fallback for client-side routing
         working-directory: ruya
         run: cp build/web/index.html build/web/404.html
 
-      - name: Verify .env is NOT in build output
+      - name: Verify no env files leaked into build output
         working-directory: ruya
         run: |
-          if [ -f "build/web/.env" ]; then
-            echo "❌ SECURITY ERROR: .env file found in build output!"
-            echo "This is a security risk - .env should never be deployed"
+          if [ -f "build/web/.env" ] || [ -f "build/web/env.json" ]; then
+            echo "❌ SECURITY ERROR: an env file was found in build output!"
             exit 1
           else
-            echo "✅ Security check passed: .env is not in build output"
+            echo "✅ Security check passed: no env file in build output"
           fi
 
       - name: Upload Pages artifact
@@ -114,7 +100,6 @@ jobs:
           echo "App is live at: ${{ steps.deployment.outputs.page_url }}"
           echo ""
           echo "Security Summary:"
-          echo "  ✓ Environment variables injected at build time"
-          echo "  ✓ .env file NOT in deployed build"
+          echo "  ✓ BASE_URL compiled in at build time via --dart-define-from-file"
+          echo "  ✓ No env file in deployed build"
           echo "  ✓ Secrets NOT in URLs or query parameters"
-          echo "  ✓ BASE_URL only available internally"

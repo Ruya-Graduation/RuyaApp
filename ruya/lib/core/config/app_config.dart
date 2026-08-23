@@ -1,40 +1,45 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Single source of truth for environment-driven configuration.
 ///
-/// SECURITY:
-/// - Environment variables are injected at BUILD TIME by GitHub Actions
-/// - They are never stored in git or exposed in URLs
-/// - They are never visible in the web app bundle
-/// - The .env file is only used on mobile/desktop
-///
-/// On web:
-/// - GitHub Actions injects BASE_URL into a config file at build time
-/// - AppConfig reads it from dotenv (which was pre-populated during build)
-/// - The value is used by DioClient to configure the API base URL
+/// - On web: `BASE_URL` is injected at BUILD TIME via `--dart-define-from-file`
+///   (see `.github/workflows/deploy-web.yml`). It becomes a compile-time
+///   constant baked into main.dart.js. There is no `.env` file involved on
+///   web at all — nothing is ever fetched at runtime.
+/// - On mobile/desktop: `BASE_URL` is read from the local `.env` file via
+///   flutter_dotenv, loaded in `main.dart` before `runApp`.
 class AppConfig {
   AppConfig._();
 
+  /// Compile-time value baked in for web builds via
+  /// `--dart-define-from-file=env.json` (or `--dart-define=BASE_URL=...`).
+  /// Empty string when not provided (e.g. on non-web platforms, or a web
+  /// build run without the define).
+  static const String _webBaseUrl = String.fromEnvironment('BASE_URL');
+
   /// The backend base URL, e.g. `http://ruya.runasp.net`.
-  ///
-  /// SECURE FLOW:
-  /// 1. GitHub Actions (deploy-web.yml) reads ENV_FILE secret
-  /// 2. Creates .env file with BASE_URL during build (before web build starts)
-  /// 3. Flutter build process loads .env into dotenv
-  /// 4. This getter reads from dotenv.env['BASE_URL']
-  /// 5. Value is never exposed in URLs or public configs
   static String get baseUrl {
-    final raw = dotenv.env['BASE_URL'];
-    
+    final raw = kIsWeb ? _webBaseUrl : dotenv.env['BASE_URL'];
+
     if (raw == null || raw.trim().isEmpty) {
       throw StateError(
-        'BASE_URL is not configured.\n\n'
-        'SETUP:\n'
-        '  1. Go to: GitHub Repo → Settings → Secrets and variables → Actions\n'
-        '  2. Create secret "ENV_FILE" with content:\n'
-        '     BASE_URL=http://your.api.url\n'
-        '  3. Push to main - GitHub Actions will inject it at build time\n\n'
-        'For more info, see deploy-web.yml in .github/workflows/'
+        kIsWeb
+            ? 'BASE_URL is not configured.\n\n'
+              'SETUP (web):\n'
+              '  1. Go to: GitHub Repo → Settings → Secrets and variables → Actions\n'
+              '  2. Create secret "WEB_BASE_URL" with the raw URL, e.g.:\n'
+              '     http://ruya.runasp.net\n'
+              '  3. Push to main - GitHub Actions builds with '
+              '--dart-define-from-file so BASE_URL is compiled in.\n\n'
+              'For local web dev, create ruya/env.json (gitignored) with:\n'
+              '  {"BASE_URL": "http://your.api.url"}\n'
+              'and run: flutter run -d chrome --dart-define-from-file=env.json'
+            : 'BASE_URL is not configured.\n\n'
+              'SETUP (mobile/desktop):\n'
+              '  1. Copy .env.example to .env in the ruya/ directory\n'
+              '  2. Set BASE_URL=http://your.api.url\n'
+              '  3. Re-run the app',
       );
     }
 
