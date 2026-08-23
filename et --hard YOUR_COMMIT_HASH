@@ -1,0 +1,10 @@
+[33mae79357[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m ci: reset deployment environment
+[33m2592ff9[m correct github actions workflow config
+[33mb6d4de8[m making new version of deployment
+[33m4be13b2[m trying to fix the deployment page
+[33maf80e2e[m ci: switch source to github actions
+[33m9519c3a[m ci: reset actions build for renamed repo
+[33med58bc1[m ci: update base-href for github pages
+[33m15d1363[m ci: fix base-href for github pages
+[33m5b29b2d[m ci: update base-href for github pages
+[33me7efc47[m[33m ([m[1;31morigin/Feature/web-deployment[m[33m, [m[1;32mfeature/web-deployment[m[33m)[m ci: add GitHub Actions workflow for web deployment
