@@ -269,7 +269,7 @@ Ruya is tested with unit and widget test suites covering:
 
 ## 👥 Authors & Acknowledgments
 
-Developed with ❤️ as an **ITI Graduation Project (Intake 44)**.
+Developed with ❤️ as an **ITI Graduation Project (Intake 46)**.
 
 * **Project Name**: Ruya (رؤية)
 * **Organization**: Information Technology Institute (ITI)
