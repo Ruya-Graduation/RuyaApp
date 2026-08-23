@@ -13,9 +13,7 @@ class ProfileHeader extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 36,
-          backgroundImage: const AssetImage(
-            'assets/images/placeholder_avatar.png',
-          ),
+          backgroundImage: const AssetImage('assets/images/Ruya AI logo.png'),
           backgroundColor: AppColors.getDivider(context),
         ),
         const SizedBox(width: 16),

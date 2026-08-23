@@ -65,6 +65,7 @@ class MainApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
+      debugShowCheckedModeBanner: false,
       locale: locale,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
