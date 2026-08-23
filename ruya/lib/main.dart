@@ -12,18 +12,21 @@ import 'package:ruya/l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Load .env BEFORE configuring dependencies so AppConfig.baseUrl is available
-  // during DI setup. On web, .env might not exist (it's not bundled in the build),
-  // so we handle the exception gracefully.
-  try {
-    await dotenv.load(fileName: '.env');
-  } catch (e) {
-    if (kDebugMode) {
-      print('⚠️ Warning: Could not load .env file: $e');
-      print('ℹ️ On web deployment, this is expected. Using fallback configuration.');
+  // On web, the .env is NOT in assets (it's built into the web config by GitHub Actions)
+  // On mobile/desktop, load from the actual .env file
+  if (!kIsWeb) {
+    try {
+      await dotenv.load(fileName: '.env');
+    } catch (e) {
+      if (kDebugMode) {
+        print('Warning: Could not load .env file on mobile: $e');
+      }
     }
-    // On web, .env doesn't exist in the deployed build.
-    // AppConfig will fall back to query parameters or defaults.
+  } else {
+    // For web, we don't need to load anything - BASE_URL is available via AppConfig
+    if (kDebugMode) {
+      print('Running on web - using injected configuration');
+    }
   }
   
   await configureDependencies();

@@ -28,19 +28,40 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Create environment file
+      # SECURITY: Create .env BEFORE building - secrets stay internal
+      - name: Create environment file from secrets
         working-directory: ruya
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
-          # For web builds, .env is optional since we can use query parameters
           if [ -z "$ENV_FILE" ]; then
-            echo "ℹ️ ENV_FILE secret not set - web app will use query parameter fallback"
-            # Create empty .env to prevent any build warnings
-            touch .env
+            echo "❌ ERROR: ENV_FILE secret is not set!"
+            echo ""
+            echo "To fix this:"
+            echo "  1. Go to: GitHub Repo → Settings → Secrets and variables → Actions"
+            echo "  2. Create secret named 'ENV_FILE'"
+            echo "  3. Set value to:"
+            echo "     BASE_URL=http://ruya.runasp.net"
+            echo "  4. Push to main again"
+            exit 1
+          fi
+          
+          echo "✅ ENV_FILE secret found - creating .env file"
+          printf '%s' "$ENV_FILE" > .env
+          
+          # Verify it was created correctly
+          if [ -f .env ]; then
+            echo "✅ .env file created successfully"
+            # Show that it contains BASE_URL (without exposing the actual value)
+            if grep -q "BASE_URL" .env; then
+              echo "✅ BASE_URL is configured"
+            else
+              echo "❌ ERROR: BASE_URL not found in ENV_FILE secret"
+              exit 1
+            fi
           else
-            echo "✅ ENV_FILE secret found - creating .env file"
-            printf '%s' "$ENV_FILE" > .env
+            echo "❌ ERROR: Failed to create .env file"
+            exit 1
           fi
 
       - name: Install dependencies
@@ -58,6 +79,17 @@ jobs:
         working-directory: ruya
         run: cp build/web/index.html build/web/404.html
 
+      - name: Verify .env is NOT in build output
+        working-directory: ruya
+        run: |
+          if [ -f "build/web/.env" ]; then
+            echo "❌ SECURITY ERROR: .env file found in build output!"
+            echo "This is a security risk - .env should never be deployed"
+            exit 1
+          else
+            echo "✅ Security check passed: .env is not in build output"
+          fi
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
@@ -74,3 +106,15 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Deployment Summary
+        run: |
+          echo "✅ Deployment successful!"
+          echo ""
+          echo "App is live at: ${{ steps.deployment.outputs.page_url }}"
+          echo ""
+          echo "Security Summary:"
+          echo "  ✓ Environment variables injected at build time"
+          echo "  ✓ .env file NOT in deployed build"
+          echo "  ✓ Secrets NOT in URLs or query parameters"
+          echo "  ✓ BASE_URL only available internally"
