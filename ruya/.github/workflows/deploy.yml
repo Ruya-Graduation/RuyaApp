@@ -19,13 +19,13 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
           cache: true
 
       - name: Install dependencies
@@ -33,7 +33,7 @@ jobs:
 
       # Corrected base-href to match your repository name
       - name: Build Web app
-        run: flutter build web --release --base-href "/RuyaMobile/"
+        run: flutter build web --release --base-href "/RuyaApp/"
 
       - name: Deploy to GitHub Pages
         uses: Peaceiris/actions-gh-pages@v4
