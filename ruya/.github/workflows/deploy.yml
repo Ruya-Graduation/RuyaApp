@@ -1,4 +1,4 @@
-name: Deploy Flutter Web
+name: Deploy Flutter Web v2
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-flutter-app
   cancel-in-progress: true
 
 jobs:
