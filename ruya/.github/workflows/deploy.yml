@@ -31,9 +31,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Uses root base-href "/" so it loads cleanly on custom domains or root GitHub pages
+      # Corrected base-href to match your repository name
       - name: Build Web app
-        run: flutter build web --release --base-href "/"
+        run: flutter build web --release --base-href "/ruya-app/"
 
       - name: Deploy to GitHub Pages
         uses: Peaceiris/actions-gh-pages@v4
